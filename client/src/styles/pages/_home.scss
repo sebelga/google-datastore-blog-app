@@ -1,0 +1,20 @@
+#home {
+    ul.blog-posts {
+        list-style: none;
+        padding-top:1.5rem;
+
+        li {
+            margin-bottom:3rem;
+        }
+
+        .post-info {
+            padding-left:15px;
+        }
+
+    }
+
+    .info-no-posts {
+        margin:30px 0;
+        text-align:center;
+    }
+}

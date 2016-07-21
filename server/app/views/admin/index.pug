@@ -1,0 +1,40 @@
+extends ../extends/layout.pug
+
+block title
+    title Admin blog
+
+block content
+    .content
+        h1 Blog Admin
+        if blogPosts.length === 0
+            .info-no-posts
+                p You haven't written any post yet.
+                a.pure-button(href='/admin/blog/new') Create New Post
+        else
+            <table class="pure-table pure-table-horizontal">
+                thead
+                    tr
+                        th #
+                        th Title
+                        th Actions
+
+                tbody
+                    each item in blogPosts
+                        tr
+                            td= item.id
+                            td= item.title
+                            td: ul.actions
+                                li: a(href="/blog/" + item.id) View
+                                li: a(href="/admin/blog/edit/" + item.id) Edit
+                                li: a(href="/admin/blog/delete/" + item.id class="btn-delete-post" post-id=item.id) Delete
+
+
+block scripts
+    script.
+        $( document ).ready(function() {
+            $('.btn-delete-post').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).attr('post-id');
+                App.blogPostService.deletePost(id);
+            });
+        });

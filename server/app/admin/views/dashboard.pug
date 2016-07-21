@@ -1,0 +1,47 @@
+extends ../../views/layout.pug
+
+block title
+    title Admin blog
+
+block content
+    .content
+        h1 Blog Admin
+
+        .btn-bar
+            a.pure-button(href='/blog/create') + Create New Post
+
+        if error
+            div.error= error.message
+
+        if blogPosts && blogPosts.length === 0
+            .info-no-posts
+                p You haven't written any post yet.
+        else if blogPosts
+            <table class="pure-table pure-table-horizontal">
+                thead
+                    tr
+                        th id
+                        th Title
+                        th Actions
+
+                tbody
+                    each item in blogPosts
+                        tr
+                            td= item.id
+                            td= item.title
+                            td: ul.actions
+                                li: a(href="/blog/" + item.id) View
+                                li: a(href="/admin/edit-post/" + item.id) Edit
+                                // We create the link for the status bar be we will delete it with Ajax below
+                                li: a(href="/admin/post/delete/" + item.id class="btn-delete-post" post-id=item.id) Delete
+
+
+block scripts
+    script.
+        $( document ).ready(function() {
+            $('.btn-delete-post').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).attr('post-id');
+                blogApp.blogPostService.deletePost(id);
+            });
+        });

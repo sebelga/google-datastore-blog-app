@@ -1,0 +1,6 @@
+{
+    "eslint.enable": true,
+    "editor.rulers": [
+        140
+    ]
+}

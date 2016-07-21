@@ -1,0 +1,46 @@
+extends ../../views/layout.pug
+
+block title
+    title= action === 'create' ? 'New Post' : 'Edit Post'
+
+block head
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css")
+
+block content
+    .content
+        h1= action === 'create' ? 'New Post' : 'Edit Post'
+
+        if error
+            .error
+                p= error.message
+
+        form.pure-form(method="post", class="blogpost-form", enctype="multipart/form-data")
+            fieldset.pure-group
+                input(type="text", id="title", class="pure-input-1", placeholder="Title", name="title", value=blogPost.title)
+                textarea.pure-input-1(placeholder="Blog Post content", rows="8", name="content")
+                    = blogPost.content
+                .feature-image
+                    if blogPost.imageData
+                        .img-preview
+                            img(src=blogPost.imageData.urls.squareSmall)
+                            div: a(id="delete-image", href="#delete-image") Delete
+                    div(class=blogPost.imageData? "pure-group hidden" : "pure-group")
+                        label(for="image") Feature Image
+                        input(type="file", name="image", id="image")
+            .btns
+                button(type="submit", class="pure-button pure-u-1 pure-u-sm-1-4 pure-button-primary") #{action === 'create' ? 'Create' : 'Update'}
+
+block scripts
+    script(src='//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js')
+    script.
+        $( document ).ready(function() {
+            $('#delete-image').on('click', function(e) {
+                e.preventDefault();
+                var id = #{blogPost.id ? blogPost.id : 0};
+
+                App.blogPostService.deleteImage(id);
+            });
+
+            // Init Simple Markdown Editor
+            var simplemde = new SimpleMDE();
+        });
