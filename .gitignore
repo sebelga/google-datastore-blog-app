@@ -1,0 +1,13 @@
+# Dependency directory
+node_modules/
+config.json
+report/
+# other
+.tmp
+*.log
+index.html
+public/build/
+
+coverage/
+vendor/
+.env
