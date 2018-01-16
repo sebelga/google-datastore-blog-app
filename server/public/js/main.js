@@ -1,6 +1,8 @@
 'use strict';
 
 (function bootstrap() {
+    const apiBase = '/api/v1';
+
     function App() {
         this.userService = new UserService();
         this.blogPostService = new BlogPostService();
@@ -8,7 +10,7 @@
         this.notificationService = new NotificationService();
     }
     const app = new App();
-    window.app = app();
+    window.app = app;
 
     // -----------------------------------------------------------
 
@@ -17,7 +19,7 @@
     }
 
     BlogPostService.prototype.deletePost = (blogPostId) => {
-        window.axios.delete(`/api/v1/blog-posts/${blogPostId}`, {
+        window.axios.delete(`${apiBase}/blog/${blogPostId}`, {
             headers: { 'Content-type': 'application/json' }, data: null // data null is necessary to pass the headers
         }).then(() => {
             /**
@@ -30,7 +32,7 @@
     };
 
     BlogPostService.prototype.deleteImage = (blogPostId) => {
-        window.axios.put(`/api/v1/blog-posts/${blogPostId}`, { imageData: null })
+        window.axios.put(`${apiBase}/blog-posts/${blogPostId}`, { imageData: null })
             .then(() => {
                 app.notificationService.show('Image deleted');
 
@@ -97,7 +99,7 @@
 
             window.console.log('Submitting form.....', data);
 
-            window.axios.post(`/api/v1/blog-posts/${blogPostId}/comments`, data)
+            window.axios.post(`${apiBase}/blog-posts/${blogPostId}/comments`, data)
                 .then((response) => {
                     list.prepend(commentToLi(response.data.comment));
                     $(`#comment-${response.data.comment.id}`).find('button.delete').click(deleteComment);

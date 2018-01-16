@@ -19,6 +19,7 @@ const config = {
     env: envVars.NODE_ENV,
     isTest: envVars.NODE_ENV === 'test',
     isDevelopment: envVars.NODE_ENV === 'development',
+    apiBase: '/api/v1',
 };
 
 log.info(`[Environment] current environment is "${config.env}"`);

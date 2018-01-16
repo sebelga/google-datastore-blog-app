@@ -3,7 +3,7 @@
 
 const storage = require('@google-cloud/storage')();
 const async = require('async');
-const is = require('is');
+const arrify = require('arrify');
 const config = require('../config');
 const logger = require('winston');
 
@@ -92,24 +92,24 @@ const uploadToGCS = (req, res, next) => {
     }
 };
 
-const deleteFromGCS = (storageObjects, cb) => {
-    const fns = [];
+/**
+ * Delte one or many objects from the Google Storage Bucket
+ * @param {string | array} _storageObjects -- Storage objects to delete
+ */
+const deleteFromGCS = (_storageObjects) => {
+    const storageObjects = arrify(_storageObjects);
+    const fns = storageObjects.map(o => processDelete(o));
 
-    if (is.object(storageObjects)) {
-        Object.keys(storageObjects).forEach((k) => {
-            fns.push(processDelete(storageObjects[k]));
+    return new Promise((resolve, reject) => {
+        async.parallel(fns, (err) => {
+            if (err) {
+                return reject(err);
+            }
+
+            logger.info('All object deleted successfully from Google Storage');
+
+            return resolve(null);
         });
-    } else {
-        fns.push(processDelete(storageObjects));
-    }
-
-    async.parallel(fns, (err) => {
-        logger.info('End Deleting Files GCS', err);
-
-        if (err) {
-            return cb(err);
-        }
-        cb(null);
     });
 
     // ----------

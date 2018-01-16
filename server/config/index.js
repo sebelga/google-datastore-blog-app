@@ -5,7 +5,7 @@ const winston = require('winston');
 
 if (process.env.NODE_ENV === 'development') {
     winston.info('Reading ENV variable from ".env" file');
-    require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+    require('dotenv').config({ path: path.join(__dirname, '../.env') });
 }
 
 const common = require('./common');

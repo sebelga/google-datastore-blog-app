@@ -2,6 +2,8 @@
 
 const router = require('express').Router();
 const blog = require('./blog-post');
+
+const config = require('../config');
 const images = require('../helpers/images');
 
 // ------------------------
@@ -9,10 +11,13 @@ const images = require('../helpers/images');
 // ------------------------
 
 router.get('/blog', blog.list);
-router.get('/blog/create', blog.create);
-router.post('/blog/create', [images.multer.single('image'), images.uploadToGCS], blog.create);
 router.get('/blog/:id', blog.get);
-router.delete('/blog/:id', blog.deletePost);
+// router.get('/blog/create', blog.create);
+// router.post('/blog/create', [images.multer.single('image'), images.uploadToGCS], blog.create);
+
+// Api
+// ---------
+router.delete(`${config.common.apiBase}/blog/:id`, blog.deletePost);
 
 module.exports = router;
 

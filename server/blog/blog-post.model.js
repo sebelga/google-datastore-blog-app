@@ -1,7 +1,7 @@
 'use strict';
 
 const gstore = require('gstore-node')();
-// const imagesHelpers = require('../helpers/images');
+const imagesHelpers = require('../helpers/images');
 
 const Schema = gstore.Schema;
 const schema = new Schema({
@@ -22,7 +22,17 @@ schema.queries('list', {
 });
 
 /**
- * Pre hook to delete image on GCS if we pass null for "imageData"
+ * Hook to delete image from GCS when we delete a post
+ */
+schema.pre('delete', function() {
+    if (!this.cloudStorageObject) {
+        return Promise.resolve();
+    }
+    return imagesHelpers.deleteFromGCS(this.cloudStorageObject);
+});
+
+ /**
+ * Hook to delete image from GCS if we pass null for "imageData"
  */
 // schema.pre('save', function (next) {
 //     if (this.entityKey && this.get('imageData') === null) {

@@ -9,19 +9,13 @@
             "request": "launch",
             "name": "nodemon",
             "runtimeExecutable": "nodemon",
-            "program": "${workspaceFolder}/server/app/server.js",
+            "program": "${workspaceFolder}/server/server.js",
             "restart": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "env": {
                 "NODE_ENV": "development"
             }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceRoot}\\server\\app\\server.js",
         },
         {
             "type": "node",

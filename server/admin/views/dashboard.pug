@@ -8,7 +8,7 @@ block content
         h1 Blog Admin
 
         .btn-bar
-            a.pure-button(href='/blog/create') + Create New Post
+            a.pure-button(href='/admin/new-post') + Create New Post
 
         if error
             div.error= error.message
@@ -42,6 +42,6 @@ block scripts
             $('.btn-delete-post').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('post-id');
-                blogApp.blogPostService.deletePost(id);
+                app.blogPostService.deletePost(id);
             });
         });
