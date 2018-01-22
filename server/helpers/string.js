@@ -1,6 +1,6 @@
 'use strict';
 
-function limitChars(str, numChars = 100, suffix = '(...)') {
+const limitChars = (str, numChars = 100, suffix = '(...)') => {
     if (str.length > numChars) {
         str = str.substr(0, numChars);
 
@@ -17,7 +17,7 @@ function limitChars(str, numChars = 100, suffix = '(...)') {
     return str;
 }
 
-function removeMarkdown(str) {
+const removeMarkdown = (str) => {
     // Simple markdown remover
     // Removes # and *
     str = str.replace(/(\*{1,2})/g, '');
@@ -25,7 +25,7 @@ function removeMarkdown(str) {
     return str;
 }
 
-function createExcerpt(str, numChars = 300, suffix = '(...)') {
+const createExcerpt = (str, numChars = 300, suffix = '(...)') => {
     if (typeof str === 'undefined' || str === null) {
         return null;
     }

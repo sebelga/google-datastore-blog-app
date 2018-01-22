@@ -3,8 +3,8 @@
 const gstore = require("gstore-node")();
 const R = require("ramda");
 
-const imagesHelpers = require("../../helpers/images");
-const stringHelpers = require("../../helpers/string");
+const imagesHelpers = require("../../../helpers/images");
+const stringHelpers = require("../../../helpers/string");
 
 const Schema = gstore.Schema;
 
@@ -46,7 +46,30 @@ schema.pre("save", [deletePreviousImage, prepareEntityData]);
  */
 schema.pre("delete", deleteCloudStorageObject);
 
+/**
+ * Hooks to run after *deleting* the entity
+ */
+schema.post("delete", deleteComments);
+
 // -------------------------------------
+
+/**
+ * If entity exists (has an id) and we are sending "null" as poster uri
+ * here we don't use the datastoreEntity() method as it would merge the datastore
+ * data into our entity (and lose any change we want to make to it)
+ * we use another helper "model()" to access a Model declared in gstore
+ */
+function deletePreviousImage() {
+    if (this.entityKey.id && this.posterUri === null) {
+        return this.dataloader.load(this.entityKey).then(entity => {
+            if (!entity || !entity.cloudStorageObject) {
+                return;
+            }
+            return imagesHelpers.deleteFromGCS(entity.cloudStorageObject);
+        });
+    }
+    return Promise.resolve();
+}
 
 function prepareEntityData() {
     /**
@@ -98,24 +121,6 @@ function createExcerpt(entityData) {
 }
 
 /**
- * If entity exists (has an id) and we are sending "null" as poster uri
- * here we don't use the datastoreEntity() method as it would merge the datastore
- * data into our entity (and lose any change we want to make to it)
- * we use another helper "model()" to access a Model declared in gstore
- */
-function deletePreviousImage() {
-    if (this.entityKey.id && this.posterUri === null) {
-        return this.dataloader.load(this.entityKey).then(entity => {
-            if (!entity || !entity.cloudStorageObject) {
-                return;
-            }
-            return imagesHelpers.deleteFromGCS(entity.cloudStorageObject);
-        });
-    }
-    return Promise.resolve();
-}
-
-/**
  * Hook to delete image from GCS before we delete a post
  */
 function deleteCloudStorageObject() {
@@ -126,6 +131,29 @@ function deleteCloudStorageObject() {
         }
         return imagesHelpers.deleteFromGCS(entity.cloudStorageObject);
     });
+}
+
+/**
+ * Hook to delete all the comments after a BlogPost has been deleted
+ *
+ * @param {*} result The result of the delete of the BlogPost
+ *                   It contains the key of the entity deleted
+ */
+function deleteComments(result) {
+    const { id } = result.key;
+
+    /**
+     * A keys-only query returns just the keys of the result entities instead of
+     * the entities themselves, at lower latency and cost.
+     */
+    return gstore.model('Comment')
+        .query()
+        .filter("blogPost", id)
+        .select('__key__')
+        .run()
+        .then(({ entities }) => (
+            gstore.ds.delete(entities.map(entity => entity[gstore.ds.KEY]))
+        ));
 }
 
 module.exports = gstore.model("BlogPost", schema);

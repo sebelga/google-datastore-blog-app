@@ -3,9 +3,8 @@
 const router = require('express').Router();
 
 const admin = require('./admin');
-const images = require('../helpers/images');
-
-const dataloaderMiddleware = require('../middleware/dataloader');
+const images = require('../../helpers/images');
+const dataloaderMiddleware = require('../../middleware/dataloader');
 
 // ------------------------
 // Admin ROUTES

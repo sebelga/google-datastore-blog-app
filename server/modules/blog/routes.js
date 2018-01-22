@@ -3,12 +3,11 @@
 const router = require("express").Router();
 const bodyParser = require("body-parser");
 
+const config = require("../../config");
+const images = require("../../helpers/images");
+const dataloaderMiddleware = require("../../middleware/dataloader");
 const { blogPostCtrl } = require("./blog-post");
 const { commentCtrl } = require("./comment");
-
-const config = require("../config");
-const images = require("../helpers/images");
-const dataloaderMiddleware = require("../middleware/dataloader");
 
 // Blog Posts ROUTES
 // ------------------------

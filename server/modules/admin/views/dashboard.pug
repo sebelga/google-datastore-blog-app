@@ -1,4 +1,4 @@
-extends ../extends/layout.pug
+extends ../../../views/layout.pug
 
 block title
     title Admin blog
@@ -6,15 +6,21 @@ block title
 block content
     .content
         h1 Blog Admin
-        if blogPosts.length === 0
+
+        .btn-bar
+            a.pure-button(href='/admin/new-post') + Create New Post
+
+        if error
+            div.error= error.message
+
+        if blogPosts && blogPosts.length === 0
             .info-no-posts
                 p You haven't written any post yet.
-                a.pure-button(href='/admin/blog/new') Create New Post
-        else
+        else if blogPosts
             <table class="pure-table pure-table-horizontal">
                 thead
                     tr
-                        th #
+                        th id
                         th Title
                         th Actions
 
@@ -25,8 +31,9 @@ block content
                             td= item.title
                             td: ul.actions
                                 li: a(href="/blog/" + item.id) View
-                                li: a(href="/admin/blog/edit/" + item.id) Edit
-                                li: a(href="/admin/blog/delete/" + item.id class="btn-delete-post" post-id=item.id) Delete
+                                li: a(href="/admin/edit-post/" + item.id) Edit
+                                // We create the link for the status bar be we will delete it with Ajax below
+                                li: a(href="/admin/post/delete/" + item.id class="btn-delete-post" post-id=item.id) Delete
 
 
 block scripts
@@ -35,6 +42,6 @@ block scripts
             $('.btn-delete-post').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('post-id');
-                App.blogPostService.deletePost(id);
+                app.blogPostService.deletePost(id);
             });
         });

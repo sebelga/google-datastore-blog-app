@@ -1,4 +1,4 @@
-extends ../../views/layout.pug
+extends ../../../views/layout.pug
 
 block title
     title= action === 'create' ? 'New Post' : 'Edit Post'
@@ -28,6 +28,7 @@ block content
                     div(class=blogPost.posterUri? "pure-group hidden" : "pure-group")
                         label(for="image") Feature Image
                         input(type="file", name="image", id="image")
+                input(type="hidden", name="posterUri" value=blogPost.posterUri)
             .btns
                 button(type="submit", class="pure-button pure-u-1 pure-u-sm-1-4 pure-button-primary") #{action === 'create' ? 'Create' : 'Update'}
 

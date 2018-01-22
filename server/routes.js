@@ -1,11 +1,14 @@
 'use strict';
 
-const blogRoutes = require('./blog/routes');
-const adminRoutes = require('./admin/routes');
+const blogRoutes = require('./modules/blog/routes');
+const adminRoutes = require('./modules/admin/routes');
 
 module.exports = (app) => {
-    // app.use('/api/v1', blogRoutes);
     app.use(blogRoutes);
     app.use(adminRoutes);
+
+    /**
+     * Default to "/blog"
+     */
     app.use((req, res) => res.redirect("/blog"));
 };

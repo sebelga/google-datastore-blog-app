@@ -5,7 +5,7 @@ const is = require("is");
 const logger = require("winston");
 const gstore = require("gstore-node")();
 
-const { blogPostCtrl, BlogPost, blogPostHelpers } = require("../blog");
+const { BlogPost } = require("../blog");
 
 const dashboard = (req, res) => {
     const view = path.join(__dirname, "views/dashboard");
