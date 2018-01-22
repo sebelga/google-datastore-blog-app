@@ -33,7 +33,9 @@ const create = (req, res) => {
         // We add an extra prop to our entityData
         entity.entityData.createdOnAgo = moment(comment.createdOn).fromNow();
         res.json(entity.plain());
-    }, (err) => res.status(400).send("Error saving comment"));
+    }, err => (
+        res.status(400).json(err)
+    ));
 };
 
 const deleteComment = (req, res) => {

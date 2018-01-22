@@ -16,7 +16,7 @@ block content
             ul
                 each item in comments.entities
                     li(id='comment-' + item.id, class="blog-post__comment")
-                        .author #{item.author} wrote on #{item.createdOnFormatted}
+                        .author #{item.author} wrote #{item.createdOnFormatted}
                         .comment= item.comment
                         button.delete(comment-id=item.id): i(class='fa fa-close')
 

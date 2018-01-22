@@ -7,7 +7,6 @@ const moment  = require('moment');
 
 const BlogPost = require("./blog-post.model");
 const Comment = require("../comment/comment.model");
-const helpers = require("./blog-post.helpers");
 
 const list = (req, res) => {
     BlogPost.list()
@@ -65,7 +64,7 @@ const get = (req, res) => {
                     // Format the comment date before sending back
                     ({
                         ...comment,
-                        createdOnFormatted: moment(comment.createdOn).format('lll')
+                        createdOnFormatted: moment(comment.createdOn).fromNow()
                     })
                 );
                 cb(null, result);
@@ -93,8 +92,9 @@ const updatePost = (req, res) => {
     const entityData = Object.assign({}, req.body, { file });
 
     /**
-     * We pass our DataLoader instance to the update method
-     * so it is attached to the created entity and available in the "pre" hooks
+     * We pass our DataLoader instance to the update method for 2 reasons
+     * 1) it will be attached to the created entity and available in the "pre" hooks
+     * 2) it will clear the cache after the update
      */
     return BlogPost.update(+req.params.id, entityData, null, null, null, {
         dataloader
@@ -106,7 +106,9 @@ const updatePost = (req, res) => {
 };
 
 const deletePost = (req, res) => {
-    BlogPost.delete(+req.params.id)
+    const { dataloader } = req;
+
+    BlogPost.delete(+req.params.id, null, null, null, null, { dataloader })
         .then(response => {
             if (!response.success) {
                 return res.status(400).json(response);

@@ -3,4 +3,7 @@
 const commentCtrl = require("./comment");
 const Comment = require("./comment.model");
 
-module.exports = { commentCtrl, Comment };
+module.exports = {
+    commentCtrl,
+    Comment
+};

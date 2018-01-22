@@ -12,8 +12,6 @@
     const app = new App();
     window.app = app;
 
-    // -----------------------------------------------------------
-
     // ----------blog service
     function BlogPostService() {}
 
@@ -86,6 +84,8 @@
                     if (response.data.entities) {
                         response.data.entities.forEach(comment => {
                             list.append(commentToLi(comment));
+                            $(`#comment-${comment.id}`).find('button.delete').click(deleteComment);
+
                             // $(".blog-post__comment").forEach(function(el) {
                             //     el.click(deleteComment);
                             // });
