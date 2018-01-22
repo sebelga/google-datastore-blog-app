@@ -3,9 +3,9 @@
 const path = require("path");
 const is = require("is");
 const logger = require("winston");
+const gstore = require("gstore-node")();
 
-const stringHelpers = require("../helpers/string");
-const { blogPostCtrl, BlogPost, helpers: blogPostHelpers } = require('../blog');
+const { blogPostCtrl, BlogPost, blogPostHelpers } = require("../blog");
 
 const dashboard = (req, res) => {
     const view = path.join(__dirname, "views/dashboard");
@@ -19,7 +19,7 @@ const dashboard = (req, res) => {
         )
         .catch(() =>
             res.render(view, {
-                error: { message: "Could not load posts" },
+                error: { message: "Error loading posts." },
                 pageId: "admin-index"
             })
         );
@@ -29,17 +29,20 @@ const newPost = (req, res) => {
     const view = path.join(__dirname, "views/edit");
 
     if (req.method === "POST") {
-        const data = blogPostHelpers.prepareData(req.body, req.file);
-        const blogPost = new BlogPost(data);
+        const entityData = Object.assign({}, req.body, { file: req.file });
+        const blogPost = new BlogPost(entityData);
+
+        // We the request DataLoader instance to our entity
+        // so it is available in our "pre" Hooks
+        blogPost.dataloader = req.dataloader;
 
         return blogPost.save().then(
             entity => {
-                // Redirect to admin dashboard
                 res.redirect("/admin");
             },
             err => {
                 res.render(view, {
-                    blogPost: data,
+                    blogPost: blogPost.plain(),
                     action: "create",
                     error: is.object(err.message) ? err.message : err
                 });
@@ -54,42 +57,40 @@ const newPost = (req, res) => {
     });
 };
 
-function editPost(req, res) {
+const editPost = (req, res) => {
+    const { dataloader } = req;
     const view = path.join(__dirname, "views/edit");
 
     if (req.method === "POST") {
-        return res.send('TODO');
-        // const blogPostData = BlogPost.sanitize(req.body);
-        // blogPostData.excerpt = createExcerpt(blogPostData.content);
+        const entityData = Object.assign({}, req.body, { file: req.file });
+        const blogPost = new BlogPost(entityData, +req.params.id);
+        blogPost.dataloader = req.dataloader;
 
-        // /**
-        //  * We update the post passing options parameters with "replace" set to true
-        //  * Be default, the Model.update() method does a "PATCH" operation.
-        //  * It fetches the entity, then merge the Datastore data and then save the merged object back
-        //  * By setting "replace" to true, we are skipping the fetching + merging and saving directly to the Datastore
-        //  */
-        // return BlogPost.update(+req.params.id, blogPostData, null, null, null, {
-        //     replace: true
-        // })
-        //     .then(entity => {
-        //         if (req.headers["content-type"] === "application/json") {
-        //             res.json(entity.plain());
-        //         } else {
-        //             res.redirect("/admin");
-        //         }
-        //     })
-        //     .catch(err =>
-        //         res.render(view, {
-        //             blogPost: blogPostData,
-        //             action: "update",
-        //             error: is.object(err.message) ? err.message : err
-        //         })
-        //     );
+        return blogPost.save()
+            .then(entity => {
+                if (req.headers["content-type"] === "application/json") {
+                    res.json(entity.plain());
+                } else {
+                    res.redirect("/admin");
+                }
+            })
+            .catch(err =>
+                res.render(view, {
+                    blogPost: blogPostData,
+                    action: "update",
+                    error: is.object(err.message) ? err.message : err
+                })
+            );
     }
 
-    return BlogPost.get(+req.params.id)
-        .then(entity => {
-            const blogPost = entity.plain();
+    return dataloader
+        .load(BlogPost.key(+req.params.id))
+        .then(blogPost => {
+            // The entity "key" is inside a Symbol on the entityData
+            // we can access it with "gstore.ds.KEY"
+            // We then add the id to the entityData
+            blogPost.id = +blogPost[gstore.ds.KEY].id;
+
             res.render(view, {
                 blogPost,
                 action: "update",
@@ -102,19 +103,7 @@ function editPost(req, res) {
                 error: is.object(err.message) ? err.message : err
             })
         );
-}
-
-// -------private
-
-function createExcerpt(content) {
-    if (typeof content === "undefined" || content === null) {
-        return null;
-    }
-
-    let excerpt = stringHelpers.limitChars(content, 300);
-    excerpt = stringHelpers.removeMarkdown(excerpt);
-    return excerpt;
-}
+};
 
 module.exports = {
     dashboard,

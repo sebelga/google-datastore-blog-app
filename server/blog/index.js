@@ -1,11 +1,10 @@
-'use strict';
-
-const helpers = require('./blog-post.helpers');
-const blogPostCtrl = require('./blog-post');
-const BlogPost = require('./blog-post.model');
+const { BlogPost, blogPostCtrl, helpers: blogPostHelpers } = require('./blog-post');
+const { Comment, commentCtrl } = require('./comment');
 
 module.exports = {
     BlogPost,
     blogPostCtrl,
-    helpers,
+    blogPostHelpers,
+    Comment,
+    commentCtrl,
 };

@@ -107,3 +107,10 @@ KEYFILENAME=<absolute/path/to/service-account.json>
 LOGGER_LEVEL=info
 LOGGER_ENABLED=true
 ```
+
+
+### Update the Datastore indexes
+
+```sh
+gcloud datastore create-indexes  --project=<YOUR-PROJECT-ID> ./index.yaml
+```

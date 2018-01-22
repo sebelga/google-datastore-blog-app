@@ -1,0 +1,7 @@
+indexes:
+
+- kind: Comment
+  properties:
+  - name: blogPost
+  - name: createdOn
+    direction: desc

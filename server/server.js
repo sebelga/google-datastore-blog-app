@@ -1,12 +1,13 @@
 'use strict';
 
+const Datastore = require('@google-cloud/datastore');
 const logger = require('winston');
 const gstore = require('gstore-node')();
 
 const app = require('./index');
 const config = require('./config');
 
-const datastore = require('@google-cloud/datastore')({
+const datastore = new Datastore({
     namespace: config.gcloud.datastoreNamespace,
     keyFilename: config.gcloud.keyFilename,
 });

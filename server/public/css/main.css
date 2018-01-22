@@ -11,15 +11,16 @@ header.main {
   header.main .sub-menu {
     float: right; }
 
-body > main h1 {
-  text-align: center; }
-
-body > main .content {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1em;
-  padding-right: 1em;
-  max-width: 768px; }
+body > main {
+  padding-bottom: 5em; }
+  body > main h1 {
+    text-align: center; }
+  body > main .content {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 768px; }
 
 .error {
   background-color: #EC644B;
@@ -69,8 +70,8 @@ body > main .content {
     margin-bottom: 5px; }
   #blogpost-view #comments ul {
     list-style: none;
-    padding: 0;
-    margin-bottom: 30px; }
+    margin-bottom: 30px;
+    padding: 0; }
     #blogpost-view #comments ul li {
       position: relative;
       padding: 20px 0;
@@ -84,8 +85,9 @@ body > main .content {
       color: red; }
   #blogpost-view #comments #load-more {
     text-align: center; }
-  #blogpost-view #comments form {
-    margin-bottom: 75px; }
+
+#blogpost-view .comments__actions {
+  text-align: right; }
 
 #blogpost-edit form textarea {
   margin-top: 15px; }
@@ -105,9 +107,6 @@ body > main .content {
 
 #blogpost-edit form .feature-image {
   margin-top: 15px; }
-  #blogpost-edit form .feature-image .img-preview {
-    display: flex;
-    height: 200px; }
   #blogpost-edit form .feature-image img {
     width: 200px; }
   #blogpost-edit form .feature-image a {

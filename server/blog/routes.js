@@ -1,41 +1,42 @@
-'use strict';
+"use strict";
 
-const router = require('express').Router();
-const blog = require('./blog-post');
+const router = require("express").Router();
+const bodyParser = require("body-parser");
 
-const config = require('../config');
-const images = require('../helpers/images');
+const { blogPostCtrl } = require("./blog-post");
+const { commentCtrl } = require("./comment");
 
-// ------------------------
+const config = require("../config");
+const images = require("../helpers/images");
+const dataloaderMiddleware = require("../middleware/dataloader");
+
 // Blog Posts ROUTES
 // ------------------------
 
-router.get('/blog', blog.list);
-router.get('/blog/:id', blog.get);
-// router.get('/blog/create', blog.create);
-// router.post('/blog/create', [images.multer.single('image'), images.uploadToGCS], blog.create);
+// Add a DataLoader instance to the requests
+router.use("/blog", dataloaderMiddleware);
 
-// Api
-// ---------
-router.delete(`${config.common.apiBase}/blog/:id`, blog.deletePost);
+router.get("/blog", blogPostCtrl.list);
+router.get("/blog/:id", blogPostCtrl.get);
+
+// API
+// ------------------------
+const { apiBase } = config.common;
+
+// Add a DataLoader instance to the requests
+router.use(apiBase, dataloaderMiddleware);
+
+//-- BlogPosts
+router.patch(
+    `${apiBase}/blog/:id`,
+    [bodyParser.json(), images.multer.single("image"), images.uploadToGCS],
+    blogPostCtrl.updatePost
+);
+router.delete(`${apiBase}/blog/:id`, blogPostCtrl.deletePost);
+
+//-- Comments
+router.get(`${apiBase}/blog/:id/comments`, commentCtrl.list);
+router.post(`${apiBase}/blog/:id/comments`, bodyParser.json(), commentCtrl.create);
+router.delete(`${apiBase}/comments/:id`, commentCtrl.deleteComment);
 
 module.exports = router;
-
-// router.route('/blog/:id')
-//         .get(blog.get);
-
-// router.route('/admin/blog/new')
-//         .get(blog.create)
-//         .post(images.multer.single('image'),
-//                 images.sendUploadToGCS,
-//                 blog.create);
-
-// router.route('/admin/blog/edit/:id')
-//         .get(blog.edit)
-//         .post(images.multer.single('image'),
-//                 images.sendUploadToGCS,
-//                 blog.edit);
-
-// router.route('/admin/blog/:id')
-//         .get(blog.get)
-//         .delete(blog.delete);

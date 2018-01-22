@@ -38,8 +38,8 @@
 
         ul {
             list-style:none;
-            padding:0;
             margin-bottom: 30px;
+            padding:0;
 
             li {
                 position:relative;
@@ -60,9 +60,9 @@
         #load-more {
             text-align: center;
         }
+    }
 
-        form {
-            margin-bottom:75px;
-        }
+    .comments__actions {
+        text-align: right;
     }
 }

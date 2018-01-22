@@ -1,9 +1,6 @@
 'use strict';
 
-function limitChars(str, numChars, sufix) {
-    numChars = typeof numChars === 'undefined' ? 100 : numChars;
-    sufix    = typeof sufix === 'undefined' ? '(...)' : sufix;
-
+function limitChars(str, numChars = 100, suffix = '(...)') {
     if (str.length > numChars) {
         str = str.substr(0, numChars);
 
@@ -12,8 +9,8 @@ function limitChars(str, numChars, sufix) {
             str = str.substr(0, lastspace);
         }
 
-        if (sufix) {
-            str += ' ' + sufix;
+        if (suffix) {
+            str += ' ' + suffix;
         }
     }
 
@@ -28,8 +25,18 @@ function removeMarkdown(str) {
     return str;
 }
 
+function createExcerpt(str, numChars = 300, suffix = '(...)') {
+    if (typeof str === 'undefined' || str === null) {
+        return null;
+    }
+
+    const excerpt = limitChars(str, numChars);
+    return removeMarkdown(excerpt);
+}
+
 
 module.exports = {
-    limitChars :     limitChars,
-    removeMarkdown : removeMarkdown
+    limitChars,
+    removeMarkdown,
+    createExcerpt,
 };

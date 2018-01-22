@@ -4,8 +4,9 @@
 const storage = require('@google-cloud/storage')();
 const async = require('async');
 const arrify = require('arrify');
-const config = require('../config');
 const logger = require('winston');
+
+const config = require('../config');
 
 /**
  * Multer handles parsing multipart/form-data requests.
@@ -35,7 +36,8 @@ const getPublicUrl = objectName => `https://storage.googleapis.com/${bucketId}/$
 
 /**
  * Express middleware that will automatically upload to Cloud Storage
- * req.file is processed and we add a "cloudStorageObject" and "cloudStoragePublicUrl" property to it
+ * req.file is processed and we add a "cloudStorageObject" and "cloudStoragePublicUrl"
+ * property to the request object
  */
 const uploadToGCS = (req, res, next) => {
     if (!req.file) {
@@ -108,7 +110,7 @@ const deleteFromGCS = (_storageObjects) => {
 
             logger.info('All object deleted successfully from Google Storage');
 
-            return resolve(null);
+            return resolve();
         });
     });
 

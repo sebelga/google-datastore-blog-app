@@ -20,11 +20,12 @@ block content
                 textarea.pure-input-1(placeholder="Blog Post content", rows="8", name="content")
                     = blogPost.content
                 .feature-image
-                    if blogPost.imageData
+                    h4 Feature image
+                    if blogPost.posterUri
                         .img-preview
-                            img(src=blogPost.imageData.urls.squareSmall)
-                            div: a(id="delete-image", href="#delete-image") Delete
-                    div(class=blogPost.imageData? "pure-group hidden" : "pure-group")
+                            img(src=blogPost.posterUri)
+                            div: a(id="delete-image", href="delete-image") Delete
+                    div(class=blogPost.posterUri? "pure-group hidden" : "pure-group")
                         label(for="image") Feature Image
                         input(type="file", name="image", id="image")
             .btns
@@ -36,9 +37,7 @@ block scripts
         $( document ).ready(function() {
             $('#delete-image').on('click', function(e) {
                 e.preventDefault();
-                var id = #{blogPost.id ? blogPost.id : 0};
-
-                App.blogPostService.deleteImage(id);
+                app.blogPostService.deleteImage(#{blogPost.id});
             });
 
             // Init Simple Markdown Editor

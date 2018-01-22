@@ -7,6 +7,7 @@ block content
     header
         .bkg(style=blogPost.posterUri ? {'background-image':'url(' + blogPost.posterUri + ')'} : null)
         h1= blogPost.title
+
     div(class="content main")!= blogPost.contentHtml
 
     #comments
@@ -14,8 +15,8 @@ block content
             h3 Conversation
             ul
                 each item in comments.entities
-                    li(id='comment-' + item.id)
-                        .author #{item.author} wrote #{item.createdOnFormatted}
+                    li(id='comment-' + item.id, class="blog-post__comment")
+                        .author #{item.author} wrote on #{item.createdOnFormatted}
                         .comment= item.comment
                         button.delete(comment-id=item.id): i(class='fa fa-close')
 
@@ -31,13 +32,13 @@ block content
                     input(type="text", id="author", class="pure-input-1", placeholder="Your name", name="author")
                     textarea.pure-input-1(placeholder="Comment", rows="4", name="comment")
 
-                .btns
+                .comments__actions
                     button(type="submit", class="pure-button pure-u-1 pure-u-sm-1-4 pure-button-primary") Add comment
 
 block scripts
     script.
         $( document ).ready(function() {
-            App.commentsService.init(
+            app.commentsService.init(
                 #{blogPost.id},
                 $('#comments ul'),
                 {
