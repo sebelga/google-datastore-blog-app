@@ -1,14 +1,33 @@
 @charset "UTF-8";
 
-@import '../../../node_modules/bulma/sass/utilities/all.sass';
+@import "vars";
+
+@import "../../../node_modules/bulma/sass/utilities/all";
+// @import "../../../node_modules/bulma/sass/utilities/initial-variables";
+// @import "../../../node_modules/bulma/sass/utilities/functions";
+// @import "../../../node_modules/bulma/sass/utilities/derived-variables";
+// @import "../../../node_modules/bulma/sass/utilities/animations";
+// @import "../../../node_modules/bulma/sass/utilities/mixins";
+// @import "../../../node_modules/bulma/sass/utilities/controls";
+
 @import '../../../node_modules/bulma/sass/base/all.sass';
 @import '../../../node_modules/bulma/sass/layout/footer.sass';
+@import '../../../node_modules/bulma/sass/layout/hero.sass';
 @import '../../../node_modules/bulma/sass/layout/section.sass';
 @import '../../../node_modules/bulma/sass/grid/columns.sass';
+
+@import '../../../node_modules/bulma/sass/components/level.sass';
 @import '../../../node_modules/bulma/sass/components/navbar.sass';
 
-// @import 'core';
-// @import 'overrides';
+@import '../../../node_modules/bulma/sass/elements/button.sass';
+@import '../../../node_modules/bulma/sass/elements/container.sass';
+@import '../../../node_modules/bulma/sass/elements/content.sass';
+@import '../../../node_modules/bulma/sass/elements/form.sass';
+@import '../../../node_modules/bulma/sass/elements/other.sass';
+@import '../../../node_modules/bulma/sass/elements/title.sass';
+
+@import 'global';
+@import 'overrides';
 
 // @import 'pages/home';
 // @import 'pages/blogpost-view';

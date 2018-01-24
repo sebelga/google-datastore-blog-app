@@ -42,12 +42,12 @@ schema.queries("list", {
 schema.pre("save", [deletePreviousImage, prepareEntityData]);
 
 /**
- * Hooks to run before *deleting* the entity
+ * Hooks to run before deleting the entity
  */
 schema.pre("delete", deleteCloudStorageObject);
 
 /**
- * Hooks to run after *deleting* the entity
+ * Hooks to run after deleting the entity
  */
 schema.post("delete", deleteComments);
 

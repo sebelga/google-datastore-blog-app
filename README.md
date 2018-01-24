@@ -90,9 +90,6 @@ SERVER_HOST=localhost
 
 # Google
 # ---------
-# Your project id
-GCLOUD_PROJECT_ID=<your-project-id>
-
 # Datastore namespace for the entities
 DATASTORE_NAMESPACE=default
 

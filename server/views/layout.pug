@@ -3,13 +3,27 @@ html(class='no-js', lang='')
     include ./includes/head.pug
 
     body(id=pageId)
-        section(class="section")
+        nav(class="navbar")
             .container
-                h1(class="title") Hello World
+                .navbar-brand
+                    .navbar-item MY BLOG
 
-                p(class="subtitle").
-                    My first website with <strong>Bulma</strong>!
+                .navbar-menu
+                    .navbar-start
+                        a(class="navbar-item" href="/blog") Home
+                        a(class="navbar-item" href="/admin") Admin
+                    .navbar-end
+                        block navbar-right
 
+        block content
+
+        footer.footer
+            .container
+                div(class="content has-text-centered")
+                    p.
+                        Google Datastore app demo by <a href="http://s.loix.me" target="_blank">Sébastien Loix.</a><br>
+                        The source code is licensed <a href="https://opensource.org/licenses/MIT">MIT</a>.<br>
+                        Made with the beautiful CSS framework <a href="https://bulma.io/" target="_blank">Bulma</a>.
         //- header.main
         //-     nav(class="pure-menu pure-menu-horizontal")
         //-         ul.pure-menu-list
@@ -21,10 +35,10 @@ html(class='no-js', lang='')
         //- main#page
         //-     block content
 
-
         // Javascript
-        script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+        //- script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
         script.
-            window.jQuery || document.write('<script src="/public/js/vendor/jquery-1.11.2.min.js"><\/script>');
+            window.pageId = "#{pageId}";
+            //- window.jQuery || document.write('<script src="/public/js/vendor/jquery-1.11.2.min.js"><\/script>');
         script(src="/public/js/main.js")
         block scripts
