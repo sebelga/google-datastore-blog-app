@@ -1,12 +1,17 @@
 
 'use strict';
 
-const storage = require('@google-cloud/storage')();
+const Storage = require('@google-cloud/storage');
 const async = require('async');
 const arrify = require('arrify');
 const logger = require('winston');
 
 const config = require('../config');
+
+const storage = new Storage({
+    projectId: config.gcloud.projectId,
+    // keyFilename: config.gcloud.keyFilename,
+});
 
 /**
  * Multer handles parsing multipart/form-data requests.

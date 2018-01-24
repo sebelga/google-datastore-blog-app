@@ -3,29 +3,34 @@
 const path = require("path");
 const marked = require("marked");
 const async = require("async");
-const moment  = require('moment');
+const moment = require("moment");
 
 const BlogPost = require("./blog-post.model");
 const Comment = require("../comment/comment.model");
+const { handleError, pageNotFound } = require("../../exceptions/exceptions");
 
 const list = (req, res) => {
-    BlogPost.list()
-        .then(response =>
+    BlogPost.list().then(
+        response =>
             res.render(path.join(__dirname, "../views/index"), {
                 blogPosts: response.entities,
                 pageId: "home"
-            })
-        )
-        .catch(err =>
+            }),
+        error =>
             res.render(path.join(__dirname, "../views/index"), {
                 blogPosts: [],
-                error: { message: err }
+                error
             })
-        );
+    );
 };
 
 const get = (req, res) => {
     const { dataloader } = req;
+    const id = +req.params.id;
+
+    if (isNaN(id)) {
+        return pageNotFound(res);
+    }
 
     /**
      * Fetch the BlogPost and its comments in parallel
@@ -38,6 +43,10 @@ const get = (req, res) => {
         dataloader
             .load(BlogPost.key(+req.params.id))
             .then(blogPost => {
+                if (!blogPost) {
+                    return cb(null, null);
+                }
+
                 blogPost.id = +req.params.id;
 
                 if (blogPost.content) {
@@ -73,13 +82,23 @@ const get = (req, res) => {
     }
 
     function onData(err, results) {
+        const template = path.join(__dirname, "..", "views", "view");
+
         if (err) {
-            return res.status(400).send(err.message);
+            return handleError(err, res, {
+                template,
+                blogPost: null,
+                comments: []
+            });
         }
 
         const [blogPost, comments] = results;
 
-        return res.render(path.join(__dirname, "../views/view"), {
+        if (blogPost === null) {
+            return pageNotFound(res);
+        }
+
+        return res.render(template, {
             pageId: "blogpost-view",
             blogPost,
             comments
@@ -94,7 +113,7 @@ const updatePost = (req, res) => {
     /**
      * We pass our DataLoader instance to the update method for 2 reasons
      * 1) it will be attached to the created entity and available in the "pre" hooks
-     * 2) it will clear the cache after the update
+     * 2) so gstore can clear the cache for the updated Key after the update is done
      */
     return BlogPost.update(+req.params.id, entityData, null, null, null, {
         dataloader
@@ -115,7 +134,9 @@ const deletePost = (req, res) => {
             }
             return res.json(response);
         })
-        .catch(err => res.status(500).json(err));
+        .catch(err => {
+            res.status(401).send({ error: err.message })
+        });
 };
 
 module.exports = {

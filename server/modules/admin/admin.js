@@ -6,6 +6,7 @@ const logger = require("winston");
 const gstore = require("gstore-node")();
 
 const { BlogPost } = require("../blog");
+const { pageNotFound } = require('../exceptions/exceptions');
 
 const dashboard = (req, res) => {
     const view = path.join(__dirname, "views/dashboard");
@@ -60,10 +61,15 @@ const newPost = (req, res) => {
 const editPost = (req, res) => {
     const { dataloader } = req;
     const view = path.join(__dirname, "views/edit");
+    const id = +req.params.id;
+
+    if (isNaN(id)) {
+        return pageNotFound(res);
+    }
 
     if (req.method === "POST") {
         const entityData = Object.assign({}, req.body, { file: req.file });
-        const blogPost = new BlogPost(entityData, +req.params.id);
+        const blogPost = new BlogPost(entityData, id);
         blogPost.dataloader = req.dataloader;
 
         return blogPost.save()
@@ -84,8 +90,12 @@ const editPost = (req, res) => {
     }
 
     return dataloader
-        .load(BlogPost.key(+req.params.id))
+        .load(BlogPost.key(id))
         .then(blogPost => {
+            if (!blogPost) {
+                return pageNotFound(res);
+            }
+
             // The entity "key" is inside a Symbol on the entityData
             // we can access it with "gstore.ds.KEY"
             // We then add the id to the entityData

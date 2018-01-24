@@ -13,7 +13,7 @@ Make sure before starting that you have the necesary dependencies installed on y
 Once you have installed the Google SDK, make sure you are **authenticated**. In your terminal run
 
 ```sh
-gcloud auth login
+gcloud auth application-default login
 ```
 
 A window browser should open, allowing you to authenticate the Google Cloud SDK.
@@ -23,11 +23,11 @@ A window browser should open, allowing you to authenticate the Google Cloud SDK.
 You need to have a project in the Google Cloud Platform to deploy the application.  
 [Go to App Engine](https://console.cloud.google.com/projectselector/appengine/create) and create a new project and if you don't have one.
 
-Once you have a project, we are going to tell glcoud to use it with the following command
+<!-- Once you have a project, we are going to tell glcoud to use it with the following command
 
 ```sh
 gcloud config set project <YOUR-PROJECT-ID>
-```
+``` -->
 
 You then have to make sure to:
 
@@ -90,6 +90,9 @@ SERVER_HOST=localhost
 
 # Google
 # ---------
+# Your project id
+GCLOUD_PROJECT_ID=<your-project-id>
+
 # Datastore namespace for the entities
 DATASTORE_NAMESPACE=default
 

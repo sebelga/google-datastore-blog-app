@@ -3,23 +3,28 @@ html(class='no-js', lang='')
     include ./includes/head.pug
 
     body(id=pageId)
-        header.main
-            nav(class="pure-menu pure-menu-horizontal")
-                ul.pure-menu-list
-                    li.pure-menu-item
-                        a(href="/blog", class="pure-menu-link") Home
-                ul.pure-menu-list.sub-menu
-                    li.pure-menu-item
-                        a(href="/admin", class="pure-menu-link") Admin
-        main#page
-            block content
+        section(class="section")
+            .container
+                h1(class="title") Hello World
+
+                p(class="subtitle").
+                    My first website with <strong>Bulma</strong>!
+
+        //- header.main
+        //-     nav(class="pure-menu pure-menu-horizontal")
+        //-         ul.pure-menu-list
+        //-             li.pure-menu-item
+        //-                 a(href="/blog", class="pure-menu-link") Home
+        //-         ul.pure-menu-list.sub-menu
+        //-             li.pure-menu-item
+        //-                 a(href="/admin", class="pure-menu-link") Admin
+        //- main#page
+        //-     block content
 
 
         // Javascript
         script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
         script.
             window.jQuery || document.write('<script src="/public/js/vendor/jquery-1.11.2.min.js"><\/script>');
-        script(src='https://unpkg.com/axios/dist/axios.min.js')
-        script(src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js')
         script(src="/public/js/main.js")
         block scripts

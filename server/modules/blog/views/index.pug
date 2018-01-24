@@ -1,51 +1,55 @@
 extends ../../../views/layout.pug
 
-block title
-    title My new blog
+//- block title
+//-     title My new blog
 
-block content
-    h1 Welcome to my blog
-    .content
-        if blogPosts.length === 0
-            .info-no-posts
-                h2 No post so far... stay tuned!
-                // a.pure-button(href='/new') Create New Post
-        else
-            ul.blog-posts
-                each item in blogPosts
-                    li
-                        .pure-g
-                            div(class="pure-u-1 pure-u-md-1-2")
-                                if item.posterUri
-                                    img(src=item.posterUri, class="pure-img")
+//- block content
+//-     h1 Welcome to my blog
 
-                            div(class="pure-u-1 pure-u-md-1-2 post-info")
-                                h4
-                                    a(href="/blog/" + item.id)= item.title
-                                p= item.excerpt
-                                //- .btns
-                                //-     ul
-                                //-         li: a(href="/" + item.id) View
-                                //-         li: a(href="/edit/" + item.id) Edit
-                                //-         li: a(href="#" class="btn-delete-post" post-id=item.id) Delete
+//-     if error
+//-         div.error= error.message
 
-block scripts
-    script.
-        $( document ).ready(function() {
-            console.log( "App ready!" );
+//-     .content
+//-         if blogPosts.length === 0
+//-             .info-no-posts
+//-                 h2 No post so far... stay tuned!
+//-                 // a.pure-button(href='/new') Create New Post
+//-         else
+//-             ul.blog-posts
+//-                 each item in blogPosts
+//-                     li
+//-                         .pure-g
+//-                             div(class="pure-u-1 pure-u-md-1-2")
+//-                                 if item.posterUri
+//-                                     img(src=item.posterUri, class="pure-img")
 
-            //- $('.btn-delete-post').on('click', function() {
-            //-     var id = $(this).attr('post-id');
+//-                             div(class="pure-u-1 pure-u-md-1-2 post-info")
+//-                                 h4
+//-                                     a(href="/blog/" + item.id)= item.title
+//-                                 p= item.excerpt
+//-                                 //- .btns
+//-                                 //-     ul
+//-                                 //-         li: a(href="/" + item.id) View
+//-                                 //-         li: a(href="/edit/" + item.id) Edit
+//-                                 //-         li: a(href="#" class="btn-delete-post" post-id=item.id) Delete
 
-            //-     axios.delete('/blog/' + id)
-            //-     .then(function (response) {
-            //-         console.log(response);
-            //-         document.location.reload();
-            //-     })
-            //-     .catch(function (error) {
-            //-         console.log(error);
-            //-     });
-            //- });
+//- block scripts
+//-     script.
+//-         $( document ).ready(function() {
+//-             console.log( "App ready!" );
 
-            //- console.log('user token', App.userService.getToken());
-        });
+//-             //- $('.btn-delete-post').on('click', function() {
+//-             //-     var id = $(this).attr('post-id');
+
+//-             //-     axios.delete('/blog/' + id)
+//-             //-     .then(function (response) {
+//-             //-         console.log(response);
+//-             //-         document.location.reload();
+//-             //-     })
+//-             //-     .catch(function (error) {
+//-             //-         console.log(error);
+//-             //-     });
+//-             //- });
+
+//-             //- console.log('user token', App.userService.getToken());
+//-         });

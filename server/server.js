@@ -8,8 +8,9 @@ const app = require('./index');
 const config = require('./config');
 
 const datastore = new Datastore({
+    projectId: config.gcloud.projectId,
+    // keyFilename: config.gcloud.keyFilename,
     namespace: config.gcloud.datastoreNamespace,
-    keyFilename: config.gcloud.keyFilename,
 });
 
 // Connect gstore to the Google Datastore instance

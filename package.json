@@ -16,7 +16,9 @@
     "main": "main.js",
     "scripts": {
         "test": "npm test",
-        "start:server": "cd server/app && node server.js"
+        "build": "webpack --env.NODE_ENV=prod",
+        "start:server": "cd server/app && node server.js",
+        "watch": "webpack --watch --progress --colors"
     },
     "dependencies": {
         "@google-cloud/datastore": "^1.3.3",
@@ -25,6 +27,7 @@
         "async": "^2.6.0",
         "axios": "^0.17.1",
         "body-parser": "^1.18.2",
+        "bulma": "^0.6.2",
         "dotenv": "^4.0.0",
         "express": "^4.16.2",
         "gstore-node": "^2.1.3",
@@ -34,17 +37,30 @@
         "moment": "^2.20.1",
         "multer": "^1.3.0",
         "nconf": "^0.10.0",
-        "ramda": "^0.25.0",
         "pug": "^2.0.0-rc.4",
+        "toastr": "^2.1.4",
+        "ramda": "^0.25.0",
         "string": "^3.3.3",
         "winston": "^2.4.0",
         "winston-express": "^0.1.1"
     },
     "devDependencies": {
-        "eslint": "^4.15.0",
+        "assets-webpack-plugin": "^3.5.1",
+        "autoprefixer": "^7.2.5",
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
+        "babel-preset-es2015": "^6.24.1",
+        "clean-webpack-plugin": "^0.1.17",
+        "css-loader": "^0.28.7",
+        "eslint": "^4.16.0",
         "eslint-plugin-prettier": "^2.5.0",
-        "gulp": "3.9.1",
-        "gulp-sass": "3.1.0",
-        "prettier": "1.10.2"
+        "extract-text-webpack-plugin": "^3.0.2",
+        "node-sass": "^4.7.2",
+        "postcss-loader": "^2.0.10",
+        "prettier": "1.10.2",
+        "resolve-url-loader": "2.2.1",
+        "sass-loader": "^6.0.6",
+        "uglifyjs-webpack-plugin": "^1.1.6",
+        "webpack": "^3.10.0"
     }
 }
