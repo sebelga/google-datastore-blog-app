@@ -1,28 +1,32 @@
-'use strict';
+"use strict";
 
-const Datastore = require('@google-cloud/datastore');
-const logger = require('winston');
-const gstore = require('gstore-node')();
+const Datastore = require("@google-cloud/datastore");
+const logger = require("winston");
+const gstore = require("gstore-node")();
 
-const app = require('./index');
-const config = require('./config');
+const app = require("./index");
+const config = require("./config");
 
 const datastore = new Datastore({
     projectId: config.gcloud.projectId,
     // keyFilename: config.gcloud.keyFilename,
-    namespace: config.gcloud.datastoreNamespace,
+    namespace: config.gcloud.datastoreNamespace
 });
+
+logger.info(`Connecting to Datastore project "${config.gcloud.projectId}"`);
 
 // Connect gstore to the Google Datastore instance
 gstore.connect(datastore);
 
-logger.info('Server process starting...');
+logger.info("Server starting...");
 
-app.listen(config.server.port, config.server.ip, (error) => {
+app.listen(config.server.port, config.server.ip, error => {
     if (error) {
-        logger.error('Unable to listen for connections', error);
+        logger.error("Unable to listen for connections", error);
         process.exit(10);
     }
 
-    logger.info(`server is listening on http://${config.server.ip}:${config.server.port}`);
+    logger.info(
+        `Server running at http://${config.server.ip}:${config.server.port}`
+    );
 });

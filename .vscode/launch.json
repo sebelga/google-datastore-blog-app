@@ -10,6 +10,9 @@
             "name": "nodemon",
             "runtimeExecutable": "nodemon",
             "program": "${workspaceFolder}/server/server.js",
+            "args": [
+                "--ignore", "client/*", "--ignore", "server/public/js/*"
+            ],
             "restart": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

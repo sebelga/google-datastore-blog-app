@@ -1,7 +1,6 @@
 'use strict';
 
 const joi = require('joi');
-const log = require('winston');
 
 const envVarsSchema = joi.object({
     NODE_ENV: joi.string()
@@ -21,7 +20,5 @@ const config = {
     isDevelopment: envVars.NODE_ENV === 'development',
     apiBase: '/api/v1',
 };
-
-log.info(`[Environment] current environment is "${config.env}"`);
 
 module.exports = config;

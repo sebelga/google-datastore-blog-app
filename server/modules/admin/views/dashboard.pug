@@ -6,7 +6,7 @@ block title
 block navbar-right
     if blogPosts.length > 0
         .navbar-item
-            button(class="button is-primary") NEW post
+            a(class="button is-primary" href="/admin/new-post") New post
 
 block content
     section(class="hero is-dark")
@@ -32,7 +32,7 @@ block content
                                         .level-item
                                             img(src=item.posterUri)
                                     .level-item
-                                        p= item.title
+                                        p.is-size-4= item.title
                                 .level-right
                                     .level-item
                                         a(href="/blog/" + item.id) view

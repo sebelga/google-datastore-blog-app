@@ -41,13 +41,13 @@ const get = (req, res) => {
 
     function getBlogPost(cb) {
         dataloader
-            .load(BlogPost.key(+req.params.id))
+            .load(BlogPost.key(id))
             .then(blogPost => {
                 if (!blogPost) {
                     return cb(null, null);
                 }
 
-                blogPost.id = +req.params.id;
+                blogPost.id = id;
 
                 if (blogPost.content) {
                     // Convert markdown to Html
@@ -81,14 +81,14 @@ const get = (req, res) => {
             .catch(cb);
     }
 
-    function onData(err, results) {
+    function onData(error, results) {
         const template = path.join(__dirname, "..", "views", "view");
 
-        if (err) {
-            return handleError(err, res, {
+        if (error) {
+            return handleError(res, {
                 template,
-                blogPost: null,
-                comments: []
+                error,
+                data: { blogPost: null }
             });
         }
 
@@ -135,7 +135,7 @@ const deletePost = (req, res) => {
             return res.json(response);
         })
         .catch(err => {
-            res.status(401).send({ error: err.message })
+            res.status(401).send({ error: err.message });
         });
 };
 

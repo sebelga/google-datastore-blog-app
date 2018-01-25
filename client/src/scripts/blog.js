@@ -49,8 +49,9 @@ const deleteImage = id => {
         });
 };
 
-const setDeletePostHandler = () => {
+const attachDeletePostHandler = () => {
     const links = Array.prototype.slice.call(document.querySelectorAll('.delete-post'), 0);
+
     if (links.length > 0) {
         links.forEach((el) => {
             el.addEventListener('click', (e) => {
@@ -63,7 +64,7 @@ const setDeletePostHandler = () => {
 };
 
 const pageReady = (page) => {
-    setDeletePostHandler();
+    attachDeletePostHandler();
 
     if(page === 'blogpost-edit') {
         const simplemde = new SimpleMDE();
@@ -71,7 +72,5 @@ const pageReady = (page) => {
 };
 
 export default {
-    // deletePost,
-    // deleteImage,
     pageReady,
 };

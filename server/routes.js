@@ -1,11 +1,20 @@
-'use strict';
+"use strict";
 
-const blogRoutes = require('./modules/blog/routes');
-const adminRoutes = require('./modules/admin/routes');
+const path = require("path");
 
-module.exports = (app) => {
+const blogRoutes = require("./modules/blog/routes");
+const adminRoutes = require("./modules/admin/routes");
+
+module.exports = app => {
     app.use(blogRoutes);
     app.use(adminRoutes);
+
+    /**
+     * Error handling
+     */
+    app.use("/404", (req, res) => {
+        res.render(path.join(__dirname, "views", "404"));
+    });
 
     /**
      * Error handling

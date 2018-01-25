@@ -12,6 +12,8 @@ module.exports = env => {
         env.NODE_ENV = "dev";
     }
 
+    const isProd = env.NODE_ENV === "prod";
+
     const cleanBuild = new CleanWebpackPlugin([
         "server/public/css/*",
         "server/public/js/*"
@@ -60,7 +62,12 @@ module.exports = env => {
                                 }
                             },
                             // 'resolve-url-loader',
-                            'sass-loader?sourceMap'
+                            {
+                                loader: 'sass-loader?sourceMap',
+                                options: {
+                                    outputStyle: isProd ? 'compressed' : 'nested',
+                                },
+                            }
                         ]
                     })
                 }

@@ -90,16 +90,14 @@ SERVER_HOST=localhost
 
 # Google
 # ---------
+# Your google cloud project
+GCLOUD_PROJECT=<your-project-id>
+
 # Datastore namespace for the entities
 DATASTORE_NAMESPACE=default
 
 # Google Storage bucket
 GCLOUD_BUCKET=<your-bucket-id>
-
-# Authentication
-KEYFILENAME=<absolute/path/to/service-account.json>
-# On Windows you will need to escape the path
-# KEYFILENAME=c:\\path\\escaped\\pointing-to\\service-account.json
 
 # Misc
 # ---------
@@ -112,5 +110,5 @@ LOGGER_ENABLED=true
 ### Update the Datastore indexes
 
 ```sh
-gcloud datastore create-indexes  --project=<YOUR-PROJECT-ID> ./index.yaml
+gcloud datastore create-indexes --project=<YOUR-PROJECT-ID> ./index.yaml
 ```
