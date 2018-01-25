@@ -5847,4 +5847,7 @@ a.navbar-link.is-active {
 .editor-toolbar svg {
   margin-right: 12px; }
 
+#blogpost-view .hero-body {
+  background-size: cover; }
+
 /*# sourceMappingURL=main.css.map*/

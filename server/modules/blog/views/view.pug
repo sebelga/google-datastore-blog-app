@@ -14,6 +14,9 @@ block content
                 div(class="container has-text-centered")
                     h1.title= blogPost.title
 
+        .container
+            .content
+                section.section!= blogPost.contentHtml
             //- header
             //-     .bkg(style=blogPost.posterUri ? {'background-image':'url(' + blogPost.posterUri + ')'} : null)
             //-     h1= blogPost.title

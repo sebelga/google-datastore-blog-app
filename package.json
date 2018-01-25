@@ -42,7 +42,6 @@
         "ramda": "^0.25.0",
         "simplemde": "1.11.2",
         "string": "^3.3.3",
-        "toastr": "^2.1.4",
         "winston": "^2.4.0",
         "winston-express": "^0.1.1"
     },

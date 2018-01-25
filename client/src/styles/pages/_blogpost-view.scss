@@ -1,68 +1,71 @@
 #blogpost-view {
-    > main header {
-        position:relative;
-        height : 320px;
-        background-color:#000;
-
-        h1 {
-            position: absolute;
-            width: 100%;
-            color: white;
-            text-transform: uppercase;
-            top: 110px;
-        }
-
-        .bkg {
-            position:absolute;
-            z-index:0;
-            width: 100%;
-            height: 100%;
-            opacity:0.5;
-            background-size:cover;
-            background-position:center;
-        }
+    .hero-body {
+        background-size: cover;
     }
+    // > main header {
+    //     position:relative;
+    //     height : 320px;
+    //     background-color:#000;
 
-    .content.main {
-        margin-top: 45px;
-        margin-bottom: 45px;
-    }
+    //     h1 {
+    //         position: absolute;
+    //         width: 100%;
+    //         color: white;
+    //         text-transform: uppercase;
+    //         top: 110px;
+    //     }
 
-    #comments {
-        border-top: 2px solid #eee;
+    //     .bkg {
+    //         position:absolute;
+    //         z-index:0;
+    //         width: 100%;
+    //         height: 100%;
+    //         opacity:0.5;
+    //         background-size:cover;
+    //         background-position:center;
+    //     }
+    // }
 
-        .author {
-            font-size:12px;
-            margin-bottom:5px;
-        }
+    // .content.main {
+    //     margin-top: 45px;
+    //     margin-bottom: 45px;
+    // }
 
-        ul {
-            list-style:none;
-            margin-bottom: 30px;
-            padding:0;
+    // #comments {
+    //     border-top: 2px solid #eee;
 
-            li {
-                position:relative;
-                padding:20px 0;
-                border-bottom:1px solid #eee;
-            }
+    //     .author {
+    //         font-size:12px;
+    //         margin-bottom:5px;
+    //     }
 
-            button.delete {
-                position : absolute;
-                top:10px;
-                right : 5px;
-                background-color:transparent;
-                border:none;
-                color:red;
-            }
-        }
+    //     ul {
+    //         list-style:none;
+    //         margin-bottom: 30px;
+    //         padding:0;
 
-        #load-more {
-            text-align: center;
-        }
-    }
+    //         li {
+    //             position:relative;
+    //             padding:20px 0;
+    //             border-bottom:1px solid #eee;
+    //         }
 
-    .comments__actions {
-        text-align: right;
-    }
+    //         button.delete {
+    //             position : absolute;
+    //             top:10px;
+    //             right : 5px;
+    //             background-color:transparent;
+    //             border:none;
+    //             color:red;
+    //         }
+    //     }
+
+    //     #load-more {
+    //         text-align: center;
+    //     }
+    // }
+
+    // .comments__actions {
+    //     text-align: right;
+    // }
 }

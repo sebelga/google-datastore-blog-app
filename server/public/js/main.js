@@ -12169,11 +12169,28 @@ const attachDeletePostHandler = () => {
     }
 };
 
+const initMarkdownEditor = () => {
+    const simplemde = new __WEBPACK_IMPORTED_MODULE_1_simplemde___default.a();
+};
+
+const initImageUpload = () => {
+    const input = document.querySelector('.file-input');
+    const fileName = document.querySelector('.file-name');
+
+    if (input) {
+        input.addEventListener('change', (e) => {
+            fileName.innerHTML = input.files[0].name;
+            fileName.classList.remove('is-invisible');
+        });
+    }
+};
+
 const pageReady = (page) => {
     attachDeletePostHandler();
 
     if(page === 'blogpost-edit') {
-        const simplemde = new __WEBPACK_IMPORTED_MODULE_1_simplemde___default.a();
+        initMarkdownEditor();
+        initImageUpload();
     }
 };
 
