@@ -24,7 +24,6 @@
         "@google-cloud/datastore": "^1.3.3",
         "@google-cloud/storage": "^1.5.2",
         "arrify": "^1.0.1",
-        "async": "^2.6.0",
         "axios": "^0.17.1",
         "body-parser": "^1.18.2",
         "bulma": "^0.6.2",

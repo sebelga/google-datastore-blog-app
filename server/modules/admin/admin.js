@@ -6,27 +6,28 @@ const logger = require("winston");
 const gstore = require("gstore-node")();
 
 const { BlogPost } = require("../blog");
-const { pageNotFound } = require('../exceptions/exceptions');
+const { pageNotFound } = require("../exceptions/exceptions");
 
-const dashboard = (req, res) => {
+const dashboard = async (req, res) => {
     const view = path.join(__dirname, "views/dashboard");
 
-    BlogPost.list()
-        .then(response =>
-            res.render(view, {
-                blogPosts: response.entities,
-                pageId: "admin-index"
-            })
-        )
-        .catch((error) =>
-            res.render(view, {
-                error,
-                pageId: "admin-index"
-            })
-        );
+    let result;
+    try {
+        result = await BlogPost.list();
+    } catch (error) {
+        return res.render(view, {
+            error,
+            pageId: "admin-index"
+        });
+    }
+
+    res.render(view, {
+        blogPosts: result.entities,
+        pageId: "admin-index"
+    });
 };
 
-const newPost = (req, res) => {
+const newPost = async (req, res) => {
     const dataloader = gstore.createDataLoader();
 
     const view = path.join(__dirname, "views/edit");
@@ -45,18 +46,17 @@ const newPost = (req, res) => {
         // so it is available in our "pre" Hooks
         blogPost.dataloader = dataloader;
 
-        return blogPost.save().then(
-            entity => {
-                res.redirect("/admin");
-            },
-            err => {
-                res.render(view, {
-                    blogPost: blogPost.plain(),
-                    action: "create",
-                    error: is.object(err.message) ? err.message : err
-                });
-            }
-        );
+        try {
+            await blogPost.save();
+        } catch (err) {
+            return res.render(view, {
+                blogPost: blogPost.plain(),
+                action: "create",
+                error: is.object(err.message) ? err.message : err
+            });
+        }
+
+        res.redirect("/admin");
     }
 
     return res.render(view, {
@@ -66,7 +66,7 @@ const newPost = (req, res) => {
     });
 };
 
-const editPost = (req, res) => {
+const editPost = async (req, res) => {
     const dataloader = gstore.createDataLoader();
     const view = path.join(__dirname, "views/edit");
     const id = +req.params.id;
@@ -81,47 +81,44 @@ const editPost = (req, res) => {
         const blogPost = new BlogPost(entityData, id, ["Blog", "my-blog"]);
         blogPost.dataloader = dataloader;
 
-        return blogPost.save()
-            .then(entity => {
-                if (req.headers["content-type"] === "application/json") {
-                    res.json(entity.plain());
-                } else {
-                    res.redirect("/admin");
-                }
-            })
-            .catch(err =>
-                res.render(view, {
-                    blogPost: blogPostData,
-                    action: "update",
-                    error: is.object(err.message) ? err.message : err
-                })
-            );
-    }
-
-    return dataloader
-        .load(BlogPost.key(id, ["Blog", "my-blog"]))
-        .then(blogPost => {
-            if (!blogPost) {
-                return pageNotFound(res);
-            }
-
-            // The entity "key" is inside a Symbol on the entityData
-            // we can access it with "gstore.ds.KEY"
-            // We then add the id to the entityData
-            blogPost.id = +blogPost[gstore.ds.KEY].id;
-
-            res.render(view, {
-                blogPost,
-                action: "update",
-                pageId: "blogpost-edit"
-            });
-        })
-        .catch(err =>
-            res.render(view, {
+        let entity;
+        try {
+            entity = await blogPost.save();
+        } catch (err) {
+            return res.render(view, {
+                blogPost: blogPostData,
                 action: "update",
                 error: is.object(err.message) ? err.message : err
-            })
-        );
+            });
+        }
+
+        return res.redirect("/admin");
+    }
+
+    let blogPost;
+    try {
+        blogPost = await dataloader.load(BlogPost.key(id, ["Blog", "my-blog"]));
+    } catch (err) {
+        return res.render(view, {
+            action: "update",
+            error: is.object(err.message) ? err.message : err
+        });
+    }
+
+    if (!blogPost) {
+        return pageNotFound(res);
+    }
+
+    // The entity "key" is inside a Symbol on the entityData
+    // we can access it with "gstore.ds.KEY"
+    // We then add the id to the entityData
+    blogPost.id = +blogPost[gstore.ds.KEY].id;
+
+    res.render(view, {
+        blogPost,
+        action: "update",
+        pageId: "blogpost-edit"
+    });
 };
 
 module.exports = {

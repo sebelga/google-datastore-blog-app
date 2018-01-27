@@ -3,7 +3,7 @@
 const moment = require("moment");
 const Comment = require("./comment.model");
 
-const list = (req, res) => {
+const list = async (req, res) => {
     const query = Comment.query()
         .filter("blogPost", +req.params.id)
         .order("createdOn", { descending: true })
@@ -16,35 +16,40 @@ const list = (req, res) => {
         query.start(decodeURIComponent(req.query.start));
     }
 
-    query.run().then(
-        result => {
-            result.entities = result.entities.map(comment => ({
-                ...comment,
-                createdOnAgo: moment(comment.createdOn).fromNow()
-            }));
-            res.json(result);
-        },
-        err => {
-            res.status(400).json(err);
-        }
-    );
+    let result;
+    try {
+        result = await query.run({ format: 'ENTITY' });
+    } catch(err) {
+        return res.status(400).json(err);
+    }
+
+    result.entities = result.entities.map(comment => comment.plain({ virtuals: true }));
+
+    res.json(result);
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
     const entityData = Comment.sanitize(req.body);
     const comment = new Comment(entityData);
 
-    comment.save().then(
-        entity => res.json(entity.plain({ virtuals: true })),
-        err => res.status(400).json(err)
-    );
+    let entity;
+    try {
+        entity = await comment.save();
+    } catch(err) {
+        return res.status(400).json(err);
+    }
+
+    res.json(entity.plain({ virtuals: true }));
 };
 
-const deleteComment = (req, res) => {
-    Comment.delete(req.params.id).then(
-        () => res.send("ok"),
-        err => res.status(400).json(err)
-    );
+const deleteComment = async (req, res) => {
+    try {
+        await Comment.delete(req.params.id);
+    } catch(err) {
+        return res.status(400).json(err);
+    }
+
+    res.send("ok");
 };
 
 module.exports = {
