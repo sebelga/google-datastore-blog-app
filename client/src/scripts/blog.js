@@ -15,33 +15,6 @@ const deletePost = id =>
             // app.notificationService.error(error.message)
         });
 
-const deleteImage = id => {
-    if (!id) {
-        console.log("[Warning] Missing 'id' to delete BlogPost image.");
-        return;
-    }
-    return axios
-        .patch(
-            `${apiBase}/blog/${id}`,
-            { posterUri: null },
-            {
-                headers: { "Content-type": "application/json" }
-            }
-        )
-        .then(() => {
-            app.notificationService.show("Image deleted");
-
-            // Remove Preview image
-            $(".feature-image .img-preview").remove();
-
-            // Show the input type file
-            $(".feature-image .pure-group.hidden").removeClass("hidden");
-        })
-        .catch(error => {
-            window.console.log(error);
-        });
-};
-
 const attachDeletePostHandler = () => {
     const links = Array.prototype.slice.call(document.querySelectorAll('.delete-post'), 0);
 
@@ -74,10 +47,7 @@ const initImageUpload = () => {
 
 const initBtnSubmit = () => {
     const btns = Array.prototype.slice.call(document.querySelectorAll('.button-submit'));
-
-    btns.forEach((btn) => {
-        btn.addEventListener('click', () => btn.classList.add('is-loading'));
-    });
+    btns.forEach((btn) => btn.addEventListener('click', () => btn.classList.add('is-loading')));
 };
 
 const pageReady = (page) => {

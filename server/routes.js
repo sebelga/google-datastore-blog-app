@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const logger = require("winston");
 
 const blogRoutes = require("./modules/blog/routes");
 const adminRoutes = require("./modules/admin/routes");
@@ -20,7 +21,7 @@ module.exports = app => {
      * Error handling
      */
     app.use((err, req, res, next) => {
-        console.log(err);
+        logger.error(err.message);
     });
 
     /**

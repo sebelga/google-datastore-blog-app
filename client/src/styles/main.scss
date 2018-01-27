@@ -1,14 +1,6 @@
 @charset "UTF-8";
 
-@import "vars";
-
 @import "../../../node_modules/bulma/sass/utilities/all";
-// @import "../../../node_modules/bulma/sass/utilities/initial-variables";
-// @import "../../../node_modules/bulma/sass/utilities/functions";
-// @import "../../../node_modules/bulma/sass/utilities/derived-variables";
-// @import "../../../node_modules/bulma/sass/utilities/animations";
-// @import "../../../node_modules/bulma/sass/utilities/mixins";
-// @import "../../../node_modules/bulma/sass/utilities/controls";
 
 @import '../../../node_modules/bulma/sass/base/all.sass';
 @import '../../../node_modules/bulma/sass/layout/footer.sass';
@@ -29,10 +21,9 @@
 @import '../../../node_modules/bulma/sass/elements/other.sass';
 @import '../../../node_modules/bulma/sass/elements/title.sass';
 
+@import 'objects/objects.ratio';
 @import 'global';
-@import 'overrides';
-
-// @import 'pages/home';
+@import 'pages/home';
 @import 'pages/blogpost-view';
 @import 'pages/blogpost-edit';
-// @import 'pages/admin-index';
+@import 'pages/admin-index';

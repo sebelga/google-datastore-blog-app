@@ -1,0 +1,117 @@
+
+// CREDITS:
+// inuitcss
+// https://github.com/inuitcss/inuitcss
+
+
+/* ==========================================================================
+   #RATIO
+   ========================================================================== */
+
+// A list of aspect ratios that get generated as modifier classes.
+
+$inuit-ratios: (
+  (2:1),
+  (4:3),
+  (16:9),
+  (1.618:1),
+) !default;
+
+
+
+/**
+ * Create ratio-bound content blocks, to keep media (e.g. images, videos) in
+ * their correct aspect ratios.
+ *
+ * http://alistapart.com/article/creating-intrinsic-ratios-for-video
+ *
+ * 1. Default cropping is a 1:1 ratio (i.e. a perfect square).
+ */
+
+.o-ratio {
+  position: relative;
+  display: block;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 100%;
+    padding-bottom: 100%; /* [1] */
+  }
+
+}
+
+
+  .o-ratio__content,
+  .o-ratio > iframe,
+  .o-ratio > embed,
+  .o-ratio > object {
+    position: absolute;
+    top:    0;
+    bottom: 0;
+    left:   0;
+    height: 100%;
+    width:  100%;
+  }
+
+
+
+/* stylelint-disable */
+
+/* Ratio variants.
+   ========================================================================== */
+
+/**
+ * Generate a series of ratio classes to be used like so:
+ *
+ *   <div class="o-ratio  o-ratio--16:9">
+ *
+ */
+
+@each $ratio in $inuit-ratios {
+
+  @each $antecedent, $consequent in $ratio {
+
+    @if (type-of($antecedent) != number) {
+      @error "`#{$antecedent}` needs to be a number."
+    }
+
+    @if (type-of($consequent) != number) {
+      @error "`#{$consequent}` needs to be a number."
+    }
+
+    // Use `$antecedent` for the generated class by default.
+    $antecedent-class: $antecedent;
+
+    // If `$antecedent` contains a “.”, we need to prefix it with a “\”.
+    @if str-index(inspect($antecedent), ".") {
+      // Get everything before the “.”
+      $antecedent-integer: str-slice(inspect($antecedent), 1, str-index(inspect($antecedent), ".") - 1);
+      // Get everything after the “.”
+      $antecedent-decimal: str-slice(inspect($antecedent), str-index(inspect($antecedent), ".") + 1);
+      // Put the number back together with a “\”-prefixed decimal separator.
+      $antecedent-class: $antecedent-integer + "\\." + $antecedent-decimal;
+    }
+
+    // Use `$consequent` for the generated class by default.
+    $consequent-class: $consequent;
+
+    // If the `$consequent` contains a “.”, we need to prefix it with a “\”.
+    @if str-index(inspect($consequent), ".") {
+      // Get everything before the “.”
+      $consequent-integer: str-slice(inspect($consequent), 1, str-index(inspect($consequent), ".") - 1);
+      // Get everything after the “.”
+      $consequent-decimal: str-slice(inspect($consequent), str-index(inspect($consequent), ".") + 1);
+      // Put the number back together with a “\”-prefixed decimal separator.
+      $consequent-class: $consequent-integer + "\\." + $consequent-decimal;
+    }
+
+    .o-ratio--#{$antecedent-class}\:#{$consequent-class}:before {
+      padding-bottom: ($consequent/$antecedent) * 100%;
+    }
+
+  }
+
+}
+
+/* stylelint-enable */

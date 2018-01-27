@@ -6,7 +6,6 @@ const envVarsSchema = joi.object({
     GCLOUD_PROJECT: joi.string().required(),
     DATASTORE_NAMESPACE: joi.string().required(),
     GCLOUD_BUCKET: joi.string().required(),
-    // KEYFILENAME: joi.string().required(),
 }).unknown()
     .required();
 
@@ -20,7 +19,6 @@ const config = {
     projectId: envVars.GCLOUD_PROJECT,
     datastoreNamespace: envVars.DATASTORE_NAMESPACE,
     storageBucket: envVars.GCLOUD_BUCKET,
-    // keyFilename: envVars.KEYFILENAME,
 };
 
 module.exports = config;

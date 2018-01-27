@@ -1,54 +1,11 @@
-
-// h1,
-// h2,
-// h3 {
-//     font-family: $family-serif;
-// }
-
 .navbar-brand {
     font-weight: 600;
     font-size: 1.5rem;
 }
 
+.o-ratio__content { overflow: hidden; }
 
-// .pure-g > div {
-//     -webkit-box-sizing: border-box;
-//     -moz-box-sizing: border-box;
-//     box-sizing: border-box;
-// }
-
-// header.main {
-//     padding: 1rem 1rem 1rem 0;
-//     border-bottom: 1px solid #eee;
-
-//     .pure-menu-link {
-//         color: #888;
-//     }
-
-//     .sub-menu {
-//         float:right;
-//     }
-// }
-
-// body > main {
-//     padding-bottom: 5em;
-
-//     h1 {
-//         text-align: center;
-//     }
-
-//     .content {
-//         margin-left: auto;
-//         margin-right: auto;
-//         padding-left: 1em;
-//         padding-right: 1em;
-//         max-width: 768px;
-//     }
-// }
-
-// .error {
-//     background-color : #EC644B;
-//     padding: 1rem;
-//     color: white;
-//     margin: 1rem 0;
-// }
+// Simple Markdown Editor
+.editor-toolbar svg {
+    margin-right: 12px;
+}

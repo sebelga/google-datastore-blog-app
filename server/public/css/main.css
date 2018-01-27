@@ -6003,12 +6003,75 @@ a.navbar-link.is-active {
   .subtitle.is-7 {
     font-size: 0.75rem; }
 
+/* ==========================================================================
+   #RATIO
+   ========================================================================== */
+/**
+ * Create ratio-bound content blocks, to keep media (e.g. images, videos) in
+ * their correct aspect ratios.
+ *
+ * http://alistapart.com/article/creating-intrinsic-ratios-for-video
+ *
+ * 1. Default cropping is a 1:1 ratio (i.e. a perfect square).
+ */
+.o-ratio {
+  position: relative;
+  display: block; }
+  .o-ratio:before {
+    content: "";
+    display: block;
+    width: 100%;
+    padding-bottom: 100%;
+    /* [1] */ }
+
+.o-ratio__content,
+.o-ratio > iframe,
+.o-ratio > embed,
+.o-ratio > object {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%; }
+
+/* stylelint-disable */
+/* Ratio variants.
+   ========================================================================== */
+/**
+ * Generate a series of ratio classes to be used like so:
+ *
+ *   <div class="o-ratio  o-ratio--16:9">
+ *
+ */
+.o-ratio--2\:1:before {
+  padding-bottom: 50%; }
+
+.o-ratio--4\:3:before {
+  padding-bottom: 75%; }
+
+.o-ratio--16\:9:before {
+  padding-bottom: 56.25%; }
+
+.o-ratio--1\.618\:1:before {
+  padding-bottom: 61.8047%; }
+
+/* stylelint-enable */
 .navbar-brand {
   font-weight: 600;
   font-size: 1.5rem; }
 
+.o-ratio__content {
+  overflow: hidden; }
+
 .editor-toolbar svg {
   margin-right: 12px; }
+
+#home .posts img {
+  position: absolute;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  top: 50%; }
 
 #blogpost-view .header-image {
   overflow: hidden;
@@ -6052,5 +6115,18 @@ a.navbar-link.is-active {
 
 #blogpost-edit .content figure {
   margin-left: 0; }
+
+#admin-index .img-preview {
+  -ms-flex-preferred-size: 200px;
+      flex-basis: 200px; }
+  #admin-index .img-preview .o-ratio {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1; }
+  #admin-index .img-preview img {
+    position: absolute;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+    top: 50%; }
 
 /*# sourceMappingURL=main.css.map*/

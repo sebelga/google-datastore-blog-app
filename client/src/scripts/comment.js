@@ -52,20 +52,19 @@ const submitComment = (e, id) => {
 
     commentFormErrorsDOM.classList.add("is-hidden");
 
-    const postId = parseInt(e.target.dataset.postId, 10);
     const name = e.target.elements[0].value;
     const website = e.target.elements[1].value || null;
     const comment = e.target.elements[2].value;
 
     const data = {
-        blogPost: postId,
+        blogPost: blogPostId,
         name,
         website,
         comment
     };
 
     return axios
-        .post(`${apiBase}/blog/${postId}/comments`, data)
+        .post(`${apiBase}/blog/${blogPostId}/comments`, data)
         .then(response => {
             commentsDOM.insertBefore(
                 commentNode(response.data),

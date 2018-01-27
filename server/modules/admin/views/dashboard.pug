@@ -27,11 +27,13 @@ block content
                     else
                         .posts
                             each item in blogPosts
-                                .level
+                                div(class="level post")
                                     .level-left
                                         if item.posterUri
-                                            .level-item
-                                                // img(src=item.posterUri)
+                                            div(class="level-item img-preview")
+                                                div(class="o-ratio o-ratio--16:9")
+                                                    div(class="o-ratio__content")
+                                                        img(src=item.posterUri, class="image")
                                         .level-item
                                             p.is-size-4= item.title
                                     .level-right
@@ -44,21 +46,3 @@ block content
                                                 href="/admin/edit-post/" + item.id,
                                                 class="delete-post",
                                                 data-post-id=item.id) delete
-
-                    //- <table class="pure-table pure-table-horizontal">
-                    //-     thead
-                    //-         tr
-                    //-             th id
-                    //-             th Title
-                    //-             th Actions
-
-                    //-     tbody
-                    //-         each item in blogPosts
-                    //-             tr
-                    //-                 td= item.id
-                    //-                 td= item.title
-                    //-                 td: ul.actions
-                    //-                     li: a(href="/blog/" + item.id) View
-                    //-                     li: a(href="/admin/edit-post/" + item.id) Edit
-                    //-                     // We create the link for the status bar be we will delete it with Ajax below
-                    //-                     li: a(href="/admin/post/delete/" + item.id class="btn-delete-post" post-id=item.id) Delete

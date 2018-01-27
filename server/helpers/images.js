@@ -10,7 +10,6 @@ const config = require('../config');
 
 const storage = new Storage({
     projectId: config.gcloud.projectId,
-    // keyFilename: config.gcloud.keyFilename,
 });
 
 /**

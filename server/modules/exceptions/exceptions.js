@@ -12,7 +12,6 @@ const handleError = (res, { template, data, error }) => {
 
 const pageNotFound = res => {
     res.redirect("/404");
-    // res.status(404).render(path.join(__dirname, "../..", "views", "404"));
 };
 
 module.exports = { handleError, pageNotFound };

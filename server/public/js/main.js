@@ -12028,12 +12028,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_es6_docready___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_es6_docready__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blog__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__comment__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__notifications__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__user__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__styles_main_scss__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__styles_main_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__styles_main_scss__);
-
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_main_scss__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_main_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__styles_main_scss__);
 
 
 
@@ -12046,8 +12042,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 const app = {
     blog: __WEBPACK_IMPORTED_MODULE_1__blog__["a" /* default */],
     comment: __WEBPACK_IMPORTED_MODULE_2__comment__["a" /* default */],
-    notifs: __WEBPACK_IMPORTED_MODULE_3__notifications__["a" /* default */],
-    user: __WEBPACK_IMPORTED_MODULE_4__user__["a" /* default */],
 };
 
 __WEBPACK_IMPORTED_MODULE_0_es6_docready___default()(() => {
@@ -12122,33 +12116,6 @@ const deletePost = id =>
             // app.notificationService.error(error.message)
         });
 
-const deleteImage = id => {
-    if (!id) {
-        console.log("[Warning] Missing 'id' to delete BlogPost image.");
-        return;
-    }
-    return __WEBPACK_IMPORTED_MODULE_0_axios___default.a
-        .patch(
-            `${__WEBPACK_IMPORTED_MODULE_2__config__["a" /* apiBase */]}/blog/${id}`,
-            { posterUri: null },
-            {
-                headers: { "Content-type": "application/json" }
-            }
-        )
-        .then(() => {
-            app.notificationService.show("Image deleted");
-
-            // Remove Preview image
-            $(".feature-image .img-preview").remove();
-
-            // Show the input type file
-            $(".feature-image .pure-group.hidden").removeClass("hidden");
-        })
-        .catch(error => {
-            window.console.log(error);
-        });
-};
-
 const attachDeletePostHandler = () => {
     const links = Array.prototype.slice.call(document.querySelectorAll('.delete-post'), 0);
 
@@ -12181,10 +12148,7 @@ const initImageUpload = () => {
 
 const initBtnSubmit = () => {
     const btns = Array.prototype.slice.call(document.querySelectorAll('.button-submit'));
-
-    btns.forEach((btn) => {
-        btn.addEventListener('click', () => btn.classList.add('is-loading'));
-    });
+    btns.forEach((btn) => btn.addEventListener('click', () => btn.classList.add('is-loading')));
 };
 
 const pageReady = (page) => {
@@ -20338,20 +20302,19 @@ const submitComment = (e, id) => {
 
     commentFormErrorsDOM.classList.add("is-hidden");
 
-    const postId = parseInt(e.target.dataset.postId, 10);
     const name = e.target.elements[0].value;
     const website = e.target.elements[1].value || null;
     const comment = e.target.elements[2].value;
 
     const data = {
-        blogPost: postId,
+        blogPost: blogPostId,
         name,
         website,
         comment
     };
 
     return __WEBPACK_IMPORTED_MODULE_0_axios___default.a
-        .post(`${__WEBPACK_IMPORTED_MODULE_1__config__["a" /* apiBase */]}/blog/${postId}/comments`, data)
+        .post(`${__WEBPACK_IMPORTED_MODULE_1__config__["a" /* apiBase */]}/blog/${blogPostId}/comments`, data)
         .then(response => {
             commentsDOM.insertBefore(
                 commentNode(response.data),
@@ -20430,41 +20393,8 @@ const pageReady = pageId => {
 
 
 /***/ }),
-/* 53 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const show = (message, type) => {
-    // type = typeof type === "undefined" ? "info" : type;
-    // toastr[type](message);
-    console.log('SHOW notification', message);
-};
-
-// const error = message => toastr.error(message);
-const error = message => console.log('TODO show error notification');
-
-/* harmony default export */ __webpack_exports__["a"] = ({ show, error });
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-let token = "abcdef12345678";
-
-const setToken = _token => (token = _token);
-const getToken = () => token;
-
-const user = {
-    setToken,
-    getToken
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (user);
-
-
-/***/ }),
+/* 53 */,
+/* 54 */,
 /* 55 */
 /***/ (function(module, exports) {
 

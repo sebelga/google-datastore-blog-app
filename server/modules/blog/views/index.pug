@@ -1,7 +1,7 @@
 extends ../../../views/layout.pug
 
 block title
-    title My new blog
+    title My Blog
 
 block content
     section(class="hero is-medium is-success")
@@ -11,51 +11,18 @@ block content
                 p.subtitle A blog in Node.js with @google/datastore & gstore-node
     .container
         .content
-            section.section
+            section(class="section posts")
                 if blogPosts.length === 0
                     h2.has-text-centered We haven't published any post so far... stay tuned!
                 else
-                    ul.blog-posts
-                        each item in blogPosts
-                            li
-                                .pure-g
-                                    div(class="pure-u-1 pure-u-md-1-2")
-                                        if item.posterUri
-                                            img(src=item.posterUri, class="pure-img")
-
-                                    div(class="pure-u-1 pure-u-md-1-2 post-info")
-                                        h4
-                                            a(href="/blog/" + item.id)= item.title
-                                        p= item.excerpt
-                                        //- .btns
-                                        //-     ul
-                                        //-         li: a(href="/" + item.id) View
-                                        //-         li: a(href="/edit/" + item.id) Edit
-                                        //-         li: a(href="#" class="btn-delete-post" post-id=item.id) Delete
-//-     h1 Welcome to my blog
-
-//-     if error
-//-         div.error= error.message
-
-//-     .content
-
-//- block scripts
-//-     script.
-//-         $( document ).ready(function() {
-//-             console.log( "App ready!" );
-
-//-             //- $('.btn-delete-post').on('click', function() {
-//-             //-     var id = $(this).attr('post-id');
-
-//-             //-     axios.delete('/blog/' + id)
-//-             //-     .then(function (response) {
-//-             //-         console.log(response);
-//-             //-         document.location.reload();
-//-             //-     })
-//-             //-     .catch(function (error) {
-//-             //-         console.log(error);
-//-             //-     });
-//-             //- });
-
-//-             //- console.log('user token', App.userService.getToken());
-//-         });
+                    each item in blogPosts
+                        .columns
+                            .column
+                                if item.posterUri
+                                    div(class="o-ratio o-ratio--16:9")
+                                        div(class="o-ratio__content")
+                                            img(src=item.posterUri, class="image")
+                            .column
+                                h4
+                                    a(href="/blog/" + item.id)= item.title
+                                p= item.excerpt

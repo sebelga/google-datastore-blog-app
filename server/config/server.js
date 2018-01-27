@@ -4,7 +4,7 @@ const joi = require("joi");
 
 const envVarsSchema = joi
     .object({
-        PORT: joi.number().required(),
+        PORT: joi.number(),
         SERVER_IP: joi.string().required(),
         SERVER_HOST: joi.string().required()
     })

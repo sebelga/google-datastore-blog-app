@@ -9,7 +9,6 @@ const config = require("./config");
 
 const datastore = new Datastore({
     projectId: config.gcloud.projectId,
-    // keyFilename: config.gcloud.keyFilename,
     namespace: config.gcloud.datastoreNamespace
 });
 
