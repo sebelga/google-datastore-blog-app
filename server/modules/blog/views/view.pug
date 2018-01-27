@@ -29,10 +29,11 @@ block content
                         h3.is-size-4 Conversation
                         #comments-wrapper
                             each item in comments.entities
-                                article(id='comment-' + item.id, class="media")
+                                article(id='comment-' + item.id, class="media comment")
                                     .media-content
                                         .content
                                             p <strong>#{item.name}</strong> <small>wrote #{item.createdOnFormatted}</small><br>#{item.comment}
+                                            <button class="delete" data-comment-id="#{item.id}"></button>
 
                         #comment-form
                             if comments.nextPageCursor
