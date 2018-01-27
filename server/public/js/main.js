@@ -20339,7 +20339,7 @@ const submitComment = (e, id) => {
 };
 
 const commentNode = entity => {
-    const { id, createdOnAgo, comment, name, website } = entity;
+    const { id, createdOnFormatted, comment, name, website } = entity;
 
     const nameRendered = website ? `<a href="${website}" class="tag" target="_blank">${name}</a>` : name;
 
@@ -20350,7 +20350,7 @@ const commentNode = entity => {
         <div class="media-content comment">
             <div class="content">
                 <p>
-                    <strong>${nameRendered}</strong> <small>wrote ${createdOnAgo}</small><br>
+                    <strong>${nameRendered}</strong> <small>wrote ${createdOnFormatted}</small><br>
                     ${comment}
                 </p>
                 <button class="delete" data-comment-id="${id}"></delete>

@@ -3,7 +3,6 @@
 const path = require("path");
 const marked = require("marked");
 const async = require("async");
-const moment = require("moment");
 const gstore = require("gstore-node")();
 
 const BlogPost = require("./blog-post.model");
@@ -68,15 +67,9 @@ const get = (req, res) => {
             .filter("blogPost", id)
             .order("createdOn", { descending: true })
             .limit(3)
-            .run()
+            .run({ format: 'ENTITY' })
             .then(result => {
-                result.entities = result.entities.map(comment =>
-                    // Format the comment date before sending back
-                    ({
-                        ...comment,
-                        createdOnFormatted: moment(comment.createdOn).fromNow()
-                    })
-                );
+                result.entities = result.entities.map(comment => comment.plain({ virtuals: true }));
 
                 // We encode the pageCursor to be able to use it safely as a uri Query parameter
                 result.nextPageCursor = result.nextPageCursor

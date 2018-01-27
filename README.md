@@ -112,3 +112,12 @@ LOGGER_ENABLED=true
 ```sh
 gcloud datastore create-indexes --project=<YOUR-PROJECT-ID> ./index.yaml
 ```
+
+### DataLoader
+
+DataLoader is a generic utiliy created by Facebook. It optimizes "get" fetching of entity by grouping "get" calls within
+a single frame of execution and also by caching all the entity.get() result inside a same request.
+
+More info about dataloader: https://github.com/facebook/dataloader
+
+gstore has a helper function `createDataLoader()` to generate a DataLoader instance that works with the batch operation (several get key at once) on Google Datastore.
