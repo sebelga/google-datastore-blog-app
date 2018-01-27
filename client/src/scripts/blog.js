@@ -9,14 +9,7 @@ const deletePost = id =>
             headers: { "Content-type": "application/json" },
             data: null // data null is necessary to pass the headers
         })
-        .then(() => {
-            /**
-             * As there is an "eventual" consistency in the Datastore outside Entity Groups
-             * we wait 1.5 seconds before reloading the page to make sure changes are reflected.
-             */
-            // app.notificationService.show("Blog post deleted successully.");
-            setTimeout(() => document.location.reload(), 1500);
-        })
+        .then(() => document.location.reload())
         .catch(error => {
             console.log(error);
             // app.notificationService.error(error.message)
@@ -79,12 +72,21 @@ const initImageUpload = () => {
     }
 };
 
+const initBtnSubmit = () => {
+    const btns = Array.prototype.slice.call(document.querySelectorAll('.button-submit'));
+
+    btns.forEach((btn) => {
+        btn.addEventListener('click', () => btn.classList.add('is-loading'));
+    });
+};
+
 const pageReady = (page) => {
     attachDeletePostHandler();
 
     if(page === 'blogpost-edit') {
         initMarkdownEditor();
         initImageUpload();
+        initBtnSubmit();
     }
 };
 

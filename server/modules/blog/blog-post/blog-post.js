@@ -41,7 +41,7 @@ const get = (req, res) => {
 
     function getBlogPost(cb) {
         dataloader
-            .load(BlogPost.key(id))
+            .load(BlogPost.key(id, ["Blog", "my-blog"]))
             .then(blogPost => {
                 if (!blogPost) {
                     return cb(null, null);
@@ -64,7 +64,7 @@ const get = (req, res) => {
          * Query the 3 most recent comments for the current BlogPost
          */
         Comment.query()
-            .filter("blogPost", +req.params.id)
+            .filter("blogPost", id)
             .order("createdOn", { descending: true })
             .limit(3)
             .run()
@@ -76,6 +76,10 @@ const get = (req, res) => {
                         createdOnFormatted: moment(comment.createdOn).fromNow()
                     })
                 );
+
+                // We encode the pageCursor to be able to use it safely as a uri Query parameter
+                result.nextPageCursor = result.nextPageCursor ? encodeURIComponent(result.nextPageCursor) : undefined;
+
                 cb(null, result);
             })
             .catch(cb);
@@ -115,7 +119,7 @@ const updatePost = (req, res) => {
      * 1) it will be attached to the created entity and available in the "pre" hooks
      * 2) so gstore can clear the cache for the updated Key after the update is done
      */
-    return BlogPost.update(+req.params.id, entityData, null, null, null, {
+    return BlogPost.update(+req.params.id, entityData, ["Blog", "my-blog"], null, null, {
         dataloader
     })
         .then(entity => {
@@ -127,7 +131,7 @@ const updatePost = (req, res) => {
 const deletePost = (req, res) => {
     const { dataloader } = req;
 
-    BlogPost.delete(+req.params.id, null, null, null, null, { dataloader })
+    BlogPost.delete(+req.params.id, ["Blog", "my-blog"], null, null, null, { dataloader })
         .then(response => {
             if (!response.success) {
                 return res.status(400).json(response);

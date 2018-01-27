@@ -13,7 +13,7 @@ const list = (req, res) => {
      * If we have a page cursor, we add it to our query
      */
     if (req.query.start) {
-        query.start(req.query.start);
+        query.start(decodeURIComponent(req.query.start));
     }
 
     query.run().then(
@@ -24,7 +24,9 @@ const list = (req, res) => {
             }));
             res.json(result);
         },
-        err => res.json(err)
+        err => {
+            res.status(400).json(err);
+        }
     );
 };
 
@@ -38,6 +40,7 @@ const create = (req, res) => {
             entity.entityData.createdOnAgo = moment(
                 comment.createdOn
             ).fromNow();
+
             res.json(entity.plain());
         },
         err => res.status(400).json(err)

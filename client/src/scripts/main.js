@@ -18,6 +18,7 @@ const app = {
 
 DocReady(() => {
     blog.pageReady(window.pageId);
+    comment.pageReady(window.pageId);
 });
 
 window.app = app;

@@ -21,7 +21,11 @@ block content
                 form(method="post", enctype="multipart/form-data")
                     .columns
                         .column(class="is-one-quarter is-one-third-desktop")
-                            p.is-size-5 Feature Image
+                            p(class="title is-size-5") Feature Image
+
+                            if blogPost.posterUri
+                                figure(class="image")
+                                    img(src=blogPost.posterUri)
                             .field
                                 div(class="file has-name is-info")
                                     label.file-label
@@ -34,7 +38,6 @@ block content
 
                             input(type="hidden", name="posterUri" value=blogPost.posterUri)
                         .column
-
                             section.content
                                 .field
                                     label.label Post title
@@ -45,30 +48,7 @@ block content
                                         textarea(placeholder="Post text...", rows="8", name="content")
                                             = blogPost.content
 
-                                //-     .feature-image
-                                //-         h4 Feature image
-                                //-         if blogPost.posterUri
-                                //-             .img-preview
-                                //-                 img(src=blogPost.posterUri)
-                                //-                 div: a(id="delete-image", href="delete-image") Delete
-                                //-         div(class=blogPost.posterUri? "pure-group hidden" : "pure-group")
-                                //-             label(for="image") Feature Image
-                                //-             input(type="file", name="image", id="image")
-                                //-     
-
                             section.content
                                 div(class="field is-grouped is-grouped-right")
                                     p.control
-                                        button(type="submit", class="button is-primary") #{action === 'create' ? 'Create' : 'Update'}
-
-//- block scripts
-//-     script.
-//-         $( document ).ready(function() {
-//-             $('#delete-image').on('click', function(e) {
-//-                 e.preventDefault();
-//-                 app.blogPostService.deleteImage(#{blogPost.id});
-//-             });
-
-//-             // Init Simple Markdown Editor
-//-             var simplemde = new SimpleMDE();
-//-         });
+                                        button(type="submit", class="button is-primary button-submit") #{action === 'create' ? 'Create' : 'Update'}

@@ -28,7 +28,8 @@ const schema = new Schema({
  * Define default configuration for our Model.list() shortcut
  */
 schema.queries("list", {
-    order: { property: "modifiedOn", descending: true }
+    order: { property: "modifiedOn", descending: true },
+    ancestors: ["Blog", "my-blog"]
 });
 
 // -------------------------------------
@@ -55,12 +56,15 @@ schema.post("delete", deleteComments);
 
 /**
  * If entity exists (has an id) and we are sending "null" as poster uri
- * here we don't use the datastoreEntity() method as it would merge the datastore
- * data into our entity (and lose any change we want to make to it)
- * we use another helper "model()" to access a Model declared in gstore
+ * or there is a "file" object in the entityData, we fetch the entity to see if
+ * it already has an image.
+ *
+ * Here we don't use the datastoreEntity() shortcut as it would merge the datastore
+ * data into our entity and override our changes on it
+ * We simply use the dataloader for the fetching.
  */
 function deletePreviousImage() {
-    if (this.entityKey.id && this.posterUri === null) {
+    if (this.entityKey.id && (this.posterUri === null || typeof this.entityData.file !== 'undefined')) {
         return this.dataloader.load(this.entityKey).then(entity => {
             if (!entity || !entity.cloudStorageObject) {
                 return;

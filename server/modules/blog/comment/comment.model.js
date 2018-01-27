@@ -1,16 +1,17 @@
 "use strict";
 
 const gstore = require("gstore-node")();
+const Joi = require('joi');
 
 const schema = new gstore.Schema({
-    blogPost: { type: "int" },
+    blogPost: { joi: Joi.number() },
     createdOn: {
-        type: "datetime",
-        default: gstore.defaultValues.NOW,
+        joi: Joi.date().default(() => new Date(), 'Current datetime of request'),
         write: false
     },
-    author: { type: "string" },
-    comment: { type: "string", excludeFromIndexes: true }
-});
+    name: { joi: Joi.string().min(3) },
+    comment: { joi: Joi.string().min(10), excludeFromIndexes: true },
+    website: { joi: Joi.string().uri().allow(null) }
+}, { joi: true });
 
 module.exports = gstore.model("Comment", schema);

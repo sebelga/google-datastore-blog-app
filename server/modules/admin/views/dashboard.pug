@@ -4,7 +4,7 @@ block title
     title Admin blog
 
 block navbar-right
-    if blogPosts.length > 0
+    if !error && blogPosts.length > 0
         .navbar-item
             a(class="button is-primary" href="/admin/new-post") New post
 
@@ -17,32 +17,33 @@ block content
         .content
             section.section
                 if error
-                    div.error= error.message
+                    div(class="notification is-danger")= error.message
 
-                if blogPosts.length === 0
-                    .has-text-centered
-                        h2.has-text-centered No post. Let's create one!
-                        a(class="button is-primary" href="/admin/new-post") New post
                 else
-                    .posts
-                        each item in blogPosts
-                            .level
-                                .level-left
-                                    if item.posterUri
+                    if blogPosts.length === 0
+                        .has-text-centered
+                            h2.has-text-centered No post. Let's create one!
+                            a(class="button is-primary" href="/admin/new-post") New post
+                    else
+                        .posts
+                            each item in blogPosts
+                                .level
+                                    .level-left
+                                        if item.posterUri
+                                            .level-item
+                                                // img(src=item.posterUri)
                                         .level-item
-                                            img(src=item.posterUri)
-                                    .level-item
-                                        p.is-size-4= item.title
-                                .level-right
-                                    .level-item
-                                        a(href="/blog/" + item.id) view
-                                    .level-item
-                                        a(href="/admin/edit-post/" + item.id) edit
-                                    .level-item
-                                        a(
-                                            href="/admin/edit-post/" + item.id,
-                                            class="delete-post",
-                                            data-post-id=item.id) delete
+                                            p.is-size-4= item.title
+                                    .level-right
+                                        .level-item
+                                            a(href="/blog/" + item.id) view
+                                        .level-item
+                                            a(href="/admin/edit-post/" + item.id) edit
+                                        .level-item
+                                            a(
+                                                href="/admin/edit-post/" + item.id,
+                                                class="delete-post",
+                                                data-post-id=item.id) delete
 
                     //- <table class="pure-table pure-table-horizontal">
                     //-     thead

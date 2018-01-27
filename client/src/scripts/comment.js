@@ -2,16 +2,34 @@ import axios from "axios";
 
 import { apiBase } from "./config";
 
+let blogPostId;
+let nextPage;
+let commentFormDOM;
+let commentsDOM;
+let commentFormErrorsDOM;
+
+const deleteComment = e => {
+    const id = parseInt(e.currentTarget.dataset.commentId, 10);
+
+    axios
+        .delete(`${apiBase}/comments/${id}`)
+        .then(() => {
+            const commentNode = document.getElementById(`comment-${id}`);
+            commentNode.remove();
+        })
+        .catch(error => window.console.log(error));
+};
+
 const loadMoreComments = id => {
     axios
         .get(`${apiBase}/blog/${id}/comments?start=${nextPage}`)
         .then(response => {
             if (response.data.entities) {
                 response.data.entities.forEach(comment => {
-                    list.append(commentToLi(comment));
-                    $(`#comment-${comment.id}`)
-                        .find("button.delete")
-                        .click(deleteComment);
+                    commentsDOM.append(commentNode(comment));
+                    // $(`#comment-${comment.id}`)
+                    //     .find("button.delete")
+                    //     .click(deleteComment);
                 });
 
                 if (
@@ -21,7 +39,7 @@ const loadMoreComments = id => {
                     nextPage = response.data.nextPageCursor;
                 } else {
                     // No more comments (hide button)
-                    loadMore.button.hide();
+                    document.querySelector('#load-more-comments button').classList.add('is-hidden');
                 }
             }
         })
@@ -32,67 +50,97 @@ const loadMoreComments = id => {
 
 const submitComment = (e, id) => {
     e.preventDefault();
-
-    const values = form.serializeArray();
-    const author = values[0].value;
-    const comment = values[1].value;
+    commentFormErrorsDOM.classList.add('is-hidden');
+    const postId = parseInt(e.target.dataset.postId, 10);
+    const name = e.target.elements[0].value;
+    const website = e.target.elements[1].value || null;
+    const comment = e.target.elements[2].value;
 
     const data = {
-        blogPost: blogPostId,
-        author,
+        blogPost: postId,
+        name,
+        website,
         comment
     };
 
-    // window.console.log("Submitting comment.....", data);
-
     axios
-        .post(`${apiBase}/blog/${id}/comments`, data)
+        .post(`${apiBase}/blog/${postId}/comments`, data)
         .then(response => {
-            list.prepend(commentToLi(response.data));
-            $(`#comment-${response.data.id}`)
-                .find("button.delete")
-                .click(deleteComment);
+            commentsDOM.insertBefore(commentNode(response.data), commentsDOM.firstChild);
+            commentFormDOM.reset();
+            // commentsDOM.prepend(commentNode(response.data));
+
+            // const btn = document.querySelector(
+            //     `#comment-${response.data.id} .comment-delete`
+            // );
+            // btn.addEventListener("click", deleteComment);
+            // // $(`#comment-${response.data.id}`)
+            // //     .find("button.delete")
+            // //     .click(deleteComment);
         })
-        .catch(error => {
-            window.console.log(error);
+        .catch(res => {
+            const error = res.response.data;
+            let message;
+            if (error.name == 'ValidationError') {
+                message = error.details.reduce((acc, err) => {
+                    acc += `${err.message}<br>`;
+                    return acc;
+                }, '');
+            } else {
+                message = error.message;
+            }
+            commentFormErrorsDOM.classList.remove('is-hidden');
+            commentFormErrorsDOM.innerHTML = message;
         });
 };
 
-const deleteComment = () => {
-    const id = $(this).attr("comment-id");
+const commentNode = entity => {
+    const { id, createdOnAgo, comment, name } = entity;
 
-    window.axios
-        .delete(`${apiBase}/comments/${id}`)
-        .then(() => $(`#comment-${id}`).remove())
-        .catch(error => window.console.log(error));
-};
-
-const commentToLi = entity => {
-    const { id, createdOnAgo, comment } = entity;
-
-    let li = `
-        <li id="comment-${id}">
-            <div class="author">
-                ${entity.author} wrote ${createdOnAgo}
+    const node = document.createElement("article");
+    node.id = `comment-${id}`;
+    node.className = "media"
+    node.innerHTML = `
+        <div class="media-content">
+            <div class="content">
+                <p>
+                    <strong>${name}</strong> <small>wrote ${createdOnAgo}</small><br>
+                    ${comment}
+                </p>
             </div>
-            <div class="comment">${comment}</div>
-            <button class="delete" comment-id="${id}"><i class="fa fa-close"></i></button>
-        </li>
+        </div>
     `;
 
-    return li;
+    // const buttonNode = document.createElement("button");
+    // buttonNode.classList.add("comment-delete");
+    // buttonNode.dataset.commentId = id;
+    // buttonNode.innerHTML = '<i class="fa fa-close"></i>';
+    // buttonNode.addEventListener("click", deleteComment);
+    // node.appendChild(buttonNode);
+
+    return node;
 };
 
-const init = (blogPostId, list, loadMore, form) => {
-    let nextPage = loadMore.start;
+const pageReady = pageId => {
+    if (pageId === "blogpost-view") {
+        blogPostId = window.__blogPostData.id;
+        nextPage = window.__blogPostData.nextPage;
+        commentsDOM = document.getElementById("comments-wrapper");
+        commentFormErrorsDOM = document.getElementById('comment-form-errors');
 
-    loadMore.button.click(() => loadMoreComments(blogPostId));
+        commentFormDOM = document.getElementById("form-comment");
+        commentFormDOM.addEventListener("submit", submitComment);
 
-    form.submit(e => submitComment(e, blogPostId));
+        const buttonsDeleteComments = Array.prototype.slice.apply(
+            document.querySelectorAll(".comment-delete")
+        );
+        buttonsDeleteComments.forEach(el => el.addEventListener("click", deleteComment));
 
-    list.find("button.delete").each((i, el) => {
-        $(el).click(deleteComment);
-    });
+        const btnLoadMore = document.getElementById('load-more-comments');
+        if (btnLoadMore) {
+            btnLoadMore.addEventListener('click', () => loadMoreComments(blogPostId));
+        }
+    }
 };
 
-export default { init };
+export default { pageReady };

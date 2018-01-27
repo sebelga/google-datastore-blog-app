@@ -4,61 +4,77 @@ block title
     title= blogPost ? blogPost.title : ""
 
 block content
-    //- if error
-    //-     div(class="content main")
-    //-         div.error= error.message
+    if error
+        div(class="notification is-danger")= error.message
 
     if blogPost
-        section(class="hero is-light is-large")
-            .hero-body(style=blogPost.posterUri ? {'background-image':'url(' + blogPost.posterUri + ')'} : null)
+        section(class="hero is-dark is-large")
+            if blogPost.posterUri
+                style.
+                    .header-image:before{
+                        background-image:url(#{blogPost.posterUri})
+                    }
+            div(class="hero-body header-image")
                 div(class="container has-text-centered")
                     h1.title= blogPost.title
 
         .container
             .content
                 section.section!= blogPost.contentHtml
-            //- header
-            //-     .bkg(style=blogPost.posterUri ? {'background-image':'url(' + blogPost.posterUri + ')'} : null)
-            //-     h1= blogPost.title
 
-            //- div(class="content main")!= blogPost.contentHtml
+        section(class="hero is-light")
+            div(class="hero-body is-paddingless")
+                .container
+                    section(id="comments" class="section")
+                        h3.is-size-4 Conversation
+                        #comments-wrapper
+                            each item in comments.entities
+                                article(id='comment-' + item.id, class="media")
+                                    .media-content
+                                        .content
+                                            p <strong>#{item.name}</strong> <small>wrote #{item.createdOnFormatted}</small><br>#{item.comment}
 
-            //- #comments
-            //-     .content
-            //-         h3 Conversation
-            //-         ul
-            //-             each item in comments.entities
-            //-                 li(id='comment-' + item.id, class="blog-post__comment")
-            //-                     .author #{item.author} wrote #{item.createdOnFormatted}
-            //-                     .comment= item.comment
-            //-                     button.delete(comment-id=item.id): i(class='fa fa-close')
+                        #comment-form
+                            if comments.nextPageCursor
+                                div(id="load-more-comments" class="has-text-right")
+                                    button(class="button is-link is-small") See more comments
 
-            //-         //- Button load more comments
-            //-         if comments.nextPageCursor
-            //-             #load-more
-            //-                 button.pure-button Load more
+                            div(id="comment-form-errors" class="notification is-danger is-hidden")
 
+                            article.media
+                                .media-content
+                                    .content
+                                        form(method="post", id="form-comment" data-post-id=blogPost.id)
+                                            .field
+                                                .control
+                                                    input(class="input", type="text", placeholder="Your name" name="author")
+                                            .field
+                                                .control
+                                                    input(class="input", type="text", placeholder="Your website (optional)" name="website")
 
-            //-         h4 Add a comment
-            //-         form.pure-form(method="post", class="comments-form")
-            //-             fieldset.pure-group
-            //-                 input(type="text", id="author", class="pure-input-1", placeholder="Your name", name="author")
-            //-                 textarea.pure-input-1(placeholder="Comment", rows="4", name="comment")
+                                            .field
+                                                .control
+                                                    textarea(class="textarea" placeholder="Add a comment...", name="comment")
 
-            //-             .comments__actions
-            //-                 button(type="submit", class="pure-button pure-u-1 pure-u-sm-1-4 pure-button-primary") Add comment
+                                            .field
+                                                .control
+                                                    button(type="submit", class="button") Post comment
 
-//- block scripts
-//-     if blogPost
-//-         script.
-//-             $( document ).ready(function() {
-//-                 app.commentsService.init(
-//-                     #{blogPost.id},
-//-                     $('#comments ul'),
-//-                     {
-//-                         start: '#{comments.nextPageCursor}',
-//-                         button: $('#load-more button')
-//-                     },
-//-                     $('#comments form')
-//-                 );
-//-             });
+block scripts
+    if blogPost
+        script.
+            window.__blogPostData = {
+                id: #{blogPost.id},
+                nextPage: '#{comments.nextPageCursor}'
+            };
+            //- $( document ).ready(function() {
+            //-     app.commentsService.init(
+            //-         #{blogPost.id},
+            //-         $('#comments ul'),
+            //-         {
+            //-             start: '#{comments.nextPageCursor}',
+            //-             button: $('#load-more button')
+            //-         },
+            //-         $('#comments form')
+            //-     );
+            //- });

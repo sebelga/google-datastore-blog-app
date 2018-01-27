@@ -18,9 +18,9 @@ const dashboard = (req, res) => {
                 pageId: "admin-index"
             })
         )
-        .catch(() =>
+        .catch((error) =>
             res.render(view, {
-                error: { message: "Error loading posts." },
+                error,
                 pageId: "admin-index"
             })
         );
@@ -31,7 +31,13 @@ const newPost = (req, res) => {
 
     if (req.method === "POST") {
         const entityData = Object.assign({}, req.body, { file: req.file });
-        const blogPost = new BlogPost(entityData);
+
+        /**
+         * We create the post under a parent entity kind "Blog" with name "my-blog"
+         * It doesn't matter if this entity exists, we can still create its child.
+         * This will gives us strong consistency for the blog posts we create/edit/delete
+         */
+        const blogPost = new BlogPost(entityData, null, ["Blog", "my-blog"]);
 
         // We the request DataLoader instance to our entity
         // so it is available in our "pre" Hooks
@@ -69,7 +75,8 @@ const editPost = (req, res) => {
 
     if (req.method === "POST") {
         const entityData = Object.assign({}, req.body, { file: req.file });
-        const blogPost = new BlogPost(entityData, id);
+
+        const blogPost = new BlogPost(entityData, id, ["Blog", "my-blog"]);
         blogPost.dataloader = req.dataloader;
 
         return blogPost.save()
@@ -90,7 +97,7 @@ const editPost = (req, res) => {
     }
 
     return dataloader
-        .load(BlogPost.key(id))
+        .load(BlogPost.key(id, ["Blog", "my-blog"]))
         .then(blogPost => {
             if (!blogPost) {
                 return pageNotFound(res);
