@@ -4,6 +4,7 @@ const path = require("path");
 const marked = require("marked");
 const async = require("async");
 const moment = require("moment");
+const gstore = require("gstore-node")();
 
 const BlogPost = require("./blog-post.model");
 const Comment = require("../comment/comment.model");
@@ -25,7 +26,7 @@ const list = (req, res) => {
 };
 
 const get = (req, res) => {
-    const { dataloader } = req;
+    const dataloader = gstore.createDataLoader();
     const id = +req.params.id;
 
     if (isNaN(id)) {
@@ -78,7 +79,9 @@ const get = (req, res) => {
                 );
 
                 // We encode the pageCursor to be able to use it safely as a uri Query parameter
-                result.nextPageCursor = result.nextPageCursor ? encodeURIComponent(result.nextPageCursor) : undefined;
+                result.nextPageCursor = result.nextPageCursor
+                    ? encodeURIComponent(result.nextPageCursor)
+                    : undefined;
 
                 cb(null, result);
             })
@@ -111,7 +114,8 @@ const get = (req, res) => {
 };
 
 const updatePost = (req, res) => {
-    const { dataloader, file } = req;
+    const { file } = req;
+    const dataloader = gstore.createDataLoader();
     const entityData = Object.assign({}, req.body, { file });
 
     /**
@@ -119,9 +123,16 @@ const updatePost = (req, res) => {
      * 1) it will be attached to the created entity and available in the "pre" hooks
      * 2) so gstore can clear the cache for the updated Key after the update is done
      */
-    return BlogPost.update(+req.params.id, entityData, ["Blog", "my-blog"], null, null, {
-        dataloader
-    })
+    return BlogPost.update(
+        +req.params.id,
+        entityData,
+        ["Blog", "my-blog"],
+        null,
+        null,
+        {
+            dataloader
+        }
+    )
         .then(entity => {
             return res.json(entity.plain());
         })
@@ -129,9 +140,11 @@ const updatePost = (req, res) => {
 };
 
 const deletePost = (req, res) => {
-    const { dataloader } = req;
+    const dataloader = gstore.createDataLoader();
 
-    BlogPost.delete(+req.params.id, ["Blog", "my-blog"], null, null, null, { dataloader })
+    BlogPost.delete(+req.params.id, ["Blog", "my-blog"], null, null, null, {
+        dataloader
+    })
         .then(response => {
             if (!response.success) {
                 return res.status(400).json(response);

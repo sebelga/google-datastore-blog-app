@@ -27,6 +27,8 @@ const dashboard = (req, res) => {
 };
 
 const newPost = (req, res) => {
+    const dataloader = gstore.createDataLoader();
+
     const view = path.join(__dirname, "views/edit");
 
     if (req.method === "POST") {
@@ -41,7 +43,7 @@ const newPost = (req, res) => {
 
         // We the request DataLoader instance to our entity
         // so it is available in our "pre" Hooks
-        blogPost.dataloader = req.dataloader;
+        blogPost.dataloader = dataloader;
 
         return blogPost.save().then(
             entity => {
@@ -65,7 +67,7 @@ const newPost = (req, res) => {
 };
 
 const editPost = (req, res) => {
-    const { dataloader } = req;
+    const dataloader = gstore.createDataLoader();
     const view = path.join(__dirname, "views/edit");
     const id = +req.params.id;
 
@@ -77,7 +79,7 @@ const editPost = (req, res) => {
         const entityData = Object.assign({}, req.body, { file: req.file });
 
         const blogPost = new BlogPost(entityData, id, ["Blog", "my-blog"]);
-        blogPost.dataloader = req.dataloader;
+        blogPost.dataloader = dataloader;
 
         return blogPost.save()
             .then(entity => {
