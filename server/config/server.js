@@ -5,8 +5,6 @@ const joi = require("joi");
 const envVarsSchema = joi
     .object({
         PORT: joi.number(),
-        SERVER_IP: joi.string().required(),
-        SERVER_HOST: joi.string().required()
     })
     .unknown()
     .required();
@@ -18,9 +16,7 @@ if (error) {
 }
 
 const config = {
-    port: Number(envVars.PORT) || 3000,
-    ip: envVars.SERVER_IP,
-    host: envVars.SERVER_HOST
+    port: Number(envVars.PORT) || 8080,
 };
 
 module.exports = config;

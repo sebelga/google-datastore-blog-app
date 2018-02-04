@@ -1,26 +1,22 @@
 runtime: nodejs
-vm: true
+env: flex
 
-env_variables:
-  GCLOUD_PROJECT: your-appengine-project
-  API_KEY: Your-API-Key
-
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml
 manual_scaling:
   instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
 
-#automatic_scaling:
-#  min_num_instances: 1
-#  max_num_instances: 10
-#  cool_down_period_sec: 120 # default value
-#  cpu_utilization:
-#    target_utilization: 0.5
+env_variables:
+  DATASTORE_NAMESPACE: development
+  GCLOUD_BUCKET: blog-nodejs
+  LOGGER_LEVEL: info
+  LOGGER_ENABLED: 'true'
 
-handlers:
-- url: /.*
-  script: IGNORED
-  # Always use https
-  secure: always
-
-# Temporary setting to keep gcloud from uploading node_modules
 skip_files:
 - ^node_modules$
+- ^client\/.*

@@ -35,6 +35,7 @@ const get = async (req, res) => {
     }
 
     let result;
+    const template = path.join(__dirname, "..", "views", "view");
 
     try {
         /**
@@ -42,6 +43,10 @@ const get = async (req, res) => {
          */
         result = await Promise.all([getBlogPost(), getComments()]);
     } catch (err) {
+        if (err.code === 404) {
+            return pageNotFound(res);
+        }
+
         return handleError(res, {
             template,
             error,
@@ -49,7 +54,6 @@ const get = async (req, res) => {
         });
     }
 
-    const template = path.join(__dirname, "..", "views", "view");
     const [blogPost, comments] = result;
 
     if (blogPost === null) {
@@ -65,8 +69,7 @@ const get = async (req, res) => {
     // ----------
 
     function getBlogPost() {
-        return dataloader
-            .load(BlogPost.key(id, ["Blog", "my-blog"]))
+        return BlogPost.get(id, ["Blog", "my-blog"], null, null, { dataloader })
             .then(blogPost => {
                 if (!blogPost) {
                     return null;

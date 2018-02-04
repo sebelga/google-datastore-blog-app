@@ -12028,7 +12028,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_es6_docready___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_es6_docready__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blog__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__comment__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_main_scss__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_main_scss__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__styles_main_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__styles_main_scss__);
 
 
@@ -20393,9 +20393,7 @@ const pageReady = pageId => {
 
 
 /***/ }),
-/* 53 */,
-/* 54 */,
-/* 55 */
+/* 53 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

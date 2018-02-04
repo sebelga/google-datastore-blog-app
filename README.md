@@ -74,24 +74,15 @@ Follow the 4 steps
 The application needs a few environment variables to be set. Create a file in the "/server" folder and name it ".env" with the following content
 
 ```txt
-# Node environment
-NODE_ENV=development
-
 # Server
 # ---------
 # Port to run the server on
 PORT=3000
 
-# Ip of the server
-SERVER_IP=127.0.0.1
-
-# Host
-SERVER_HOST=localhost
-
 # Google
 # ---------
 # Your google cloud project
-GCLOUD_PROJECT=<your-project-id>
+GOOGLE_CLOUD_PROJECT=<your-project-id>
 
 # Datastore namespace for the entities
 DATASTORE_NAMESPACE=default
@@ -120,4 +111,8 @@ a single frame of execution and also by caching all the entity.get() result insi
 
 More info about dataloader: https://github.com/facebook/dataloader
 
-gstore has a helper function `createDataLoader()` to generate a DataLoader instance that works with the batch operation (several get key at once) on Google Datastore.
+gstore has a helper function `createDataLoader()` to generate a DataLoader instance that works with the batch operation (several get key at once) on Google Datastore.  
+From the documentation of the Datastore:
+"Cloud Datastore supports batch operations which allow it to operate on multiple objects in a single Cloud Datastore call.  
+
+Such batch calls are faster than making separate calls for each individual entity because they incur the overhead for only one service call. If multiple entity groups are involved, the work for all the groups is performed in parallel on the server side."

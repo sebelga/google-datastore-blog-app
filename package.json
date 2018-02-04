@@ -3,21 +3,27 @@
     "version": "1.0.0",
     "description": "Demo Blog Application on Google App Engine Flexible Environment",
     "keywords": [
-        "blog",
-        "node.js",
-        "google",
-        "app",
-        "engine",
-        "gcloud-store",
-        "gcloud-node"
+        "nodejs",
+        "google cloud",
+        "app engine",
+        "google-cloud",
+        "gstore-node"
     ],
     "author": "Sébastien Loix",
-    "license": "ISC",
-    "main": "main.js",
+    "license": "MIT",
+    "main": "server/server.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sebelga/blog-app-googlecloud"
+    },
+    "engines": {
+        "node": ">= 6"
+    },
     "scripts": {
+        "deploy": "gcloud app deploy --project blog-nodejs --version dev --verbosity=info",
         "test": "npm test",
         "build": "webpack --env.NODE_ENV=prod",
-        "start:server": "cd server/app && node server.js",
+        "start": "node server/server.js",
         "watch": "webpack --watch --progress --colors"
     },
     "dependencies": {

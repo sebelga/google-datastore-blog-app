@@ -2,30 +2,30 @@
 
 const Datastore = require("@google-cloud/datastore");
 const logger = require("winston");
-const gstore = require("gstore-node")();
+const gstore = require("gstore-node")({ cache: true });
 
 const app = require("./index");
 const config = require("./config");
 
 const datastore = new Datastore({
     projectId: config.gcloud.projectId,
-    namespace: config.gcloud.datastoreNamespace
+    namespace: config.gcloud.datastore.namespace,
 });
 
-logger.info(`Connecting to Datastore project "${config.gcloud.projectId}"`);
+logger.info(`Connecting to Datastore... | project "${config.gcloud.projectId}"`);
 
 // Connect gstore to the Google Datastore instance
 gstore.connect(datastore);
 
 logger.info("Server starting...");
 
-app.listen(config.server.port, config.server.ip, error => {
+app.listen(config.server.port, error => {
     if (error) {
-        logger.error("Unable to listen for connections", error);
+        logger.error("Unable to listen for connection", error);
         process.exit(10);
     }
 
     logger.info(
-        `Server running at http://${config.server.ip}:${config.server.port}`
+        `App listening on port ${config.server.port}`
     );
 });

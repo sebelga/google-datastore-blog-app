@@ -27,7 +27,7 @@ const multer = require('multer')({
     },
 });
 
-const bucketId = config.gcloud.storageBucket;
+const bucketId = config.gcloud.storage.bucket;
 const bucket = storage.bucket(bucketId);
 
 /**

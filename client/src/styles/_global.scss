@@ -9,3 +9,10 @@
 .editor-toolbar svg {
     margin-right: 12px;
 }
+
+.CodeMirror {
+    .CodeMirror-placeholder,
+    .content pre:not(:last-child) {
+        margin-bottom: 0 !important;
+    }
+}

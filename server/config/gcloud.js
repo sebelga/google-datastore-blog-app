@@ -3,7 +3,7 @@
 const joi = require('joi');
 
 const envVarsSchema = joi.object({
-    GCLOUD_PROJECT: joi.string().required(),
+    GOOGLE_CLOUD_PROJECT: joi.string().required(),
     DATASTORE_NAMESPACE: joi.string().required(),
     GCLOUD_BUCKET: joi.string().required(),
 }).unknown()
@@ -16,9 +16,13 @@ if (error) {
 }
 
 const config = {
-    projectId: envVars.GCLOUD_PROJECT,
-    datastoreNamespace: envVars.DATASTORE_NAMESPACE,
-    storageBucket: envVars.GCLOUD_BUCKET,
+    projectId: envVars.GOOGLE_CLOUD_PROJECT,
+    datastore: {
+        namespace: envVars.DATASTORE_NAMESPACE,
+    },
+    storage: {
+        bucket: envVars.GCLOUD_BUCKET,
+    },
 };
 
 module.exports = config;
