@@ -13,7 +13,7 @@ const dashboard = async (req, res) => {
 
     let result;
     try {
-        result = await BlogPost.list();
+        result = await BlogPost.list({ cache: false });
     } catch (error) {
         return res.render(view, {
             error,
@@ -36,11 +36,11 @@ const newPost = async (req, res) => {
         const entityData = Object.assign({}, req.body, { file: req.file });
 
         /**
-         * We create the post under a parent entity kind "Blog" with name "my-blog"
+         * We create the post under a parent entity kind "Blog" with name "default"
          * It doesn't matter if this entity exists, we can still create its child.
          * This will gives us strong consistency for the blog posts we create/edit/delete
          */
-        const blogPost = new BlogPost(entityData, null, ["Blog", "my-blog"]);
+        const blogPost = new BlogPost(entityData, null, ["Blog", "default"]);
 
         // We the request DataLoader instance to our entity
         // so it is available in our "pre" Hooks
@@ -78,7 +78,7 @@ const editPost = async (req, res) => {
     if (req.method === "POST") {
         const entityData = Object.assign({}, req.body, { file: req.file });
 
-        const blogPost = new BlogPost(entityData, id, ["Blog", "my-blog"]);
+        const blogPost = new BlogPost(entityData, id, ["Blog", "default"]);
         blogPost.dataloader = dataloader;
 
         let entity;
@@ -97,7 +97,7 @@ const editPost = async (req, res) => {
 
     let blogPost;
     try {
-        blogPost = await dataloader.load(BlogPost.key(id, ["Blog", "my-blog"]));
+        blogPost = await dataloader.load(BlogPost.key(id, ["Blog", "default"]));
     } catch (err) {
         return res.render(view, {
             action: "update",

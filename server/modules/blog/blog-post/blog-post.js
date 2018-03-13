@@ -43,13 +43,13 @@ const get = async (req, res) => {
          */
         result = await Promise.all([getBlogPost(), getComments()]);
     } catch (err) {
-        if (err.code === 404) {
+        if (err.code === 'ERR_ENTITY_NOT_FOUND') {
             return pageNotFound(res);
         }
 
         return handleError(res, {
             template,
-            error,
+            error: err,
             data: { blogPost: null }
         });
     }
@@ -69,7 +69,7 @@ const get = async (req, res) => {
     // ----------
 
     function getBlogPost() {
-        return BlogPost.get(id, ["Blog", "my-blog"], null, null, { dataloader })
+        return BlogPost.get(id, ["Blog", "default"], null, null, { dataloader })
             .then(blogPost => {
                 if (!blogPost) {
                     return null;
@@ -125,7 +125,7 @@ const updatePost = async (req, res) => {
         entity = await BlogPost.update(
             +req.params.id,
             entityData,
-            ["Blog", "my-blog"],
+            ["Blog", "default"],
             null,
             null,
             {
@@ -146,7 +146,7 @@ const deletePost = async (req, res) => {
     try {
         result = await BlogPost.delete(
             +req.params.id,
-            ["Blog", "my-blog"],
+            ["Blog", "default"],
             null,
             null,
             null,

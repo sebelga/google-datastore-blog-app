@@ -29,7 +29,7 @@ const schema = new Schema({
  */
 schema.queries("list", {
     order: { property: "modifiedOn", descending: true },
-    ancestors: ["Blog", "my-blog"]
+    ancestors: ["Blog", "default"]
 });
 
 // -------------------------------------
