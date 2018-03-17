@@ -12,11 +12,14 @@ resources:
   disk_size_gb: 10
 
 env_variables:
-  DATASTORE_NAMESPACE: development
   GCLOUD_BUCKET: blog-nodejs
   LOGGER_LEVEL: info
   LOGGER_ENABLED: 'true'
 
 skip_files:
 - ^node_modules$
-- ^client\/.*
+- ^client$
+- ^local-datastore$
+- ^.vscode$
+- ^.git$
+- ^scripts$

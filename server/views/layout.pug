@@ -1,44 +1,18 @@
 doctype html
 html(class='no-js', lang='')
-    include ./includes/head.pug
+    head
+        include ./includes/head.pug
+        link(rel='stylesheet', href='/public/dist/main.c1703a1e90e95da52fe7895c15a14f86.css')
+        block head
 
     body(id=pageId)
-        nav(class="navbar")
-            .container
-                .navbar-brand
-                    .navbar-item MY BLOG
-
-                .navbar-menu
-                    .navbar-start
-                        a(class="navbar-item" href="/blog") Home
-                        a(class="navbar-item" href="/admin") Admin
-                    .navbar-end
-                        block navbar-right
+        include ./includes/navbar.pug
 
         block content
 
-        footer.footer
-            .container
-                div(class="content has-text-centered")
-                    p.
-                        Google Datastore app demo by <a href="http://s.loix.me" target="_blank">Sébastien Loix.</a><br>
-                        The source code is licensed <a href="https://opensource.org/licenses/MIT">MIT</a>.<br>
-                        Made with the beautiful CSS framework <a href="https://bulma.io/" target="_blank">Bulma</a>.
-        //- header.main
-        //-     nav(class="pure-menu pure-menu-horizontal")
-        //-         ul.pure-menu-list
-        //-             li.pure-menu-item
-        //-                 a(href="/blog", class="pure-menu-link") Home
-        //-         ul.pure-menu-list.sub-menu
-        //-             li.pure-menu-item
-        //-                 a(href="/admin", class="pure-menu-link") Admin
-        //- main#page
-        //-     block content
+        include ./includes/footer.pug
 
-        // Javascript
-        //- script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
         script.
             window.pageId = "#{pageId}";
-            //- window.jQuery || document.write('<script src="/public/js/vendor/jquery-1.11.2.min.js"><\/script>');
-        script(src="/public/js/main.js")
+        script(src="/public/dist/main.153df6d3ac4352f38cb1.js")
         block scripts

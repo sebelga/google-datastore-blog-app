@@ -11,3 +11,4 @@ public/build/
 coverage/
 vendor/
 .env
+local-datastore/

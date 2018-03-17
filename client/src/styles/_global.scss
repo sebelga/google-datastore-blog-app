@@ -10,9 +10,11 @@
     margin-right: 12px;
 }
 
-.CodeMirror {
-    .CodeMirror-placeholder,
-    .content pre:not(:last-child) {
-        margin-bottom: 0 !important;
+.content {
+    .CodeMirror {
+        .CodeMirror-placeholder,
+        pre:not(:last-child) {
+            margin-bottom: 0 !important;
+        }
     }
 }

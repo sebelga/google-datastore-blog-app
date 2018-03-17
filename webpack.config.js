@@ -1,9 +1,11 @@
 const webpack = require("webpack");
 const path = require("path");
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const autoprefixer = require("autoprefixer");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const AssetsPlugin = require("assets-webpack-plugin");
+const WebpackShellPlugin = require("webpack-shell-plugin");
 
 module.exports = env => {
     env = env || {};
@@ -15,12 +17,35 @@ module.exports = env => {
     const isProd = env.NODE_ENV === "prod";
 
     const cleanBuild = new CleanWebpackPlugin([
-        "server/public/css/*",
-        "server/public/js/*"
-    ]);
+        "server/public/dist/*",
+        "server/public/assets.json"
+    ], { watch: true });
 
     const extractCSS = new ExtractTextPlugin({
-        filename: getPath => getPath('css/main.css').replace('css', '../css'),
+        filename: "[name].[contenthash].css"
+    });
+
+    const assetsManifest = new AssetsPlugin({
+        filename: "assets.json",
+        path: path.join(__dirname, "server", "public"),
+        fullPath: false,
+        processOutput: assets => {
+            Object.keys(assets).forEach(bundle => {
+                Object.keys(assets[bundle]).forEach(type => {
+                    const filename = assets[bundle][type];
+                    assets[bundle][type] = filename.slice(
+                        filename.indexOf(bundle)
+                    );
+                });
+            });
+            return JSON.stringify(assets, null, 4);
+        }
+    });
+
+    const shellPlugin = new WebpackShellPlugin({
+        onBuildStart: ['echo "Webpack build started!"'],
+        onBuildEnd: ["node ./scripts/postbuild.js"],
+        dev: false,
     });
 
     const uglifyJS = new UglifyJsPlugin({ sourceMap: true });
@@ -30,8 +55,8 @@ module.exports = env => {
             main: path.join(__dirname, "client", "src", "scripts", "main.js")
         },
         output: {
-            filename: "main.js",
-            path: path.join(__dirname, "server", "public", "js")
+            filename: "[name].[chunkhash].js",
+            path: path.join(__dirname, "server", "public", "dist")
         },
         module: {
             rules: [
@@ -45,28 +70,34 @@ module.exports = env => {
                 },
                 {
                     test: /\.scss$/,
-                    include: path.join(__dirname, 'client', "src", "styles"),
+                    include: path.join(__dirname, "client", "src", "styles"),
                     loader: extractCSS.extract({
                         use: [
                             {
-                                loader: 'css-loader?sourceMap',
-                                options: { importLoaders: 1 },
+                                loader: "css-loader?sourceMap",
+                                options: { importLoaders: 1 }
                             },
                             {
-                                loader: 'postcss-loader',
+                                loader: "postcss-loader",
                                 options: {
                                     plugins: [
-                                        autoprefixer({ browsers: ['> 1%', 'last 2 versions'] }),
+                                        autoprefixer({
+                                            browsers: [
+                                                "> 1%",
+                                                "last 2 versions"
+                                            ]
+                                        })
                                     ],
-                                    sourceMap: true,
+                                    sourceMap: true
                                 }
                             },
-                            // 'resolve-url-loader',
                             {
-                                loader: 'sass-loader?sourceMap',
+                                loader: "sass-loader?sourceMap",
                                 options: {
-                                    outputStyle: isProd ? 'compressed' : 'nested',
-                                },
+                                    outputStyle: isProd
+                                        ? "compressed"
+                                        : "nested"
+                                }
                             }
                         ]
                     })
@@ -76,12 +107,12 @@ module.exports = env => {
         resolve: {
             extensions: [".js", ".scss"]
         },
-        plugins: [extractCSS],
+        plugins: [shellPlugin, extractCSS, assetsManifest, cleanBuild],
         devtool: "source-map"
     };
 
     if (env.NODE_ENV === "prod") {
-        config.plugins = [...config.plugins, uglifyJS, cleanBuild];
+        config.plugins = [...config.plugins, uglifyJS];
     }
 
     return config;

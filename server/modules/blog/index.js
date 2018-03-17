@@ -1,9 +1,11 @@
-const { BlogPost, blogPostCtrl } = require("./blog-post");
-const { Comment, commentCtrl } = require("./comment");
+"use strict";
+
+const routes = require("./routes");
+const { blogPostDomain } = require("./blog-post");
+const { commentDomain } = require("./comment");
 
 module.exports = {
-    BlogPost,
-    blogPostCtrl,
-    Comment,
-    commentCtrl
+    routes,
+    blogPostDomain,
+    commentDomain
 };

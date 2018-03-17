@@ -1,14 +1,14 @@
-# gstore-node Application demo
-Blog application in Node.js running on Google Flexible Environment
+# Google Datastore Blog Application
+A Node.js demo application built with [`@google-cloud/datastore`](https://github.com/googleapis/nodejs-datastore) & [`gstore-node`](https://github.com/sebelga/gstore-node) running on Google App Engine.
 
 ## Getting started
 
 ### System tools
 
-Make sure before starting that you have the necesary dependencies installed on your machine
+Make sure before starting that you have the necesary dependencies installed on your system.
 
-* node (6 +) + npm
-* Google SDK (you can [download it here](https://cloud.google.com/sdk/downloads)) with the gcloud command on your $PATH
+* node (8 +) + npm
+* Google SDK (you can [download it here](https://cloud.google.com/sdk/downloads)) with the `gcloud` cli on your $PATH
 
 Once you have installed the Google SDK, make sure you are **authenticated**. In your terminal run
 

@@ -4,10 +4,9 @@ const joi = require("joi");
 
 const envVarsSchema = joi
     .object({
-        PORT: joi.number(),
+        PORT: joi.number().default(8080)
     })
-    .unknown()
-    .required();
+    .unknown();
 
 const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
 
@@ -16,7 +15,7 @@ if (error) {
 }
 
 const config = {
-    port: Number(envVars.PORT) || 8080,
+    port: Number(envVars.PORT)
 };
 
 module.exports = config;

@@ -3,10 +3,13 @@ extends ../../../views/layout.pug
 block title
     title Admin blog
 
+block head
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css")
+
 block navbar-right
-    if !error && blogPosts.length > 0
+    if !error && posts.length > 0
         .navbar-item
-            a(class="button is-primary" href="/admin/new-post") New post
+            a(class="button is-primary" href="/admin/create-post") New post
 
 block content
     section(class="hero is-dark")
@@ -20,13 +23,13 @@ block content
                     div(class="notification is-danger")= error.message
 
                 else
-                    if blogPosts.length === 0
+                    if posts.length === 0
                         .has-text-centered
                             h2.has-text-centered No post. Let's create one!
-                            a(class="button is-primary" href="/admin/new-post") New post
+                            a(class="button is-primary" href="/admin/create-post") New post
                     else
                         .posts
-                            each item in blogPosts
+                            each item in posts
                                 div(class="level post")
                                     .level-left
                                         if item.posterUri
@@ -46,3 +49,4 @@ block content
                                                 href="/admin/edit-post/" + item.id,
                                                 class="delete-post",
                                                 data-post-id=item.id) delete
+                                                    i(class="fa fa-spinner fa-pulse is-hidden")

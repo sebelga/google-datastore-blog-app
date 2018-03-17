@@ -10,7 +10,6 @@ let commentFormErrorsDOM;
 
 const deleteComment = e => {
     const id = parseInt(e.currentTarget.dataset.commentId, 10);
-
     return axios
         .delete(`${apiBase}/comments/${id}`)
         .then(() => {
@@ -20,9 +19,13 @@ const deleteComment = e => {
         .catch(error => window.console.log(error));
 };
 
-const loadMoreComments = id => {
+const loadComments = id => {
+    let uri = `${apiBase}/blog/${id}/comments`;
+    if (nextPage) {
+        uri += `?start=${nextPage}`;
+    }
     return axios
-        .get(`${apiBase}/blog/${id}/comments?start=${nextPage}`)
+        .get(uri)
         .then(response => {
             if (response.data.entities) {
                 response.data.entities.forEach(comment => {
@@ -34,6 +37,9 @@ const loadMoreComments = id => {
                     response.data.entities.length > 0
                 ) {
                     nextPage = response.data.nextPageCursor;
+                    document
+                        .querySelector("#load-more-comments button")
+                        .classList.remove("is-hidden");
                 } else {
                     // No more comments (hide button)
                     document
@@ -56,15 +62,14 @@ const submitComment = (e, id) => {
     const website = e.target.elements[1].value || null;
     const comment = e.target.elements[2].value;
 
-    const data = {
-        blogPost: blogPostId,
+    const postData = {
         name,
         website,
         comment
     };
 
     return axios
-        .post(`${apiBase}/blog/${blogPostId}/comments`, data)
+        .post(`${apiBase}/blog/${blogPostId}/comments`, postData)
         .then(response => {
             commentsDOM.insertBefore(
                 commentNode(response.data),
@@ -91,7 +96,9 @@ const submitComment = (e, id) => {
 const commentNode = entity => {
     const { id, createdOnFormatted, comment, name, website } = entity;
 
-    const nameRendered = website ? `<a href="${website}" class="tag" target="_blank">${name}</a>` : name;
+    const nameRendered = website
+        ? `<a href="${website}" class="tag" target="_blank">${name}</a>`
+        : name;
 
     const node = document.createElement("article");
     node.id = `comment-${id}`;
@@ -116,7 +123,6 @@ const commentNode = entity => {
 const pageReady = pageId => {
     if (pageId === "blogpost-view") {
         blogPostId = window.__blogPostData.id;
-        nextPage = window.__blogPostData.nextPage;
         commentsDOM = document.getElementById("comments-wrapper");
         commentFormErrorsDOM = document.getElementById("comment-form-errors");
 
@@ -133,9 +139,12 @@ const pageReady = pageId => {
         const btnLoadMore = document.getElementById("load-more-comments");
         if (btnLoadMore) {
             btnLoadMore.addEventListener("click", () =>
-                loadMoreComments(blogPostId)
+                loadComments(blogPostId)
             );
         }
+
+        // load initial comments
+        loadComments(blogPostId);
     }
 };
 

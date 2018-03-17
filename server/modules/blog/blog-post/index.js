@@ -1,9 +1,9 @@
 "use strict";
 
-const blogPostCtrl = require("./blog-post");
-const BlogPost = require("./blog-post.model");
+const routesHandlers = require("./blog-post.routes-handlers");
+const blogPostDomain = require("./blog-post.domain");
 
 module.exports = {
-    BlogPost,
-    blogPostCtrl
+    routesHandlers,
+    blogPostDomain
 };

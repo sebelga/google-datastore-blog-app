@@ -1,14 +1,18 @@
-'use strict';
+"use strict";
 
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
+const addRoutes = require("./routes");
 
 const app = express();
-app.set('views', __dirname);
-app.set('view engine', 'pug');
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.set("views", __dirname);
+app.set("view engine", "pug");
+app.use(
+    "/public",
+    express.static(path.join(__dirname, "public"), { maxAge: '1 year' })
+);
 
 // Add Routes
-require('./routes')(app);
+addRoutes(app);
 
 module.exports = app;

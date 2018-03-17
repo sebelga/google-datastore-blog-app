@@ -1,33 +1,32 @@
 "use strict";
 
-const router = require("express").Router();
 const bodyParser = require("body-parser");
+const express = require("express");
+const { routesHandlers: routesHandlersBlogPost } = require("./blog-post");
+const { routesHandlers: routesHandlersComment } = require("./comment");
 
-const config = require("../../config");
-const images = require("../../helpers/images");
-const { blogPostCtrl } = require("./blog-post");
-const { commentCtrl } = require("./comment");
+const routerWeb = express.Router();
+const routerApi = express.Router();
 
-// Blog Posts ROUTES
-// ------------------------
-router.get("/blog", blogPostCtrl.list);
-router.get("/blog/:id", blogPostCtrl.get);
+// --------------------------------------------------
+// Web
+// --------------------------------------------------
+routerWeb.get("/", routesHandlersBlogPost.index);
+routerWeb.get("/:id", routesHandlersBlogPost.detail);
 
-// API
-// ------------------------
-const { apiBase } = config.common;
-
-//-- BlogPosts
-router.patch(
-    `${apiBase}/blog/:id`,
-    [bodyParser.json(), images.multer.single("image"), images.uploadToGCS],
-    blogPostCtrl.updatePost
+// --------------------------------------------------
+// REST API
+// --------------------------------------------------
+routerApi.delete("/blog/:id", routesHandlersBlogPost.deletePost);
+routerApi.get("/blog/:id/comments", routesHandlersComment.getComments);
+routerApi.post(
+    "/blog/:id/comments",
+    bodyParser.json(),
+    routesHandlersComment.createComment
 );
-router.delete(`${apiBase}/blog/:id`, blogPostCtrl.deletePost);
+routerApi.delete("/comments/:id", routesHandlersComment.deleteComment);
 
-//-- Comments
-router.get(`${apiBase}/blog/:id/comments`, commentCtrl.list);
-router.post(`${apiBase}/blog/:id/comments`, bodyParser.json(), commentCtrl.create);
-router.delete(`${apiBase}/comments/:id`, commentCtrl.deleteComment);
-
-module.exports = router;
+module.exports = {
+    web: routerWeb,
+    api: routerApi
+};

@@ -1,15 +1,15 @@
+"use strict";
 
-'use strict';
+const Storage = require("@google-cloud/storage");
+const async = require("async");
+const arrify = require("arrify");
+const logger = require("winston");
+const multer = require("multer");
 
-const Storage = require('@google-cloud/storage');
-const async = require('async');
-const arrify = require('arrify');
-const logger = require('winston');
-
-const config = require('../config');
+const config = require("../config");
 
 const storage = new Storage({
-    projectId: config.gcloud.projectId,
+    projectId: config.gcloud.projectId
 });
 
 /**
@@ -18,13 +18,24 @@ const storage = new Storage({
  * conflicting with existing objects.
  * This makes it straightforward to upload to Cloud Storage.
  */
-const multer = require('multer')({
-    inMemory: true,
-    fileSize: 5 * 1024 * 1024, // no larger than 5mb
-    rename(fieldname, filename) {
-        // generate a unique filename
-        return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
+const memoryStorage = multer.memoryStorage();
+const upload = multer({
+    storage: memoryStorage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // no larger than 5mb
     },
+    fileFilter: (req, file, cb) => {
+        // Validate image type
+        if (["image/jpeg", "image/png"].indexOf(file.mimetype) < 0) {
+            const err = new Error(
+                `File type not allowed: ${req.file.mimetype}`
+            );
+            err.code = "ERR_FILE_MIMETYPE";
+            err.status = 400;
+            return cb(err);
+        }
+        return cb(null, true);
+    }
 });
 
 const bucketId = config.gcloud.storage.bucket;
@@ -36,7 +47,8 @@ const bucket = storage.bucket(bucketId);
  *
  * @param {string} objectName -- Storage object to retrieve
  */
-const getPublicUrl = objectName => `https://storage.googleapis.com/${bucketId}/${objectName}`;
+const getPublicUrl = objectName =>
+    `https://storage.googleapis.com/${bucketId}/${objectName}`;
 
 /**
  * Express middleware that will automatically upload to Cloud Storage
@@ -48,71 +60,48 @@ const uploadToGCS = (req, res, next) => {
         return next();
     }
 
-    const imageOptions = {
-        mimeTypes: ['image/jpeg', 'image/png'],
-        maxSize: 10000,
-    };
+    const gcsname =
+        Date.now() + req.file.originalname.replace(/\W+/g, "-").toLowerCase();
+    const file = bucket.file(gcsname);
 
-    // Validate image type
-    if (imageOptions.mimeTypes.indexOf(req.file.mimetype) < 0) {
-        return res.status(400).send(`File type not allowed: ${req.file.mimetype}`);
-    }
+    const stream = file.createWriteStream({
+        metadata: {
+            contentType: req.file.mimetype,
+            cacheControl: "public, max-age=31536000" // 1 year of cache
+        },
+        validation: "crc32c"
+    });
 
-    // Validate image size
-    if (req.file.size / 1024 > imageOptions.maxSize) {
-        return res.status(400).send(`File size too big: ${req.file.size}`);
-    }
+    stream.on("error", err => {
+        req.file.cloudStorageError = err;
+        next(err);
+    });
 
-    const fileOptions = {
-        mimetype: req.file.mimetype,
-    };
+    stream.on("finish", () => {
+        req.file.cloudStorageObject = gcsname;
+        req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
 
-    return uploadFile(next);
+        next();
+    });
 
-    // ----------
-
-    function uploadFile(cb) {
-        const gcsname = Date.now() + req.file.originalname;
-        const file = bucket.file(gcsname);
-
-        const stream = file.createWriteStream({
-            metadata: {
-                contentType: fileOptions.mimetype,
-            },
-            validation: 'crc32c',
-        });
-
-        stream.on('error', (err) => {
-            req.file.cloudStorageError = err;
-            cb(err);
-        });
-
-        stream.on('finish', () => {
-            req.file.cloudStorageObject = gcsname;
-            req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
-
-            cb();
-        });
-
-        stream.end(req.file.buffer);
-    }
+    stream.end(req.file.buffer);
 };
 
 /**
  * Delte one or many objects from the Google Storage Bucket
  * @param {string | array} _storageObjects -- Storage objects to delete
  */
-const deleteFromGCS = (_storageObjects) => {
-    const storageObjects = arrify(_storageObjects);
-    const fns = storageObjects.map(o => processDelete(o));
-
+const deleteFromGCS = _storageObjects => {
     return new Promise((resolve, reject) => {
-        async.parallel(fns, (err) => {
+        const storageObjects = arrify(_storageObjects);
+        const fns = storageObjects.map(o => processDelete(o));
+
+        async.parallel(fns, err => {
             if (err) {
                 return reject(err);
             }
 
-            logger.info('All object deleted successfully from Google Storage');
+            logger.info("All object deleted successfully from Google Storage");
 
             return resolve();
         });
@@ -121,7 +110,7 @@ const deleteFromGCS = (_storageObjects) => {
     // ----------
 
     function processDelete(fileName) {
-        return (cb) => {
+        return cb => {
             logger.info(`Deleting GCS file ${fileName}`);
 
             const file = bucket.file(fileName);
@@ -134,11 +123,11 @@ const deleteFromGCS = (_storageObjects) => {
             });
         };
     }
-}
+};
 
 module.exports = {
     getPublicUrl,
     uploadToGCS,
     deleteFromGCS,
-    multer,
+    upload
 };

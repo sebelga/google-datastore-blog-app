@@ -5,6 +5,7 @@ block title
 
 block head
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css")
 
 block content
     section(class="hero is-dark")
@@ -23,30 +24,30 @@ block content
                         .column(class="is-one-quarter is-one-third-desktop")
                             p(class="title is-size-5") Feature Image
 
-                            if blogPost.posterUri
+                            if post && post.posterUri
                                 figure(class="image")
-                                    img(src=blogPost.posterUri)
+                                    img(src=post.posterUri)
                             .field
                                 div(class="file has-name is-info")
                                     label.file-label
                                         input(class="file-input", type="file", name="image")
                                         span.file-cta
                                             span.file-icon
-                                                i(class="fas fa-upload")
+                                                i(class="fa fa-upload")
                                             span.file-label Choose a file...
                                         span(class="file-name is-invisible")
 
-                            input(type="hidden", name="posterUri" value=blogPost.posterUri)
+                            input(type="hidden", name="posterUri" value=post && post.posterUri)
                         .column
                             section.content
                                 .field
                                     label.label Post title
                                     .control
-                                        input(class="input", type="text", placeholder="Title..." name="title", value=blogPost.title)
+                                        input(class="input", type="text", placeholder="Title..." name="title", value=post && post.title)
                                 .field
                                     .control
                                         textarea(placeholder="Post text...", rows="8", name="content")
-                                            = blogPost.content
+                                            = post && post.content
 
                             section.content
                                 div(class="field is-grouped is-grouped-right")

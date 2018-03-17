@@ -1,9 +1,9 @@
 "use strict";
 
-const commentCtrl = require("./comment");
-const Comment = require("./comment.model");
+const routesHandlers = require("./comment.routes-handlers");
+const commentDomain = require("./comment.domain");
 
 module.exports = {
-    commentCtrl,
-    Comment
+    routesHandlers,
+    commentDomain
 };
