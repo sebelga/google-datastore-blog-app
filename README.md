@@ -121,7 +121,7 @@ The easiest way to do it is to:
 ### Start the Application
 
 ```js
-node ./server/server.js
+npm start
 ```
 
 ### Deploy the application
