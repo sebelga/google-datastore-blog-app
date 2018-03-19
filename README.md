@@ -20,14 +20,8 @@ A window browser should open, allowing you to authenticate the Google Cloud SDK.
 
 ### Google Cloud project
 
-You need to have a project in the Google Cloud Platform to deploy the application.  
-[Go to App Engine](https://console.cloud.google.com/projectselector/appengine/create) and create a new project and if you don't have one.
-
-<!-- Once you have a project, we are going to tell glcoud to use it with the following command
-
-```sh
-gcloud config set project <YOUR-PROJECT-ID>
-``` -->
+Before starting, create a projet in the Google Cloud Platform to deploy the application.  
+[Go to App Engine](https://console.cloud.google.com/projectselector/appengine/create) and create a new project if you don't have one.
 
 You then have to make sure to:
 
@@ -37,11 +31,11 @@ You then have to make sure to:
 2. Enable the Google Cloud Datastore API  
 [Enable the API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com)
 
-3. [Set up authentication](https://cloud.google.com/docs/authentication/getting-started) with a service account so you can access the API from your local workstation.
+<!-- 3. [Set up authentication](https://cloud.google.com/docs/authentication/getting-started) with a service account so you can access the API from your local workstation.
 
-From the command line it is a 3 step process:
+From the command line it is a 3 step process: -->
 
-```sh
+<!-- ```sh
 
 # 1. Create service account
 # <NAME> could be for example "devs"
@@ -52,67 +46,97 @@ gcloud projects add-iam-policy-binding <YOUR-PROJECT-ID> --member "serviceAccoun
 
 # 3. Generate key
 gcloud iam service-accounts keys create service-account.json --iam-account <NAM>@<YOUR-PROJECT-ID>.iam.gserviceaccount.com
-```
+``` -->
 
-You can check the service account key generated for your project [here](https://console.cloud.google.com/projectselector/iam-admin/serviceaccounts).
+<!-- You can check the service account key generated for your project [here](https://console.cloud.google.com/projectselector/iam-admin/serviceaccounts). -->
 
-### npm dependencies
+### NPM dependencies
 
 Install the application dependencies with
 
 ```js
-npm i
-// or
-yarn
+npm install
 ```
 
-### Before you begin
-Follow the 4 steps 
+### Environment variables (.env file)
 
-### environment variables (.env file)
-
-The application needs a few environment variables to be set. Create a file in the "/server" folder and name it ".env" with the following content
+The application needs a few environment variables to be defined. Create a file at the _root_ of the "./server" folder and name it ".env". Add the following variable and change any values. This file **sould not** be added to source control. It is only used during development.
 
 ```txt
+# -------------------
 # Server
-# ---------
-# Port to run the server on
+# -------------------
+## Server port (optional. Default 8080)
 PORT=3000
 
-# Google
-# ---------
-# Your google cloud project
+# -------------------
+# Google Cloud
+# -------------------
+# -- Google Cloud project
 GOOGLE_CLOUD_PROJECT=<your-project-id>
 
-# Datastore namespace for the entities
-DATASTORE_NAMESPACE=default
+## -- Datastore namespace for the entities
+## Namespace for the Datastore entities (optional)
+## During development you might want to use "dev" namespace for ex.
+DATASTORE_NAMESPACE=<optional-namespace>
 
-# Google Storage bucket
-GCLOUD_BUCKET=<your-bucket-id>
+## Local Datastore Emulator Host (optional)
+## You can develop against the emulator by uncommenting this line
+# DATASTORE_EMULATOR_HOST=localhost:8081
 
+# -- Google Storage
+## This is where the pictures will be uploaded
+GCLOUD_BUCKET=<google-bucket-id>
+
+# -------------------
 # Misc
-# ---------
-# value must be one of 'error', 'warn', 'info', 'verbose', 'debug', 'silly'
-LOGGER_LEVEL=info
-LOGGER_ENABLED=true
+# -------------------
+# -- Logger
+## Enable Logger (optional. Default: "true")
+# LOGGER_ENABLED=true
+
+## Logger level (optional. Default: "info")
+## Allowed values: 'error', 'warn', 'info', 'verbose', 'debug', 'silly'
+# LOGGER_LEVEL=info
 ```
 
 
 ### Update the Datastore indexes
 
+Before being able to navigate the app and execute the queries, you need first to **update the Datastore indexes** with the command below. For more information about indexes, [read the documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-datastore-indexes-with-index-yaml).
+
 ```sh
 gcloud datastore create-indexes --project=<YOUR-PROJECT-ID> ./index.yaml
 ```
 
-### DataLoader
+### Google Cloud Storage
+You need to make the content of your bucket **public** so the images you upload are accesible in the browser.  
 
-DataLoader is a generic utiliy created by Facebook. It optimizes "get" fetching of entity by grouping "get" calls within
-a single frame of execution and also by caching all the entity.get() result inside a same request.
+The easiest way to do it is to:
+* select you bucket.
+* on the menu on the right select `Edit bucket permissions`.
+* add the `allUsers` user
+* set the role to `Storage Object Viewer`.
 
-More info about dataloader: https://github.com/facebook/dataloader
+### Start the Application
 
-gstore has a helper function `createDataLoader()` to generate a DataLoader instance that works with the batch operation (several get key at once) on Google Datastore.  
-From the documentation of the Datastore:
-"Cloud Datastore supports batch operations which allow it to operate on multiple objects in a single Cloud Datastore call.  
+```js
+node ./server/server.js
+```
 
-Such batch calls are faster than making separate calls for each individual entity because they incur the overhead for only one service call. If multiple entity groups are involved, the work for all the groups is performed in parallel on the server side."
+### Deploy the application
+Before deploying the application you have to set your bucket id in the GCLOUD_BUCKET environment variable inside the `app.yaml` file.  
+
+You can now run the following command
+
+```sh
+gcloud app deploy --project <your-project-id> --version <app-version> --verbosity=info
+```
+
+### Work with the client code
+This demo application is mainly to show how to build an application in Node.js with gstore-node. The javascript of the client part has been reduced to the strict minimum for the purpose of the demo and "get the job done".
+You can run a watcher for the client js files with the following command:
+
+```js
+npm run watch
+```

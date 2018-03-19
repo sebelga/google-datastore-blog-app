@@ -12,7 +12,7 @@ resources:
   disk_size_gb: 10
 
 env_variables:
-  GCLOUD_BUCKET: blog-nodejs
+  GCLOUD_BUCKET: <google-bucket-id>
   LOGGER_LEVEL: info
   LOGGER_ENABLED: 'true'
 

@@ -3,6 +3,8 @@
 const path = require("path");
 const log = require("winston");
 
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 if (process.env.NODE_ENV === "development") {
     /**
      * Read environement variables from .env file
