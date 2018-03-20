@@ -2,6 +2,7 @@
 
 const path = require("path");
 const gstore = require("gstore-node")();
+const logger = require("winston");
 
 const blogPostDomain = require("./blog-post.domain");
 const { handleError, pageNotFound } = require("../../exceptions/routes");
@@ -69,8 +70,18 @@ const deletePost = async (req, res) => {
     return res.json(result);
 };
 
+/**
+ * Clean up BlogPost created by users of the Live Demo
+ * Executed every 24h by a Cron Job
+ */
+const cleanUp = async (req, res) => {
+    logger.info("Cleaning up BlogPost...");
+    res.send("ok");
+};
+
 module.exports = {
     index,
     detail,
-    deletePost
+    deletePost,
+    cleanUp
 };
