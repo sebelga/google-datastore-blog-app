@@ -49,25 +49,6 @@ You then have to make sure to:
 2. Enable the Google Cloud Datastore API  
 [Enable the API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com)
 
-<!-- 3. [Set up authentication](https://cloud.google.com/docs/authentication/getting-started) with a service account so you can access the API from your local workstation.
-
-From the command line it is a 3 step process: -->
-
-<!-- ```sh
-
-# 1. Create service account
-# <NAME> could be for example "devs"
-gcloud iam service-accounts create <NAME>
-
-# 2. Add permission to it
-gcloud projects add-iam-policy-binding <YOUR-PROJECT-ID> --member "serviceAccount:<NAME>@<YOUR-PROJECT-ID>.iam.gserviceaccount.com" --role "roles/editor"
-
-# 3. Generate key
-gcloud iam service-accounts keys create service-account.json --iam-account <NAM>@<YOUR-PROJECT-ID>.iam.gserviceaccount.com
-``` -->
-
-<!-- You can check the service account key generated for your project [here](https://console.cloud.google.com/projectselector/iam-admin/serviceaccounts). -->
-
 ### NPM dependencies
 
 Install the application dependencies with
@@ -78,7 +59,7 @@ npm install
 
 ### Environment variables (.env file)
 
-The application needs a few environment variables to be defined. Create a file at the _root_ of the "./server" folder and name it ".env". Add the following variable and change any values. This file **sould not** be added to source control. It is only used during development.
+The application needs a few environment variables to be defined. Create a file at the _root_ of the "./server" folder and name it ".env". Add the following variable and update their values. This file **sould not** be added to source control. It is only used during development.
 
 ```txt
 # -------------------
@@ -96,7 +77,7 @@ GOOGLE_CLOUD_PROJECT=<your-project-id>
 ## -- Datastore namespace for the entities
 ## Namespace for the Datastore entities (optional)
 ## During development you might want to use "dev" namespace for ex.
-DATASTORE_NAMESPACE=<optional-namespace>
+# DATASTORE_NAMESPACE=<optional-namespace>
 
 ## Local Datastore Emulator Host (optional)
 ## You can develop against the emulator by uncommenting this line
@@ -122,18 +103,18 @@ GCLOUD_BUCKET=<google-bucket-id>
 
 ### Update the Datastore indexes
 
-Before being able to navigate the app and execute the queries, you need first to **update the Datastore indexes** with the command below. For more information about indexes, [read the documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-datastore-indexes-with-index-yaml).
+Before being able to navigate the app and execute its queries, you need first to **update the Datastore indexes** with the command below. For more information about indexes, [read the documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-datastore-indexes-with-index-yaml).
 
 ```sh
 gcloud datastore create-indexes --project=<YOUR-PROJECT-ID> ./index.yaml
 ```
 
 ### Google Cloud Storage
-You need to make the content of your bucket **public** so the images you upload are accesible in the browser.  
+You need to make the content of your bucket **public** so the images you upload are accesible to the browser.  
 
 The easiest way to do it is to:
 * go to [Google Storage](https://console.cloud.google.com/storage/) and select your bucket
-* on the menu on the right select `Edit bucket permissions`
+* on the menu on the right select `Edit bucket permissions`
 * add the `allUsers` user
 * set the role to `Storage Object Viewer`
 
@@ -144,9 +125,9 @@ npm start
 ```
 
 ### Deploy the application
-Before deploying the application you have to set your bucket id in the `GCLOUD_BUCKET` environment variable inside the `app.yaml` file.  
+Before deploying the application you need to first update the `GCLOUD_BUCKET` environment variable inside the `app.yaml` file and put your Google Storage bucket id.  
 
-You can now run the following command
+You can now run the following command:
 
 ```sh
 # This command will execute the "prebuild" npm script to make sure the latest client
@@ -165,4 +146,12 @@ If you want to make some modifications you can run a watcher for the client Java
 npm run watch
 ```
 
-This will bundle the .js and .css file, save them in the public/dist folder of the server and update their path in the /server/views/layout.pug template.
+This will bundle the .js and .css file, save them in the `public/dist` folder of the server and update their path in the `/server/views/layout.pug` template.
+
+## Meta
+
+Sébastien Loix – [@sebloix](https://twitter.com/sebloix)
+
+Distributed under the MIT license. See `LICENSE` for more information.
+
+[https://github.com/sebelga](https://github.com/sebelga/)  
