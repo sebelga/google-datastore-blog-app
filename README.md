@@ -1,5 +1,23 @@
 # Google Datastore Blog Application
-A Node.js demo application built with [`@google-cloud/datastore`](https://github.com/googleapis/nodejs-datastore) & [`gstore-node`](https://github.com/sebelga/gstore-node) running on Google App Engine.
+> A Node.js demo application built with [`@google-cloud/datastore`](https://github.com/googleapis/nodejs-datastore) & [`gstore-node`](https://github.com/sebelga/gstore-node) running on Google App Engine.
+
+When building any client/server application we know that we can "_never trust the client_".  The server is the source of truth that should enforce the consistency rules.  
+
+The Google Datastore is an amazing NoSQL database that lets us save in it anything we want very easily.  In some cases, that's just what we need and that's great. In some other cases, like in a blog application, we might want to make sure that our entities are consistent and verify the data sent from our users.
+
+#### gstore-node
+
+This is where [gstore-node](https://github.com/sebelga/gstore-node) comes into play. It lets you define **Schemas** for your entities that will validate the data coming from the client _before_ saving it into the Datastore. It has also other nice features like **middleware**, **virtual properties** or a **cache layer** to speed up the entities fetching.  
+
+Hopefully this small application will demonstrate how much gstore-node can help you building complex applications on the Datastore.
+
+#### Highlights
+
+* Validate entity data (write a _comment_ to a post to see it in action)
+* Middleware (deleting a post will delete its feature image + all its comments)
+* Cache (you should see a faster load page the second time you access a post)
+* Upload/delete image to the Google Storage
+
 
 ## Getting started
 
@@ -7,7 +25,7 @@ A Node.js demo application built with [`@google-cloud/datastore`](https://github
 
 Make sure before starting that you have the necesary dependencies installed on your system.
 
-* node (8 +) + npm
+* node (8 +) & npm
 * Google SDK (you can [download it here](https://cloud.google.com/sdk/downloads)) with the `gcloud` cli on your $PATH
 
 Once you have installed the Google SDK, make sure you are **authenticated**. In your terminal run
@@ -85,7 +103,8 @@ DATASTORE_NAMESPACE=<optional-namespace>
 # DATASTORE_EMULATOR_HOST=localhost:8081
 
 # -- Google Storage
-## This is where the pictures will be uploaded
+## This is where the images will be uploaded
+## Make sure you made it public for allUsers (see below)
 GCLOUD_BUCKET=<google-bucket-id>
 
 # -------------------
@@ -113,10 +132,10 @@ gcloud datastore create-indexes --project=<YOUR-PROJECT-ID> ./index.yaml
 You need to make the content of your bucket **public** so the images you upload are accesible in the browser.  
 
 The easiest way to do it is to:
-* select you bucket.
-* on the menu on the right select `Edit bucket permissions`.
+* go to [Google Storage](https://console.cloud.google.com/storage/) and select your bucket
+* on the menu on the right select `Edit bucket permissions`
 * add the `allUsers` user
-* set the role to `Storage Object Viewer`.
+* set the role to `Storage Object Viewer`
 
 ### Start the Application
 
@@ -125,18 +144,25 @@ npm start
 ```
 
 ### Deploy the application
-Before deploying the application you have to set your bucket id in the GCLOUD_BUCKET environment variable inside the `app.yaml` file.  
+Before deploying the application you have to set your bucket id in the `GCLOUD_BUCKET` environment variable inside the `app.yaml` file.  
 
 You can now run the following command
 
 ```sh
+# This command will execute the "prebuild" npm script to make sure the latest client
+# Javascript and Sass code is bundled in our /server/public folder
+GOOGLE_CLOUD_PROJECT=<your-project-id> GOOGLE_APP_VERSION=<your-app-version> npm run deploy
+
+# If you didn't make any modification to the client code then you can just run this
 gcloud app deploy --project <your-project-id> --version <app-version> --verbosity=info
 ```
 
 ### Work with the client code
-This demo application is mainly to show how to build an application in Node.js with gstore-node. The javascript of the client part has been reduced to the strict minimum for the purpose of the demo and "get the job done".
-You can run a watcher for the client js files with the following command:
+This demo application is mainly to showcase how to build an application in Node.js with gstore-node. The javascript of the client part has been reduced to the strict minimum for the purpose of the demo and to "get the job done".
+If you want to make some modifications you can run a watcher for the client Javascript and Sass files with the following command:
 
 ```js
 npm run watch
 ```
+
+This will bundle the .js and .css file, save them in the public/dist folder of the server and update their path in the /server/views/layout.pug template.
