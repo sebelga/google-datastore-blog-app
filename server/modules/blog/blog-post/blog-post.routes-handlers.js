@@ -87,7 +87,9 @@ const cleanUp = async (req, res) => {
         res.status(400).send(err);
     }
 
-    res.send(result);
+    logger.info(result);
+
+    res.send("ok");
 };
 
 module.exports = {

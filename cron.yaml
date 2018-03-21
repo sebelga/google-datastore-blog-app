@@ -1,0 +1,4 @@
+cron:
+  - description: "daily cleaning BlogPosts"
+    url: /blog/clean-up
+    schedule: every 24 hours
