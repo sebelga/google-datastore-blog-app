@@ -1,8 +1,10 @@
 "use strict";
 
 const marked = require("marked");
+const logger = require("winston");
 
 const DB = require("./blog-post.db");
+const { model: Comment } = require("../comment/comment.db");
 
 /**
  * For Demo Application only. Some BlogPost are protected for editing/deletion
@@ -113,10 +115,8 @@ const cleanUp = async () => {
     }
 
     const total = ids.length;
-    if (total === 0) {
-        return "No entity to clean up.";
-    }
 
+    // Delete BlogPosts (executing all the pre and post hooks)
     let result;
     try {
         result = await Promise.all(
@@ -126,6 +126,39 @@ const cleanUp = async () => {
         throw e;
     }
 
+    // Delete Comments of protected BlogPosts
+    let comments;
+    let commentsIds;
+    try {
+        comments = await Promise.all(
+            protectedBlogPosts.map(id =>
+                Comment.query()
+                    .filter("blogPost", id)
+                    .select("__key__")
+                    .run()
+            )
+        );
+
+        commentsIds = comments.reduce((acc, blogComments) => {
+            blogComments.entities.forEach(e => acc.push(+e.id));
+            return acc;
+        }, []);
+
+        if (commentsIds.length > 0) {
+            logger.info(
+                `Deleting ${
+                    commentsIds.length
+                } comment(s) on protected BlogPost`
+            );
+            await Comment.delete(commentsIds);
+        }
+    } catch (e) {
+        throw e;
+    }
+
+    if (total === 0) {
+        return "No BlogPost to clean up.";
+    }
     return `${total} BlogPosts cleaned up.`;
 };
 

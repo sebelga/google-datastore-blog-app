@@ -20,8 +20,8 @@ Hopefully this small application will demonstrate how much gstore-node can help 
 
 ## Live demo
 
-You can see a live demo of this application at the foolowing url:   [https://blog-nodejs.appspot.com/blog](https://blog-nodejs.appspot.com/blog).  
-Play with it as much as you want but don't feel sad if your post disapears the next day as a cron job does some clean up every 24h :smile:.
+You can see a live demo of this application at the foolowing url:   [https://blog-nodejs.appspot.com](https://blog-nodejs.appspot.com).  
+Play with it as much as you want but don't feel sad if your post disappears the next day as a cron job does a clean up every 24h :smile:.
 
 ## Getting started
 

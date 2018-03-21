@@ -68,5 +68,6 @@ module.exports = {
         const comment = new Comment(entityData);
         return comment.save();
     },
-    deleteComment: id => Comment.delete(id)
+    deleteComment: id => Comment.delete(id),
+    model: Comment
 };
