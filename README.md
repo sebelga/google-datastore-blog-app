@@ -18,6 +18,10 @@ Hopefully this small application will demonstrate how much gstore-node can help 
 * Cache (you should see a faster load page the second time you access a post)
 * Upload/delete image to the Google Storage
 
+## Live demo
+
+You can see a live demo of this application at the foolowing url:   [https://blog-nodejs.appspot.com/blog](https://blog-nodejs.appspot.com/blog).  
+Play with it as much as you want but don't feel sad if your post disapears the next day as a cron job does some clean up every 24h :smile:.
 
 ## Getting started
 

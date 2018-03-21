@@ -2,12 +2,13 @@ runtime: nodejs
 env: flex
 
 # The settings below are to reduce costs during testing and are not appropriate
-# for production use. For more information, see:
+# for production use. Alhtough tests of 1000 concurrent didn't show any sign of performance hit.
+# For more information, see:
 # https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml
 manual_scaling:
   instances: 1
 resources:
-  cpu: 1
+  cpu: 0.5
   memory_gb: 0.5
   disk_size_gb: 10
 
