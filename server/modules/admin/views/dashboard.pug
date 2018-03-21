@@ -44,9 +44,11 @@ block content
                                             a(href="/blog/" + item.id) view
                                         .level-item
                                             a(href="/admin/edit-post/" + item.id) edit
-                                        .level-item
+                                        div(class=protectedBlogPosts.indexOf(item.id) >= 0 ? "is-hidden" : "level-item")
                                             a(
                                                 href="/admin/edit-post/" + item.id,
                                                 class="delete-post",
                                                 data-post-id=item.id) delete
                                                     i(class="fa fa-spinner fa-pulse is-hidden")
+
+

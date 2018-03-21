@@ -8,6 +8,8 @@ const blogPostDomain = require("./blog-post.domain");
 const { handleError, pageNotFound } = require("../../exceptions/routes");
 const templates = path.join(__dirname, "..", "views");
 
+const { protectedBlogPosts } = blogPostDomain;
+
 const index = async (req, res) => {
     const template = path.join(templates, "index");
     let posts;
@@ -57,10 +59,11 @@ const detail = async (req, res) => {
 
 const deletePost = async (req, res) => {
     let result;
+
     try {
         result = await blogPostDomain.deletePost(req.params.id);
     } catch (err) {
-        return res.status(401).send({ error: err.message });
+        return res.status(err.status || 401).end(err.message);
     }
 
     if (!result.success) {
@@ -76,7 +79,8 @@ const deletePost = async (req, res) => {
  */
 const cleanUp = async (req, res) => {
     logger.info("Cleaning up BlogPost...");
-    res.send("ok");
+
+    res.send(protectedBlogPosts);
 };
 
 module.exports = {

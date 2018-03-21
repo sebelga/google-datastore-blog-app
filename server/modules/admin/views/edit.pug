@@ -1,7 +1,7 @@
 extends ../../../views/layout.pug
 
 block title
-    title= action === 'create' ? 'New Post' : 'Edit Post'
+    title= post ? 'Edit Post' : 'New Post'
 
 block head
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css")
@@ -11,12 +11,12 @@ block content
     section(class="hero is-dark")
         .hero-body
             div(class="container has-text-centered")
-                p.title= action === 'create' ? 'New Post' : 'Edit Post'
+                p.title= post ? 'Edit Post' : 'New Post'
     .container
         .content
             section.section
                 if error
-                    .error
+                    div(class="notification is-danger")
                         p= error.message
 
                 form(method="post", enctype="multipart/form-data")
@@ -52,4 +52,6 @@ block content
                             section.content
                                 div(class="field is-grouped is-grouped-right")
                                     p.control
-                                        button(type="submit", class="button is-primary button-submit") #{action === 'create' ? 'Create' : 'Update'}
+                                        button(type="submit", class="button is-primary button-submit" disabled=post && protectedBlogPosts.indexOf(post.id) >= 0) #{post ? 'Update' : 'Create'}
+                                if post && protectedBlogPosts.indexOf(post.id) >= 0
+                                    p(class="has-text-right is-size-7") Update disabled for this blog post.

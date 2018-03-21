@@ -5,6 +5,15 @@ const marked = require("marked");
 const DB = require("./blog-post.db");
 
 /**
+ * For Demo Application only. Some BlogPost are protected for editing/deletion
+ */
+const protectedBlogPosts =
+    (
+        process.env.PROTECTED_BLOGPOSTS &&
+        process.env.PROTECTED_BLOGPOSTS.split(",")
+    ).map(id => +id.trim()) || [];
+
+/**
  * Get a list of BlogPosts
  * @param {*} options Object of options ("start" and "limit" parameters)
  */
@@ -55,6 +64,14 @@ const updatePost = (id, data, dataloader, replace = false) => {
     if (isNaN(id)) {
         throw new Error("BlogPost id must be an integer");
     }
+
+    // This check if *only* for the Live deployed application to prevent deleting some BlogPost
+    if (protectedBlogPosts.indexOf(id) >= 0) {
+        const err = new Error("This BlogPost can not be edited");
+        err.status = 403;
+        throw err;
+    }
+
     return DB.updatePost(id, data, dataloader, replace);
 };
 
@@ -64,6 +81,14 @@ const updatePost = (id, data, dataloader, replace = false) => {
  */
 const deletePost = id => {
     id = +id;
+
+    // This check if *only* for the Live deployed application to prevent deleting some BlogPost
+    if (protectedBlogPosts.indexOf(id) >= 0) {
+        const err = new Error("This BlogPost can not be deleted");
+        err.status = 403;
+        throw err;
+    }
+
     return DB.deletePost(id);
 };
 
@@ -72,5 +97,6 @@ module.exports = {
     getPost,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    protectedBlogPosts
 };

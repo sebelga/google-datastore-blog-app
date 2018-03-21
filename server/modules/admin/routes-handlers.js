@@ -8,6 +8,8 @@ const { blogPostDomain } = require("../blog");
 const { pageNotFound } = require("../exceptions/routes");
 const templates = path.join(__dirname, "views");
 
+const { protectedBlogPosts } = blogPostDomain;
+
 const dashboard = async (req, res) => {
     const template = path.join(templates, "dashboard");
 
@@ -25,7 +27,8 @@ const dashboard = async (req, res) => {
 
     res.render(template, {
         posts: posts.entities,
-        pageId: "admin-index"
+        pageId: "admin-index",
+        protectedBlogPosts: protectedBlogPosts.join(",")
     });
 };
 
@@ -41,7 +44,6 @@ const createPost = async (req, res) => {
         } catch (err) {
             return res.render(template, {
                 blogPost: entityData,
-                action: "create",
                 error: is.object(err.message) ? err.message : err
             });
         }
@@ -50,13 +52,13 @@ const createPost = async (req, res) => {
     }
 
     return res.render(template, {
-        action: "create",
         pageId: "blogpost-edit"
     });
 };
 
 const editPost = async (req, res) => {
     const template = path.join(templates, "edit");
+    const pageId = "blogpost-edit";
     const dataloader = gstore.createDataLoader();
     const { id } = req.params;
 
@@ -67,9 +69,10 @@ const editPost = async (req, res) => {
             await blogPostDomain.updatePost(id, entityData, dataloader, true);
         } catch (err) {
             return res.render(template, {
-                blogPost: entityData,
-                action: "update",
-                error: is.object(err.message) ? err.message : err
+                post: Object.assign({}, entityData, { id }),
+                pageId,
+                error: is.object(err.message) ? err.message : err,
+                protectedBlogPosts: protectedBlogPosts.join(",")
             });
         }
 
@@ -81,8 +84,10 @@ const editPost = async (req, res) => {
         post = await blogPostDomain.getPost(id, dataloader);
     } catch (err) {
         return res.render(template, {
-            action: "update",
-            error: is.object(err.message) ? err.message : err
+            post: {},
+            pageId,
+            error: is.object(err.message) ? err.message : err,
+            protectedBlogPosts: protectedBlogPosts.join(",")
         });
     }
 
@@ -92,8 +97,8 @@ const editPost = async (req, res) => {
 
     res.render(template, {
         post,
-        action: "update",
-        pageId: "blogpost-edit"
+        pageId,
+        protectedBlogPosts: protectedBlogPosts.join(",")
     });
 };
 
