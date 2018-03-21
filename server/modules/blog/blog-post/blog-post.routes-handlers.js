@@ -80,7 +80,14 @@ const deletePost = async (req, res) => {
 const cleanUp = async (req, res) => {
     logger.info("Cleaning up BlogPost...");
 
-    res.send(protectedBlogPosts);
+    let result;
+    try {
+        result = await blogPostDomain.cleanUp();
+    } catch (err) {
+        res.status(400).send(err);
+    }
+
+    res.send(result);
 };
 
 module.exports = {

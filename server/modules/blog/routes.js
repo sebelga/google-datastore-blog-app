@@ -21,9 +21,17 @@ routerWeb.get(
     (req, res, next) => {
         // Validate it is the Cron service
         logger.info("About to clean up BlogPosts...");
-        logger.info(`X-Appengine-Cron: ${req.headers["X-Appengine-Cron"]}`);
-        logger.info(`ip Cron: ${req.ip}`);
-        if (!req.headers["X-Appengine-Cron"] || req.ip !== "10.0.0.1") {
+
+        let ipAllowed = false;
+        if (req.headers["x-forwarded-for"]) {
+            ipAllowed = req.headers["x-forwarded-for"].indexOf("10.0.0.1") >= 0;
+        }
+
+        logger.info(`x-appengine-cron: ${req.headers["x-appengine-cron"]}`);
+        logger.info(`x-forwarded-for: ${req.headers["x-forwarded-for"]}`);
+        logger.info(`ip allowed: ${ipAllowed}`);
+
+        if (!req.headers["x-appengine-cron"] || !ipAllowed) {
             logger.warn(`The host ${req.ip} tried to clean up BlogPost`);
             return res.status(403).send("Not allowed");
         }

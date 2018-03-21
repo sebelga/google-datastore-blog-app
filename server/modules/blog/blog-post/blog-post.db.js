@@ -72,5 +72,6 @@ module.exports = {
     },
     updatePost: (id, data, dataloader, replace) =>
         BlogPost.update(id, data, parent, null, null, { dataloader, replace }),
-    deletePost: id => BlogPost.delete(id, parent)
+    deletePost: id => BlogPost.delete(id, parent),
+    model: BlogPost
 };

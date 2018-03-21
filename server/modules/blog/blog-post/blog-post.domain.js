@@ -92,11 +92,49 @@ const deletePost = id => {
     return DB.deletePost(id);
 };
 
+/**
+ * This is only used for the Live demo application
+ * to clean up generated BlogPost + comments and images every 24h
+ */
+const cleanUp = async () => {
+    const BlogPost = DB.model;
+
+    let posts;
+    let ids;
+    try {
+        posts = await BlogPost.query()
+            .select("__key__")
+            .run({ format: "JSON" });
+        ids = posts.entities
+            .map(p => +p.id)
+            .filter(id => protectedBlogPosts.indexOf(id) < 0);
+    } catch (e) {
+        throw e;
+    }
+
+    const total = ids.length;
+    if (total === 0) {
+        return "No entity to clean up.";
+    }
+
+    let result;
+    try {
+        result = await Promise.all(
+            ids.map(id => BlogPost.delete(id, ["Blog", "default"]))
+        );
+    } catch (e) {
+        throw e;
+    }
+
+    return `${total} BlogPosts cleaned up.`;
+};
+
 module.exports = {
     getPosts,
     getPost,
     createPost,
     updatePost,
     deletePost,
-    protectedBlogPosts
+    protectedBlogPosts,
+    cleanUp
 };
