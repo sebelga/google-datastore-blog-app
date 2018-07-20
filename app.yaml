@@ -1,26 +1,8 @@
-runtime: nodejs
-env: flex
+runtime: nodejs8
 
-# The settings below are to reduce costs during testing and are not appropriate
-# for production use. Alhtough tests of 1000 concurrent didn't show any sign of performance hit.
-# For more information, see:
-# https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml
-manual_scaling:
-  instances: 1
-resources:
-  cpu: 0.5
-  memory_gb: 0.5
-  disk_size_gb: 10
+instance_class: F2
 
 env_variables:
-  GCLOUD_BUCKET: <google-bucket-id>
+  GCLOUD_BUCKET: <your-google-bucket-id>
   LOGGER_LEVEL: info
   LOGGER_ENABLED: 'true'
-
-skip_files:
-- ^node_modules$
-- ^client$
-- ^local-datastore$
-- ^.vscode$
-- ^.git$
-- ^scripts$

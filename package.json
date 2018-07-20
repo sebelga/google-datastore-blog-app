@@ -1,7 +1,8 @@
 {
     "name": "gstore-blog-demo",
     "version": "1.0.0",
-    "description": "Demo Blog Application on Google App Engine Flexible Environment",
+    "description":
+        "Demo Blog Application on Google App Engine Flexible Environment",
     "keywords": [
         "nodejs",
         "google cloud",
@@ -17,12 +18,14 @@
         "url": "https://github.com/sebelga/blog-app-googlecloud"
     },
     "engines": {
-        "node": ">= 8"
+        "node": "8.x.x"
     },
     "scripts": {
-        "local-datastore": "gcloud beta emulators datastore start --data-dir=$PWD/local-datastore",
+        "local-datastore":
+            "gcloud beta emulators datastore start --data-dir=$PWD/local-datastore",
         "predeploy": "npm run build",
-        "deploy": "gcloud app deploy --project $GOOGLE_CLOUD_PROJECT --version $GOOGLE_APP_VERSION --verbosity=info",
+        "deploy": "gcloud app deploy",
+        "deploy-no-client": "gcloud app deploy",
         "test": "npm test",
         "build": "webpack --env.NODE_ENV=prod",
         "start": "node server/server.js",
@@ -42,7 +45,7 @@
         "gstore-node": "^3.0.1",
         "is": "^3.2.1",
         "joi": "^13.1.1",
-        "marked": "^0.3.17",
+        "marked": "^0.4.0",
         "moment": "^2.21.0",
         "multer": "^1.3.0",
         "nconf": "^0.10.0",
@@ -67,7 +70,7 @@
         "extract-text-webpack-plugin": "^3.0.2",
         "node-sass": "^4.7.2",
         "postcss-loader": "^2.0.10",
-        "prettier": "1.10.2",
+        "prettier": "1.13.7",
         "replace-in-file": "^3.2.0",
         "resolve-url-loader": "2.2.1",
         "sass-loader": "^6.0.6",

@@ -3,16 +3,16 @@
 const path = require("path");
 const logger = require("winston");
 
-const { routes: blogRoutes } = require("./modules/blog");
-const adminRoutes = require("./modules/admin/routes");
 const config = require("./config");
+const { routes: blogRoutes } = require("./modules/blog");
+const { routes: adminRoutes } = require("./modules/admin");
 
 const { apiBase } = config.common;
 const { web: webBlogRoutes, api: apiBlogRoutes } = blogRoutes;
 
 /**
  * Authentication middleware for the "admin" routes
- * It is a starting point for the Demo. It is not yet implemented.
+ * Not implemented, just a starting point for the Demo.
  * @param {*} req Http Request object
  * @param {*} res Http Response object
  * @param {*} next Callback to call next middleware
