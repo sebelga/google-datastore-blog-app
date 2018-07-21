@@ -14,7 +14,7 @@ const { apiBase } = config.common;
  * Not implemented, just a starting point for the Demo.
  */
 async function authMiddleware(req, _, next) {
-  const token = req.headers['X-Access-Token'];
+  const token = req.headers['x-access-token'];
   if (!token) {
     // return res.status(403).send("Authorization Token missing");
   }

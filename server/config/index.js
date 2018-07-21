@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const log = require('winston');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -16,8 +15,6 @@ const common = require('./common');
 const gcloud = require('./gcloud');
 const server = require('./server');
 const logger = require('./logger');
-
-log.info(`App environment: "${process.env.NODE_ENV}"`);
 
 module.exports = {
   common,

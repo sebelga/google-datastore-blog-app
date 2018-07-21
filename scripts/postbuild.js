@@ -12,6 +12,7 @@ const templateLayout = path.resolve(process.cwd(), 'server', 'views', 'layout.pu
 
 const assets = require(assetsManifest);
 
+console.log('Executing post build script....');
 console.log('-------------- ASSETS Manifest ----------------');
 console.log(assets);
 

@@ -2,7 +2,7 @@ doctype html
 html(class='no-js', lang='')
     head
         include ./includes/head.pug
-        link(rel='stylesheet', href='/public/dist/main.cdd8c7d393220247e6a89df09a299b55.css')
+        link(rel='stylesheet', href='/public/dist/main.5a4054c6494eefe70bc6.css')
         block head
 
     body(id=pageId)
@@ -20,5 +20,5 @@ html(class='no-js', lang='')
         if protectedBlogPosts
             script.
                 window.__protectedBlogPosts = "#{protectedBlogPosts}".split(',').map(id => +id);
-        script(src="/public/dist/main.86291f8e351b4a560f75.js")
+        script(src="/public/dist/main.86b38089ec5da34fbbbd.js")
         block scripts

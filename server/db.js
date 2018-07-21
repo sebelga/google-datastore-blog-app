@@ -1,9 +1,10 @@
 'use strict';
 
 const Datastore = require('@google-cloud/datastore');
-const logger = require('winston');
 const gstore = require('gstore-node')({ cache: true });
+
 const config = require('./config');
+const logger = require('./logger');
 
 logger.info(`Instantiating Datastore instance for project "${config.gcloud.projectId}"`);
 
