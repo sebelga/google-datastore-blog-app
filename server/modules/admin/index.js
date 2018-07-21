@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const routes = require("./routes");
+const webRoutes = require('./routes');
 
 module.exports = {
-    routes
+  webRoutes,
 };

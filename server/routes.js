@@ -1,60 +1,60 @@
-"use strict";
+'use strict';
 
-const path = require("path");
-const logger = require("winston");
+const path = require('path');
+const logger = require('winston');
 
-const config = require("./config");
-const { routes: blogRoutes } = require("./modules/blog");
-const { routes: adminRoutes } = require("./modules/admin");
+const config = require('./config');
+const { webRoutes: blogWebRoutes, apiRoutes: blogApiRoutes } = require('./modules/blog');
+const { webRoutes: adminWebRoutes } = require('./modules/admin');
 
 const { apiBase } = config.common;
-const { web: webBlogRoutes, api: apiBlogRoutes } = blogRoutes;
 
 /**
  * Authentication middleware for the "admin" routes
  * Not implemented, just a starting point for the Demo.
- * @param {*} req Http Request object
- * @param {*} res Http Response object
- * @param {*} next Callback to call next middleware
  */
-async function authenticate(req, res, next) {
-    const token = req.headers["x-access-token"];
-    if (!token) {
-        // We disable authentication for the Demo
-        // return res.status(404).send("Authorization Token missing");
-    }
-
-    // ... logic to validate the token
-
-    next();
+async function authMiddleware(req, _, next) {
+  const token = req.headers['X-Access-Token'];
+  if (!token) {
+    // return res.status(403).send("Authorization Token missing");
+  }
+  // ... logic to validate the token and authenticate user
+  next();
 }
 
 module.exports = app => {
-    /**
-     * Application Routes
-     */
-    app.use("/blog", webBlogRoutes);
-    app.use("/admin", [authenticate], adminRoutes);
-    app.use(apiBase, apiBlogRoutes);
+  /**
+   * Web Routes
+   */
+  app.use('/blog', blogWebRoutes);
+  app.use('/admin', [authMiddleware], adminWebRoutes);
 
-    /**
-     * 404 Page Not found
-     */
-    app.get("/404", (req, res) => {
-        res.render(path.join(__dirname, "views", "404"));
-    });
+  /**
+   * API Routes
+   */
+  app.use(apiBase, blogApiRoutes);
 
-    /**
-     * Default route "/blog"
-     */
-    app.get("*", (req, res) => res.redirect("/blog"));
+  /**
+   * 404 Page Not found
+   */
+  app.get('/404', (_, res) => {
+    res.render(path.join(__dirname, 'views', '404'));
+  });
 
-    /**
-     * Error handling
-     */
-    app.use((err, req, res, next) => {
-        logger.error(err.message);
-        const status = err.status || 500;
-        res.status(status).send(err);
-    });
+  /**
+   * Default route "/blog"
+   */
+  app.get('*', (_, res) => res.redirect('/blog'));
+
+  /**
+   * Error handling
+   */
+  app.use((err, _, res) => {
+    logger.error(err.output.payload);
+    if (err.isServer) {
+      // log the error...
+      return;
+    }
+    return res.status(err.output.statusCode).json(err.output.payload);
+  });
 };

@@ -1,8 +1,7 @@
 {
     "name": "gstore-blog-demo",
     "version": "1.0.0",
-    "description":
-        "Demo Blog Application on Google App Engine Flexible Environment",
+    "description": "Demo Blog Application on Google App Engine Flexible Environment",
     "keywords": [
         "nodejs",
         "google cloud",
@@ -21,11 +20,10 @@
         "node": "8.x.x"
     },
     "scripts": {
-        "local-datastore":
-            "gcloud beta emulators datastore start --data-dir=$PWD/local-datastore",
-        "predeploy": "npm run build",
-        "deploy": "gcloud app deploy",
-        "deploy-no-client": "gcloud app deploy",
+        "local-datastore": "gcloud beta emulators datastore start --data-dir=$PWD/local-datastore",
+        "predeploy-with-client": "npm run build",
+        "deploy-with-client": "gcloud app deploy --version prod",
+        "deploy": "gcloud app deploy --version prod",
         "test": "npm test",
         "build": "webpack --env.NODE_ENV=prod",
         "start": "node server/server.js",
@@ -37,6 +35,7 @@
         "arrify": "^1.0.1",
         "axios": "^0.18.0",
         "body-parser": "^1.18.2",
+        "boom": "7.2.0",
         "bulma": "^0.6.2",
         "dataloader": "^1.4.0",
         "dotenv": "^5.0.1",

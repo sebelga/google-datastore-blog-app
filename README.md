@@ -1,7 +1,7 @@
 # Google Datastore Blog Application
 > A Node.js demo application built with [`@google-cloud/datastore`](https://github.com/googleapis/nodejs-datastore) & [`gstore-node`](https://github.com/sebelga/gstore-node) running on Google App Engine.
 
-This small application will show you how to use gstore-node to build an application on Google App Engine **standard** environement.  gstore-node is a library that lets you define **Schemas** for your entities to easily validate the entities _data_ before saving them in Google Datastore. It has also other nice features like **middleware**, **virtual properties** or a **cache layer** to speed up the entities fetching.  
+This small application will show you how to use gstore-node to build an application on Google App Engine **standard** environment.  gstore-node is a library that lets you define **Schemas** for your entities to easily validate the entities _data_ before saving them in Google Datastore. It has also other nice features like **middleware**, **virtual properties** or a **cache layer** to speed up the entities fetching.  
 
 Hopefully this small application will demonstrate how gstore-node can help you building complex applications on the Datastore.
 
@@ -134,11 +134,11 @@ Before deploying the application make sure to define the `GCLOUD_BUCKET` environ
 Then run the following command:
 
 ```sh
-# This command will execute the "prebuild" npm script to compile the .js and .css static files for the client.
 npm run deploy
 
-# If you didn't make any modification to the client code then you can just run this
-npm run deploy-no-client
+# If you modified the client files, this command will bundle the .js and .css
+# to the "public" folder before deploying the app to App Engine
+npm run deploy-with-client
 ```
 
 ### Make changes to the client code

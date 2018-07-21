@@ -1,7 +1,5 @@
 {
-    "eslint.enable": true,
-    "editor.rulers": [
-        140
-    ],
-    "editor.formatOnSave": true
+  "eslint.enable": false,
+  "editor.rulers": [120],
+  "editor.formatOnSave": true
 }

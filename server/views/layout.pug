@@ -16,7 +16,7 @@ html(class='no-js', lang='')
             window.pageId = "#{pageId}";
 
         //- This is only for the Live Demo application
-        //- to prevent deleting some BlogPosts
+        //- to prevent deleting initial BlogPosts
         if protectedBlogPosts
             script.
                 window.__protectedBlogPosts = "#{protectedBlogPosts}".split(',').map(id => +id);
