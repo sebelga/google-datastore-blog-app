@@ -1,20 +1,20 @@
-"use strict";
+'use strict';
 
-import DocReady from "es6-docready";
+import DocReady from 'es6-docready';
 
-import blog from "./blog";
-import comment from "./comment";
+import blog from './blog';
+import comment from './comment';
 
-import "../styles/main.scss";
+import '../styles/main.scss';
 
 const app = {
-    blog,
-    comment
+  blog,
+  comment,
 };
 
 DocReady(() => {
-    blog.pageReady(window.pageId);
-    comment.pageReady(window.pageId);
+  blog.pageReady(window.pageId);
+  comment.pageReady(window.pageId);
 });
 
 window.app = app;

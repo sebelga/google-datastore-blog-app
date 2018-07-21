@@ -1,109 +1,99 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { apiBase } from "./config";
+import { API_BASE } from './config';
 
 let blogPostId;
 let nextPage;
-let commentFormDOM;
-let commentsDOM;
-let commentFormErrorsDOM;
+let commentFormEl;
+let commentsEl;
+let commentFormErrorsEl;
 
 const deleteComment = e => {
-    const id = parseInt(e.currentTarget.dataset.commentId, 10);
-    return axios
-        .delete(`${apiBase}/comments/${id}`)
-        .then(() => {
-            const commentNode = document.getElementById(`comment-${id}`);
-            commentNode.remove();
-        })
-        .catch(error => window.console.log(error));
+  const id = parseInt(e.currentTarget.dataset.commentId, 10);
+  return axios
+    .delete(`${API_BASE}/comments/${id}`)
+    .then(() => {
+      const commentEl = document.getElementById(`comment-${id}`);
+      commentEl.remove();
+    })
+    .catch(error => window.console.log(error));
 };
 
 const loadComments = id => {
-    let uri = `${apiBase}/blog/${id}/comments`;
-    if (nextPage) {
-        uri += `?start=${nextPage}`;
-    }
-    return axios
-        .get(uri)
-        .then(response => {
-            if (response.data.entities) {
-                response.data.entities.forEach(comment => {
-                    commentsDOM.append(commentNode(comment));
-                });
-
-                if (
-                    response.data.nextPageCursor &&
-                    response.data.entities.length > 0
-                ) {
-                    nextPage = response.data.nextPageCursor;
-                    document
-                        .querySelector("#load-more-comments button")
-                        .classList.remove("is-hidden");
-                } else {
-                    // No more comments (hide button)
-                    document
-                        .querySelector("#load-more-comments button")
-                        .classList.add("is-hidden");
-                }
-            }
-        })
-        .catch(error => {
-            window.console.log(error);
+  let uri = `${API_BASE}/blog/${id}/comments`;
+  if (nextPage) {
+    uri += `?start=${nextPage}`;
+  }
+  return axios
+    .get(uri)
+    .then(response => {
+      if (response.data.entities) {
+        response.data.entities.forEach(comment => {
+          const commentEl = createCommentElementFromEntity(comment);
+          commentsEl.append(commentEl);
         });
+
+        if (response.data.nextPageCursor && response.data.entities.length > 0) {
+          nextPage = response.data.nextPageCursor;
+          document.querySelector('#load-more-comments button').classList.remove('is-hidden');
+        } else {
+          // No more comments (hide button)
+          document.querySelector('#load-more-comments button').classList.add('is-hidden');
+        }
+      }
+    })
+    .catch(error => {
+      window.console.log(error);
+    });
 };
 
 const submitComment = (e, id) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    commentFormErrorsDOM.classList.add("is-hidden");
+  commentFormErrorsEl.classList.add('is-hidden');
 
-    const name = e.target.elements[0].value;
-    const website = e.target.elements[1].value || null;
-    const comment = e.target.elements[2].value;
+  const name = e.target.elements[0].value;
+  const website = e.target.elements[1].value || null;
+  const comment = e.target.elements[2].value;
 
-    const postData = {
-        name,
-        website,
-        comment
-    };
+  const postData = {
+    name,
+    website,
+    comment,
+  };
 
-    return axios
-        .post(`${apiBase}/blog/${blogPostId}/comments`, postData)
-        .then(response => {
-            commentsDOM.insertBefore(
-                commentNode(response.data),
-                commentsDOM.firstChild
-            );
-            commentFormDOM.reset();
-        })
-        .catch(res => {
-            const error = res.response.data;
-            let message;
-            if (error.name == "ValidationError") {
-                message = error.details.reduce((acc, err) => {
-                    acc += `${err.message}<br>`;
-                    return acc;
-                }, "");
-            } else {
-                message = error.message;
-            }
-            commentFormErrorsDOM.classList.remove("is-hidden");
-            commentFormErrorsDOM.innerHTML = message;
-        });
+  return axios
+    .post(`${API_BASE}/blog/${blogPostId}/comments`, postData)
+    .then(response => {
+      const commentEl = createCommentElementFromEntity(response.data);
+      commentsEl.insertBefore(commentEl, commentsEl.firstChild);
+      commentFormEl.reset();
+    })
+    .catch(res => {
+      const error = res.response.data;
+      let message;
+      if (error.name == 'ValidationError') {
+        message = error.details.reduce((acc, err) => {
+          acc += `${err.message}<br>`;
+          return acc;
+        }, '');
+      } else {
+        message = error.message;
+      }
+      commentFormErrorsEl.classList.remove('is-hidden');
+      commentFormErrorsEl.innerHTML = message;
+    });
 };
 
-const commentNode = entity => {
-    const { id, createdOnFormatted, comment, name, website } = entity;
+const createCommentElementFromEntity = entity => {
+  const { id, createdOnFormatted, comment, name, website } = entity;
 
-    const nameRendered = website
-        ? `<a href="${website}" class="tag" target="_blank">${name}</a>`
-        : name;
+  const nameRendered = website ? `<a href="${website}" class="tag" target="_blank">${name}</a>` : name;
 
-    const node = document.createElement("article");
-    node.id = `comment-${id}`;
-    node.className = "media";
-    node.innerHTML = `
+  const node = document.createElement('article');
+  node.id = `comment-${id}`;
+  node.className = 'media';
+  node.innerHTML = `
         <div class="media-content comment">
             <div class="content">
                 <p>
@@ -115,37 +105,32 @@ const commentNode = entity => {
         </div>
     `;
 
-    node.querySelector(".delete").addEventListener("click", deleteComment);
+  node.querySelector('.delete').addEventListener('click', deleteComment);
 
-    return node;
+  return node;
 };
 
 const pageReady = pageId => {
-    if (pageId === "blogpost-view") {
-        blogPostId = window.__blogPostData.id;
-        commentsDOM = document.getElementById("comments-wrapper");
-        commentFormErrorsDOM = document.getElementById("comment-form-errors");
+  if (pageId === 'blogpost-view') {
+    blogPostId = window.__blogPostData.id;
 
-        commentFormDOM = document.getElementById("form-comment");
-        commentFormDOM.addEventListener("submit", submitComment);
+    commentsEl = document.getElementById('comments-wrapper');
+    commentFormErrorsEl = document.getElementById('comment-form-errors');
+    commentFormEl = document.getElementById('form-comment');
 
-        const buttonsDeleteComments = Array.prototype.slice.apply(
-            document.querySelectorAll(".comment .delete")
-        );
-        buttonsDeleteComments.forEach(el =>
-            el.addEventListener("click", deleteComment)
-        );
+    commentFormEl.addEventListener('submit', submitComment);
 
-        const btnLoadMore = document.getElementById("load-more-comments");
-        if (btnLoadMore) {
-            btnLoadMore.addEventListener("click", () =>
-                loadComments(blogPostId)
-            );
-        }
+    const buttonsDeleteComments = Array.prototype.slice.apply(document.querySelectorAll('.comment .delete'));
+    buttonsDeleteComments.forEach(el => el.addEventListener('click', deleteComment));
 
-        // load initial comments
-        loadComments(blogPostId);
+    const btnLoadMore = document.getElementById('load-more-comments');
+    if (btnLoadMore) {
+      btnLoadMore.addEventListener('click', () => loadComments(blogPostId));
     }
+
+    // load BlogPost comments
+    loadComments(blogPostId);
+  }
 };
 
 export default { pageReady };

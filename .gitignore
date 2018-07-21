@@ -12,3 +12,4 @@ coverage/
 vendor/
 .env
 local-datastore/
+__local/
