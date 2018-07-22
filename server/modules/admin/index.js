@@ -1,12 +1,12 @@
 'use strict';
 
-const routes = require('./routes');
-const handlers = require('./routes-handlers');
+const Routes = require('./routes');
+const Handlers = require('./routes-handlers');
 
 module.exports = (context, { blog, images }) => {
-  const routesHandlers = handlers(context, { blog });
+  const routesHandlers = Handlers(context, { blog });
 
   return {
-    webRoutes: routes(context, { routesHandlers, images }),
+    webRoutes: Routes(context, { routesHandlers, images }),
   };
 };
