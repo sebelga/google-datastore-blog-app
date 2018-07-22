@@ -3,7 +3,7 @@
 
 This small application will show you how to use gstore-node to build an application on Google App Engine **standard** environment.  gstore-node is a library that lets you define **Schemas** for your entities to easily validate the entities _data_ before saving them in Google Datastore. It has also other nice features like **middleware**, **virtual properties** or a **cache layer** to speed up the entities fetching.  
 
-Hopefully this small application will demonstrate how gstore-node can help you building complex applications on the Datastore.
+This repository can be a starting point to build complex applications on top of the Google Datastore.
 
 ## Highlights
 
