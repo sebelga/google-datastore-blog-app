@@ -1,9 +1,15 @@
-"use strict";
+'use strict';
 
-const routesHandlers = require("./comment.routes-handlers");
-const commentDomain = require("./comment.domain");
+const DB = require('./comment.db');
+const routes = require('./comment.routes-handlers');
+const domain = require('./comment.domain');
 
-module.exports = {
-    routesHandlers,
-    commentDomain
+module.exports = context => {
+  const db = DB(context);
+  const commentDomain = domain(context, { db });
+
+  return {
+    commentDomain,
+    routesHandlers: routes(context, { commentDomain }),
+  };
 };

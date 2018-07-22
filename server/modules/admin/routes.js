@@ -1,21 +1,19 @@
 'use strict';
 
-const router = require('express').Router();
+const express = require('express');
 
-const routesHandlers = require('./routes-handlers');
-const images = require('../../utils/images');
+module.exports = (context, { routesHandlers, images }) => {
+  const router = express.Router();
 
-// ------------------------
-// Admin ROUTES
-// ------------------------
-router.get('/', routesHandlers.dashboard);
-router.get('/create-post', routesHandlers.createPost);
-router.get('/edit-post/:id', routesHandlers.editPost);
-router.post(
-  '/create-post',
-  [images.upload.single('image'), images.uploadToGCS], // Middlewares to upload image
-  routesHandlers.createPost
-);
-router.post('/edit-post/:id', [images.upload.single('image'), images.uploadToGCS], routesHandlers.editPost);
+  router.get('/', routesHandlers.dashboard);
+  router.get('/create-post', routesHandlers.createPost);
+  router.get('/edit-post/:id', routesHandlers.editPost);
+  router.post(
+    '/create-post',
+    [images.upload.single('image'), images.uploadToGCS], // Middlewares to upload image
+    routesHandlers.createPost
+  );
+  router.post('/edit-post/:id', [images.upload.single('image'), images.uploadToGCS], routesHandlers.editPost);
 
-module.exports = router;
+  return router;
+};

@@ -1,29 +1,30 @@
-"use strict";
+'use strict';
 
-const DB = require("./comment.db");
-
-const getComments = (postId, options) => {
+module.exports = (_, { db }) => {
+  const getComments = (postId, options) => {
     postId = +postId;
 
     if (options.start) {
-        options.start = decodeURIComponent(options.start);
+      options.start = decodeURIComponent(options.start);
     }
 
-    return DB.getComments(postId, options);
-};
+    return db.getComments(postId, options);
+  };
 
-const createComment = (postId, data) => {
+  const createComment = (postId, data) => {
     postId = +postId;
     data.blogPost = postId;
-    return DB.createComment(data).then(entity =>
-        entity.plain({ virtuals: true })
-    );
-};
+    return db.createComment(data).then(entity => entity.plain({ virtuals: true }));
+  };
 
-const deleteComment = id => DB.deleteComment(id);
+  const deleteComment = id => db.deleteComment(id);
 
-module.exports = {
+  const queryDB = db.query;
+
+  return {
     getComments,
     createComment,
-    deleteComment
+    deleteComment,
+    queryDB,
+  };
 };

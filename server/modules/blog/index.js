@@ -1,12 +1,18 @@
 'use strict';
 
-const { webRoutes, apiRoutes } = require('./routes');
-const { blogPostDomain } = require('./blog-post');
-const { commentDomain } = require('./comment');
+const routes = require('./routes');
+const BlogPost = require('./blog-post');
+const Comment = require('./comment');
 
-module.exports = {
-  webRoutes,
-  apiRoutes,
-  blogPostDomain,
-  commentDomain,
+module.exports = (context, { images }) => {
+  const comment = Comment(context);
+  const blogPost = BlogPost(context, { comment, images });
+  const { webRoutes, apiRoutes } = routes(context, { blogPost, comment });
+
+  return {
+    webRoutes,
+    apiRoutes,
+    blogPost,
+    comment,
+  };
 };

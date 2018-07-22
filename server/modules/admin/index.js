@@ -1,7 +1,12 @@
 'use strict';
 
-const webRoutes = require('./routes');
+const routes = require('./routes');
+const handlers = require('./routes-handlers');
 
-module.exports = {
-  webRoutes,
+module.exports = (context, { blog, images }) => {
+  const routesHandlers = handlers(context, { blog });
+
+  return {
+    webRoutes: routes(context, { routesHandlers, images }),
+  };
 };

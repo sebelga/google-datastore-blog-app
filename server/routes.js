@@ -1,13 +1,6 @@
 'use strict';
 
 const path = require('path');
-const logger = require('winston');
-
-const config = require('./config');
-const { webRoutes: blogWebRoutes, apiRoutes: blogApiRoutes } = require('./modules/blog');
-const { webRoutes: adminWebRoutes } = require('./modules/admin');
-
-const { apiBase } = config.common;
 
 /**
  * Authentication middleware for the "admin" routes
@@ -22,17 +15,19 @@ async function authMiddleware(req, _, next) {
   next();
 }
 
-module.exports = app => {
+module.exports = ({ logger, config }, { app, modules: { blog, admin } }) => {
+  const { apiBase } = config.common;
+
   /**
    * Web Routes
    */
-  app.use('/blog', blogWebRoutes);
-  app.use('/admin', [authMiddleware], adminWebRoutes);
+  app.use('/blog', blog.webRoutes);
+  app.use('/admin', [authMiddleware], admin.webRoutes);
 
   /**
    * API Routes
    */
-  app.use(apiBase, blogApiRoutes);
+  app.use(apiBase, blog.apiRoutes);
 
   /**
    * 404 Page Not found
