@@ -6,8 +6,9 @@ module.exports = ({ logger }, { db, comment }) => {
   /**
    * For Demo Application only. Some BlogPost are protected and cannot be edited or delted
    */
-  const protectedBlogPosts =
-    (process.env.PROTECTED_BLOGPOSTS && process.env.PROTECTED_BLOGPOSTS.split(',')).map(id => +id.trim()) || [];
+  const protectedBlogPosts = process.env.PROTECTED_BLOGPOSTS
+    ? process.env.PROTECTED_BLOGPOSTS.split(',').map(id => +id.trim())
+    : [];
 
   /**
    * Get a list of BlogPosts

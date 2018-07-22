@@ -1,15 +1,10 @@
 'use strict';
 
-const Storage = require('@google-cloud/storage');
 const async = require('async');
 const arrify = require('arrify');
 const multer = require('multer');
 
-module.exports = ({ config, logger }) => {
-  const storage = new Storage({
-    projectId: config.gcloud.projectId,
-  });
-
+module.exports = ({ config, logger, storage }) => {
   /**
    * Multer handles parsing multipart/form-data requests.
    * This instance is configured to store images in memory and re-name to avoid
@@ -64,6 +59,7 @@ module.exports = ({ config, logger }) => {
         cacheControl: 'public, max-age=31536000', // 1 year of cache
       },
       validation: 'crc32c',
+      predefinedAcl: 'publicRead',
     });
 
     stream.on('error', err => {
@@ -82,7 +78,7 @@ module.exports = ({ config, logger }) => {
   };
 
   /**
-   * Delte one or many objects from the Google Storage Bucket
+   * Delete one or many objects from the Google Storage Bucket
    * @param {string | array} objects -- Storage objects to delete
    */
   const deleteFromGCS = objects => {

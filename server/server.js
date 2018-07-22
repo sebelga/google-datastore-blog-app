@@ -3,8 +3,9 @@
 const config = require('./config');
 const logger = require('./logger')({ config: config.logger });
 const gstore = require('./db')({ config: config.gcloud, logger });
+const storage = require('./storage')({ config: config.gcloud });
 
-const context = { gstore, logger, config };
+const context = { gstore, storage, logger, config };
 
 /**
  * Instantiate the modules used in our application

@@ -107,18 +107,6 @@ To be able to execute the Datastore Queries of this application, you will need f
 gcloud datastore create-indexes ./index.yaml
 ```
 
-### Google Cloud Storage
-You need to make the content of your bucket **public** so the images you upload are accesible to the browser.  
-
-The easiest way to do it is to:
-
-* go to [Google Storage](https://console.cloud.google.com/storage/) and select your bucket
-* on the menu on the right select `Edit bucket permissions`
-* add the `allUsers` user
-* set the role to `Storage Object Viewer`
-
-Make sure the bucket is **_only_** used for the files uploaded from this application!
-
 ### Start the Application
 
 ```js
