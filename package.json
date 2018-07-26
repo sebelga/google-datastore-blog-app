@@ -22,8 +22,8 @@
   "scripts": {
     "local-datastore": "gcloud beta emulators datastore start --data-dir=$PWD/local-datastore",
     "predeploy-with-client": "npm run build",
-    "deploy-with-client": "gcloud app deploy --version prod",
-    "deploy": "gcloud app deploy --version prod",
+    "deploy-with-client": "gcloud app deploy -v prod",
+    "deploy": "gcloud app deploy -v prod",
     "test": "npm test",
     "build": "NODE_ENV=production node --trace-deprecation ./node_modules/.bin/webpack",
     "start": "node server/server.js",
