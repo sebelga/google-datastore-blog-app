@@ -3,6 +3,7 @@ runtime: nodejs8
 instance_class: F2
 
 env_variables:
-  GCLOUD_BUCKET: <your-google-bucket-id>
+  GCLOUD_BUCKET: blog-nodejs
   LOGGER_LEVEL: info
   LOGGER_ENABLED: 'true'
+  PROTECTED_BLOGPOSTS: '5689792285114368,5754903989321728'

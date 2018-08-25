@@ -1,0 +1,57 @@
+extends ../layout.pug
+
+block title
+    title= post ? 'Edit Post' : 'New Post'
+
+block head
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css")
+
+block content
+    section(class="hero is-dark")
+        .hero-body
+            div(class="container has-text-centered")
+                p.title= post ? 'Edit Post' : 'New Post'
+    .container
+        .content
+            section.section
+                if error
+                    div(class="notification is-danger")
+                        p= error.message
+
+                form(method="post", enctype="multipart/form-data")
+                    .columns
+                        .column(class="is-one-quarter is-one-third-desktop")
+                            p(class="title is-size-5") Feature Image
+
+                            if post && post.posterUri
+                                figure(class="image")
+                                    img(src=post.posterUri)
+                            .field
+                                div(class="file has-name is-info")
+                                    label.file-label
+                                        input(class="file-input", type="file", name="image")
+                                        span.file-cta
+                                            span.file-icon
+                                                i(class="fa fa-upload")
+                                            span.file-label Choose a file...
+                                        span(class="file-name is-invisible")
+
+                            input(type="hidden", name="posterUri" value=post && post.posterUri)
+                        .column
+                            section.content
+                                .field
+                                    label.label Post title
+                                    .control
+                                        input(class="input", type="text", placeholder="Title..." name="title", value=post && post.title)
+                                .field
+                                    .control
+                                        textarea(placeholder="Post text...", rows="8", name="content")
+                                            = post && post.content
+
+                            section.content
+                                div(class="field is-grouped is-grouped-right")
+                                    p.control
+                                        button(type="submit", class="button is-primary button-submit" disabled=post && protectedBlogPosts.indexOf(post.id) >= 0) #{post ? 'Update' : 'Create'}
+                                if post && protectedBlogPosts.indexOf(post.id) >= 0
+                                    p(class="has-text-right is-size-7") Update disabled for this blog post.

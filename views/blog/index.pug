@@ -1,0 +1,28 @@
+extends ../layout.pug
+
+block title
+    title My Blog
+
+block content
+    section(class="hero is-medium is-success")
+        .hero-body
+            .container
+                p.title Google Datastore demo
+                p.subtitle Node.js Blog Application with @google-cloud/datastore & gstore-node
+    .container
+        .content
+            section(class="section posts")
+                if blogPosts.length === 0
+                    h2.has-text-centered We haven't published any post so far... stay tuned!
+                else
+                    each item in blogPosts
+                        .columns
+                            .column
+                                if item.posterUri
+                                    div(class="o-ratio o-ratio--16:9")
+                                        div(class="o-ratio__content")
+                                            img(src=item.posterUri, class="image")
+                            .column
+                                h4
+                                    a(href="/blog/" + item.id)= item.title
+                                p= item.excerpt

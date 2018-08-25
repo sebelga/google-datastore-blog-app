@@ -18,14 +18,15 @@ module.exports = env => {
 
   const devMode = process.env.NODE_ENV !== 'production';
 
-  const cleanBuild = new CleanWebpackPlugin(['server/public/dist/*.*', 'server/public/assets.json']);
+  const cleanBuild = new CleanWebpackPlugin(['src/server/public/dist/*.*', 'src/server/public/assets.json']);
   const extractCSS = new MiniCssExtractPlugin({
     filename: '[name].[contenthash].css',
   });
 
   const assetsManifest = new AssetsPlugin({
     filename: 'assets.json',
-    path: path.join(__dirname, 'server', 'public'),
+    // path: path.join(__dirname, 'src', 'server', 'public'),
+    path: path.join(__dirname, 'public'),
     fullPath: false,
     processOutput: assets => {
       Object.keys(assets).forEach(bundle => {
@@ -54,17 +55,18 @@ module.exports = env => {
   const config = {
     mode: process.env.NODE_ENV,
     entry: {
-      main: path.join(__dirname, 'client', 'src', 'scripts', 'main.js'),
+      main: path.join(__dirname, 'src', 'client', 'js', 'main.js'),
     },
     output: {
       filename: '[name].[chunkhash].js',
-      path: path.join(__dirname, 'server', 'public', 'dist'),
+      // path: path.join(__dirname, 'src', 'server', 'public', 'dist'),
+      path: path.join(__dirname, 'public', 'dist'),
     },
     module: {
       rules: [
         {
           test: /\.js$/,
-          include: path.join(__dirname, 'src', 'scripts'),
+          include: path.join(__dirname, 'src', 'client', 'js'),
           use: {
             loader: 'babel-loader',
             options: { presets: ['es2015'] },

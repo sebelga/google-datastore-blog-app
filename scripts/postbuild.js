@@ -7,8 +7,8 @@
 const path = require('path');
 const replace = require('replace-in-file');
 
-const assetsManifest = path.resolve(process.cwd(), 'server', 'public', 'assets.json');
-const templateLayout = path.resolve(process.cwd(), 'server', 'views', 'layout.pug');
+const assetsManifest = path.resolve(process.cwd(), 'public', 'assets.json');
+const templateLayout = path.resolve(process.cwd(), 'views', 'layout.pug');
 
 const assets = require(assetsManifest);
 
@@ -29,3 +29,7 @@ replace.sync({
   from: /\/public\/dist\/main(\..+)?\.js/g,
   to: `/public/dist/${assets.main.js}`,
 });
+
+// if (process.env.NODE_ENV === 'development') {
+//   require('./copyStaticAssets');
+// }

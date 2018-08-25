@@ -1,0 +1,24 @@
+doctype html
+html(class='no-js', lang='')
+    head
+        include ./includes/head.pug
+        link(rel='stylesheet', href='/public/dist/main.df0cfa80b4fd2b437253.css')
+        block head
+
+    body(id=pageId)
+        include ./includes/navbar.pug
+
+        block content
+
+        include ./includes/footer.pug
+
+        script.
+            window.pageId = "#{pageId}";
+
+        //- This is only for the Live Demo application
+        //- to prevent deleting initial BlogPosts
+        if protectedBlogPosts
+            script.
+                window.__protectedBlogPosts = "#{protectedBlogPosts}".split(',').map(id => +id);
+        script(src="/public/dist/main.17f1ef88358f22b736d8.js")
+        block scripts
