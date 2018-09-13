@@ -49,14 +49,14 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
 
       let post: Entity<BlogPostType>;
       try {
-        post = await (blogPostDB.getPost(id, dataloader) as Promise<Entity<BlogPostType>>);
+        post = <Entity<BlogPostType>>await blogPostDB.getPost(id, dataloader);
       } catch (err) {
         throw err;
       }
 
       if (post && post.content) {
         // Convert markdown to Html
-        post.contentToHtml = marked((<BlogPostType>post).content);
+        post.contentToHtml = marked(post.content);
       }
 
       return post;

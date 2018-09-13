@@ -12,9 +12,11 @@ export type Config = {
   logger: LoggerConfig;
 };
 
-export default {
+const config: Config = {
   common,
   gcloud,
   server,
   logger,
 };
+
+export default config;
