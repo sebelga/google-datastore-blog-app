@@ -8,8 +8,16 @@ export default (_: Context, routesHandlers: AdminRoutesHandlers, { images }: Mod
   router.get('/', routesHandlers.dashboard);
   router.get('/create-post', routesHandlers.createPost);
   router.get('/edit-post/:id', routesHandlers.editPost);
-  router.post('/create-post', [images.upload.single('image'), images.uploadToGCS], routesHandlers.createPost);
-  router.post('/edit-post/:id', [images.upload.single('image'), images.uploadToGCS], routesHandlers.editPost);
+  router.post(
+    '/create-post',
+    [images.middlewares.uploadInMemory.single('image'), images.middlewares.uploadToGCS],
+    routesHandlers.createPost
+  );
+  router.post(
+    '/edit-post/:id',
+    [images.middlewares.uploadInMemory.single('image'), images.middlewares.uploadToGCS],
+    routesHandlers.editPost
+  );
 
   return router;
 };

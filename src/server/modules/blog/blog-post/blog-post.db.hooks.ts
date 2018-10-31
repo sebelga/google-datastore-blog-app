@@ -23,7 +23,7 @@ export default ({ gstore }: Context, { images, utils, comment }: Modules) => {
         if (!entity || !entity.cloudStorageObject) {
           return;
         }
-        return images.deleteFromGCS(entity.cloudStorageObject);
+        return images.GCS.deleteFile(entity.cloudStorageObject);
       });
     }
 
@@ -85,7 +85,7 @@ export default ({ gstore }: Context, { images, utils, comment }: Modules) => {
       if (!entity || !entity.cloudStorageObject) {
         return;
       }
-      return images.deleteFromGCS(entity.cloudStorageObject);
+      return images.GCS.deleteFile(entity.cloudStorageObject);
     });
   }
 
