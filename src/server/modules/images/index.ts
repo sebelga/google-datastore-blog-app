@@ -1,5 +1,3 @@
-'use strict';
-
 import async from 'async';
 import arrify from 'arrify';
 import multer from 'multer';
@@ -20,10 +18,8 @@ export default ({ config, logger, storage }: Context): ImagesModule => {
    * conflicting with existing objects.
    * This makes it straightforward to upload to Cloud Storage.
    */
-  const memoryStorage = multer.memoryStorage();
-
   const upload = multer({
-    storage: memoryStorage,
+    storage: multer.memoryStorage(),
     limits: {
       fileSize: 5 * 1024 * 1024, // no larger than 5mb
     },
@@ -40,93 +36,94 @@ export default ({ config, logger, storage }: Context): ImagesModule => {
   const bucketId = config.gcloud.storage.bucket;
   const bucket = storage.bucket(bucketId);
 
-  const imagesModule: ImagesModule = {
-    /**
-     * Returns the public, anonymously accessible URL to a given Cloud Storage
-     * object. The object's ACL has to be set to public read.
-     *
-     * @param {string} objectName -- Storage object to retrieve
-     */
-    getPublicUrl(objectName) {
-      return `https://storage.googleapis.com/${bucketId}/${objectName}`;
-    },
-    /**
-     * Express middleware that will automatically upload a file to Google Cloud Storage
-     * Once the "req.file" is processed we add a "cloudStorageObject" and "cloudStoragePublicUrl"
-     * property to the request object
-     */
-    uploadToGCS(req, _, next) {
-      if (!req.file) {
-        return next();
-      }
-      const _this = this;
-      const gcsname = Date.now() + req.file.originalname.replace(/\W+/g, '-').toLowerCase();
-      const file = bucket.file(gcsname);
+  /**
+   * Returns the public, anonymously accessible URL to a given Cloud Storage
+   * object. The object's ACL has to be set to public read.
+   *
+   * @param {string} objectName -- Storage object to retrieve
+   */
+  const getPublicUrl = (objectName: string) => `https://storage.googleapis.com/${bucketId}/${objectName}`;
 
-      const stream = file.createWriteStream({
-        metadata: {
-          contentType: req.file.mimetype,
-          cacheControl: 'public, max-age=31536000', // 1 year of cache
-        },
-        validation: 'crc32c',
-        predefinedAcl: 'publicRead',
-      });
+  /**
+   * Express middleware that will automatically upload a file to Google Cloud Storage
+   * Once the "req.file" is processed we add a "cloudStorageObject" and "cloudStoragePublicUrl"
+   * property to the request object
+   */
+  const uploadToGCS = (req: Request, _: Response, next: NextFunction) => {
+    if (!req.file) {
+      return next();
+    }
+    const gcsname = Date.now() + req.file.originalname.replace(/\W+/g, '-').toLowerCase();
+    const file = bucket.file(gcsname);
 
-      stream.on('error', err => {
-        (<any>req.file).cloudStorageError = err;
-        next(err);
-      });
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+        cacheControl: 'public, max-age=31536000', // 1 year of cache
+      },
+      validation: 'crc32c',
+      predefinedAcl: 'publicRead',
+    });
 
-      stream.on('finish', () => {
-        (<any>req.file).cloudStorageObject = gcsname;
-        (<any>req.file).cloudStoragePublicUrl = imagesModule.getPublicUrl(gcsname);
+    stream.on('error', err => {
+      (<any>req.file).cloudStorageError = err;
+      next(err);
+    });
 
-        next();
-      });
+    stream.on('finish', () => {
+      (<any>req.file).cloudStorageObject = gcsname;
+      (<any>req.file).cloudStoragePublicUrl = getPublicUrl(gcsname);
 
-      stream.end(req.file.buffer);
-    },
-    /**
-     * Delete one or many objects from the Google Storage Bucket
-     * @param {string | array} objects -- Storage objects to delete
-     */
-    deleteFromGCS(objects) {
-      return new Promise((resolve, reject) => {
-        const storageObjects = arrify(objects);
-        const fns = storageObjects.map(o => processDelete(o));
+      next();
+    });
 
-        async.parallel(fns, err => {
-          if (err) {
-            return reject(err);
-          }
-
-          logger.info('All object deleted successfully from Google Storage');
-
-          return resolve();
-        });
-      });
-
-      // ----------
-
-      function processDelete(fileName: string) {
-        return (cb: async.AsyncFunction<null, Error>) => {
-          logger.info(`Deleting GCS file ${fileName}`);
-
-          const file = bucket.file(fileName);
-          file.delete().then(
-            () => cb(null),
-            err => {
-              if (err && err.code !== 404) {
-                return cb(err);
-              }
-              cb(null);
-            }
-          );
-        };
-      }
-    },
-    upload,
+    stream.end(req.file.buffer);
   };
 
-  return imagesModule;
+  /**
+   * Delete one or many objects from the Google Storage Bucket
+   * @param {string | array} objects -- Storage objects to delete
+   */
+  const deleteFromGCS = (objects: string | Array<string>) => {
+    return new Promise((resolve, reject) => {
+      const storageObjects = arrify(objects);
+      const fns = storageObjects.map(o => processDelete(o));
+
+      async.parallel(fns, err => {
+        if (err) {
+          return reject(err);
+        }
+
+        logger.info('All object deleted successfully from Google Storage');
+
+        return resolve();
+      });
+    });
+
+    // ----------
+
+    function processDelete(fileName: string) {
+      return (cb: async.AsyncFunction<null, Error>) => {
+        logger.info(`Deleting GCS file ${fileName}`);
+
+        const file = bucket.file(fileName);
+        file.delete().then(
+          () => cb(null),
+          err => {
+            if (err && err.code !== 404) {
+              return cb(err);
+            }
+            cb(null);
+          }
+        );
+      };
+    }
+  };
+
+  return {
+    getPublicUrl,
+    uploadToGCS,
+    deleteFromGCS,
+    upload,
+  };
 };

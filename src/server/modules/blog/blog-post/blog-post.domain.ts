@@ -1,5 +1,6 @@
 import marked from 'marked';
 import Boom from 'boom';
+import initDBhooks from './blog-post.db.hooks';
 import { Entity, QueryListOptions, QueryResult, DeleteResult } from 'gstore-node';
 import { Context, Modules } from '../models';
 import { BlogPostType } from './models';
@@ -20,13 +21,25 @@ export interface BlogPostDomain {
   protectedBlogPosts: number[];
 }
 
-export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPostDomain => {
+export default (context: Context, { blogPostDB, images, utils, comment }: Modules): BlogPostDomain => {
   /**
    * For Demo Application only. Some BlogPost are protected and cannot be edited or delted
    */
   const protectedBlogPosts = process.env.PROTECTED_BLOGPOSTS
     ? process.env.PROTECTED_BLOGPOSTS.split(',').map(id => +id.trim())
     : [];
+
+  /**
+   * Add "pre" and "post" hooks to our Schema
+   */
+  const { initEntityData, deletePreviousImage, deleteFeatureImage, deleteComments } = initDBhooks(context, {
+    images,
+    utils,
+    comment,
+  });
+  blogPostDB.addPreSaveHook([deletePreviousImage, initEntityData]);
+  blogPostDB.addPreDeleteHook(deleteFeatureImage);
+  blogPostDB.addPostDeleteHook(deleteComments);
 
   return {
     /**
@@ -82,7 +95,7 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
         throw new Boom('BlogPost id must be an integer', { statusCode: 400 });
       }
 
-      // This check if *only* for the Demo application deployed to prevent deleting the default posts
+      // This is only for the Live demo application to prevent deleting the "default" posts
       if (protectedBlogPosts.indexOf(id) >= 0) {
         throw new Boom('This BlogPost can not be edited', { statusCode: 403 });
       }
@@ -94,38 +107,27 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
      * @param {number} id Id of the BlogPost to delete
      */
     deletePost(id) {
-      id = +id;
-
-      /**
-       * This check if *only* for the Demo deployed application
-       * to prevent deleting the default BlogPost
-       */
-      if (protectedBlogPosts.indexOf(id) >= 0) {
-        throw new Boom('This BlogPost can not be deleted', { statusCode: 403 });
-      }
-
-      return blogPostDB.deletePost(id);
+      return blogPostDB.deletePost(+id);
     },
     /**
      * ONLY FOR THE LIVE DEMO APPLICATION
-     * Clean up user generated BlogPost + comments and images in a Crob Job every 24h
+     * Clean up user generated BlogPost + comments and images in a Cron Job every 24h
      */
     async cleanUp() {
-      const BlogPost = blogPostDB.gstoreModel;
-
       let posts;
       let ids;
       try {
         /**
          * Query and ask only for the entity keys, which is faster and cheaper
          */
-        posts = await BlogPost.query()
+        posts = await blogPostDB
+          .query()
           .select('__key__')
           .run();
         /**
          * Retrieve alist of IDs (filtering out the "default" post of the Demo application)
          */
-        ids = posts.entities.map(p => +p.id).filter(id => protectedBlogPosts.indexOf(id) < 0);
+        ids = posts.entities.map(p => +p.id).filter(id => !protectedBlogPosts.includes(id));
       } catch (e) {
         throw e;
       }
@@ -136,7 +138,7 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
        * Delete BlogPosts (executing all the pre and post hooks)
        */
       try {
-        await Promise.all(ids.map(id => BlogPost.delete(id, ['Blog', 'default'])));
+        await Promise.all(ids.map(id => blogPostDB.deletePost(id)));
       } catch (e) {
         throw e;
       }
@@ -149,8 +151,8 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
       try {
         comments = await Promise.all(
           protectedBlogPosts.map(id =>
-            comment.commentDomain
-              .createQuery()
+            comment.commentDB
+              .query()
               .filter('blogPost', id)
               .select('__key__')
               .run()
@@ -163,7 +165,7 @@ export default ({ logger }: Context, { blogPostDB, comment }: Modules): BlogPost
         }, []);
 
         if (commentsIds.length > 0) {
-          logger.info(`Deleting ${commentsIds.length} comment(s) on protected BlogPost`);
+          context.logger.info(`Deleting ${commentsIds.length} comment(s) on protected BlogPost`);
           await comment.commentDomain.deleteComment(commentsIds);
         }
       } catch (e) {

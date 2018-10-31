@@ -1,9 +1,9 @@
 import Datastore from '@google-cloud/datastore';
-import GstoreNode from 'gstore-node';
+import GstoreNode, { Gstore } from 'gstore-node';
 import { Logger } from 'winston';
 import { GcloudConfig } from './config/gcloud';
 
-export default ({ config, logger }: { config: GcloudConfig; logger: Logger }) => {
+export default ({ config, logger }: { config: GcloudConfig; logger: Logger }): Gstore => {
   logger.info(`Instantiating Datastore instance for project "${config.projectId}"`);
 
   /**

@@ -1,9 +1,8 @@
-'use strict';
-
-import { Entity, Model, QueryListOptions, QueryResult, DeleteResult } from 'gstore-node';
-import initDBhooks from './blog-post.db.hooks';
+import { Entity, QueryListOptions, QueryResult, DeleteResult, Query } from 'gstore-node';
 import { Context, Modules } from '../models';
 import { BlogPostType } from './models';
+
+type FunctionReturnPromise = (...args: any[]) => Promise<any>;
 
 export interface BlogPostDB {
   getPosts(options?: QueryListOptions): Promise<QueryResult<BlogPostType>>;
@@ -11,12 +10,16 @@ export interface BlogPostDB {
   createPost(data: BlogPostType, dataloader: any): Promise<Entity<BlogPostType>>;
   updatePost(id: number, data: any, dataloader: any, replace: boolean): Promise<Entity<BlogPostType>>;
   deletePost(id: number): Promise<DeleteResult>;
-  gstoreModel: Model<BlogPostType>;
+  addPreSaveHook(handler: FunctionReturnPromise | FunctionReturnPromise[]): void;
+  addPreDeleteHook(handler: FunctionReturnPromise | FunctionReturnPromise[]): void;
+  addPostDeleteHook(handler: FunctionReturnPromise | FunctionReturnPromise[]): void;
+  query(): Query<BlogPostType>;
 }
 
-export default (context: Context, { images, utils }: Modules): BlogPostDB => {
-  const { gstore } = context;
+export default (context: Context, modules: Modules): BlogPostDB => {
+  const { gstore, logger } = context;
   const { Schema } = gstore;
+  const { utils } = modules;
 
   /**
    * Schema for the BlogPost entity Kind
@@ -37,44 +40,21 @@ export default (context: Context, { images, utils }: Modules): BlogPostDB => {
   });
 
   /**
-   * Add "pre" and "post" hooks to our Schema
+   * All the BlogPost will be created under the same entity group with ancestor ["Blog", "default"]
+   * The ancestor entity does not have to exist in the Datastore to be able to create the children.
+   * Saving our BlogPost in one entity group will give us *strong consistency* when saving entities
    */
-  const { deletePreviousImage, initEntityData, deleteFeatureImage, deleteComments } = initDBhooks(context, {
-    images,
-    utils,
-  });
+  const ancestor = ['Blog', 'default'];
 
-  /**
-   * Hooks to run before *saving* the entity
-   * In "pre.save" hooks, the scope "this" is the entity being saved
-   * In "pre.delete" hooks, the scope is also the entity being deleted but does not have contain data.
-   */
-  schema.pre('save', [deletePreviousImage, initEntityData]);
-
-  /**
-   * Hooks to run before deleting the entity
-   */
-  schema.pre('delete', deleteFeatureImage);
-
-  /**
-   * Hooks to run after deleting the entity
-   */
-  schema.post('delete', deleteComments);
+  const { addPreSaveHook, addPreDeleteHook, addPostDeleteHook } = utils.gstore.initDynamicHooks(schema, logger);
 
   /**
    * Define default configuration for our Model.list() query shortcut
    */
   schema.queries('list', {
     order: { property: 'modifiedOn', descending: true },
-    ancestors: ['Blog', 'default'],
+    ancestors: ancestor,
   });
-
-  /**
-   * All the BlogPost will be created under the same entity group with ancestor ["Blog", "default"]
-   * The ancestor entity does not have to exist in the Datastore to be able to create the children.
-   * Saving our BlogPost in one entity group will give us *strong consistency* when saving entities
-   */
-  const ancestor = ['Blog', 'default'];
 
   /**
    * Create a "BlogPost" Entity Kind Model
@@ -110,6 +90,9 @@ export default (context: Context, { images, utils }: Modules): BlogPostDB => {
     deletePost(id) {
       return BlogPost.delete(id, ancestor);
     },
-    gstoreModel: BlogPost,
+    addPreSaveHook,
+    addPreDeleteHook,
+    addPostDeleteHook,
+    query: BlogPost.query,
   };
 };

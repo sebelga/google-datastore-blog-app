@@ -1,5 +1,3 @@
-'use strict';
-
 import path from 'path';
 import { Request, Response, NextFunction, Express } from 'express';
 import { Context, AppModules } from './models';
@@ -8,6 +6,7 @@ import { Context, AppModules } from './models';
  * Authentication middleware for the "admin" routes
  * Not implemented, just a starting point for the Demo.
  */
+
 async function authMiddleware(req: Request, _: Response, next: NextFunction) {
   const token = req.headers['x-access-token'];
   if (!token) {
@@ -22,6 +21,7 @@ export default (
   { app, modules: { blog, admin } }: { app: Express; modules: AppModules }
 ) => {
   const { apiBase } = config.common;
+
   /**
    * Web Routes
    */
@@ -56,7 +56,7 @@ export default (
 
     if (err.isServer) {
       // log the error...
-      return;
+      return res.status(statusCode).send('Server error');
     }
     return res.status(statusCode).json(payload);
   });

@@ -1,5 +1,3 @@
-'use strict';
-
 import initBlogModule from './modules/blog';
 import initAdminModule from './modules/admin';
 import initImagesModule from './modules/images';

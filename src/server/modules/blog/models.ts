@@ -1,7 +1,7 @@
 import { Gstore } from 'gstore-node';
 import { Logger } from 'winston';
 import { ImagesModule } from '../images/index';
-import { UtilsModule } from '../utils/index';
+import { UtilsModule } from '../utils';
 import { BlogPostModule } from './blog-post';
 import { BlogPostDB } from './blog-post/blog-post.db';
 import { BlogPostDomain } from './blog-post/blog-post.domain';

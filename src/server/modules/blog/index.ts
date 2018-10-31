@@ -1,5 +1,3 @@
-'use strict';
-
 import { Router } from 'express';
 import initRoutes from './blog.routes';
 import initBlogPost, { BlogPostModule } from './blog-post';
@@ -13,9 +11,9 @@ export interface BlogModule {
   comment: CommentModule;
 }
 
-export default (context: Context, { images, utils }: Modules): BlogModule => {
+export default (context: Context, modules: Modules): BlogModule => {
   const comment = initComment(context);
-  const blogPost = initBlogPost(context, { comment, images, utils });
+  const blogPost = initBlogPost(context, { ...modules, comment });
   const { webRouter, apiRouter } = initRoutes(context, { blogPost, comment });
 
   return {

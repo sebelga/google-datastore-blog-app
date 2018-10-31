@@ -1,9 +1,9 @@
-import { createLogger, format, transports } from 'winston';
+import { createLogger, format, transports, Logger } from 'winston';
 import { LoggerConfig } from './config/logger';
 
 const { combine, timestamp, printf } = format;
 
-export default ({ config }: { config: LoggerConfig }) => {
+export default ({ config }: { config: LoggerConfig }): Logger => {
   const myFormat = printf(info => {
     return `${info.timestamp} ${info.level}: ${info.message}`;
   });
@@ -11,11 +11,7 @@ export default ({ config }: { config: LoggerConfig }) => {
   const logger = createLogger({
     level: config.level,
     format: combine(timestamp(), myFormat),
-    transports: [
-      new transports.File({ filename: 'error.log', level: 'error' }),
-      new transports.File({ filename: 'combined.log' }),
-      new transports.Console({ format: format.simple() }),
-    ],
+    transports: [new transports.Console({ format: format.simple() })],
   });
 
   return logger;

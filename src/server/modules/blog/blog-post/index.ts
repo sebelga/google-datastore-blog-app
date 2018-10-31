@@ -10,9 +10,9 @@ export interface BlogPostModule {
   routesHandlers: BlogPostRoutesHandlers;
 }
 
-export default (context: Context, { comment, images, utils }: Modules): BlogPostModule => {
-  const blogPostDB = initDB(context, { images, utils });
-  const blogPostDomain = initDomain(context, { blogPostDB, comment });
+export default (context: Context, modules: Modules): BlogPostModule => {
+  const blogPostDB = initDB(context, modules);
+  const blogPostDomain = initDomain(context, { blogPostDB, ...modules });
 
   return {
     blogPostDomain,

@@ -1,5 +1,4 @@
-import { Query, QueryListOptions } from 'gstore-node';
-import { DatastoreTransaction } from '@google-cloud/datastore/transaction';
+import { QueryListOptions } from 'gstore-node';
 
 import { CommentType } from './models';
 import { Context, Modules } from '../models';
@@ -8,7 +7,6 @@ export interface CommentDomain {
   getComments(postId: number | string, options?: QueryListOptions & { withVirtuals?: boolean }): Promise<any>;
   createComment(postId: number | string, data: CommentType): Promise<CommentType>;
   deleteComment(id: number | string | (number | string)[]): Promise<any>;
-  createQuery(namespace?: string, transaction?: DatastoreTransaction): Query<CommentType>;
 }
 
 export default (_: Context, { commentDB }: Modules): CommentDomain => {
@@ -25,17 +23,14 @@ export default (_: Context, { commentDB }: Modules): CommentDomain => {
   const createComment = (postId: number | string, data: CommentType) => {
     postId = +postId;
     const entityData = { ...data, blogPost: postId };
-    return commentDB.createComment(entityData).then(entity => entity.plain({ virtuals: true }));
+    return commentDB.createComment(entityData);
   };
 
   const deleteComment = (id: number | string | (number | string)[]) => commentDB.deleteComment(id);
-
-  const createQuery = commentDB.createQuery;
 
   return {
     getComments,
     createComment,
     deleteComment,
-    createQuery,
   };
 };
