@@ -1,4 +1,3 @@
-import path from 'path';
 import { Request, Response } from 'express';
 import { Entity, QueryResult, DeleteResult } from 'gstore-node';
 import { BlogPostType } from './models';
@@ -38,9 +37,9 @@ export default ({ gstore, logger }: Context, { blogPostDomain }: Modules): BlogP
       const dataloader = gstore.createDataLoader();
       const template = 'blog/detail';
 
-      let post: Entity<BlogPostType>;
+      let blogPost: Entity<BlogPostType>;
       try {
-        post = await blogPostDomain.getPost(req.params.id, dataloader);
+        blogPost = await blogPostDomain.getPost(req.params.id, dataloader);
       } catch (error) {
         if (error.code === 'ERR_ENTITY_NOT_FOUND') {
           return res.redirect('/404');
@@ -50,7 +49,7 @@ export default ({ gstore, logger }: Context, { blogPostDomain }: Modules): BlogP
 
       return res.render(template, {
         pageId: 'blogpost-view',
-        post,
+        blogPost,
       });
     },
     async deletePost(req, res) {
@@ -70,7 +69,7 @@ export default ({ gstore, logger }: Context, { blogPostDomain }: Modules): BlogP
     },
     /**
      * FOR LIVE DEMO APPLICATION: Clean up BlogPost created by users
-     * This function is executed every 24h by a Cron Job
+     * It is ran every 24h in a Cron Job
      */
     async cleanUp(_, res) {
       logger.info('Cleaning up BlogPost...');

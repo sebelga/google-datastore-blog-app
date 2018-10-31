@@ -34,7 +34,7 @@ const loadComments = id => {
         });
 
         if (response.data.nextPageCursor && response.data.entities.length > 0) {
-          nextPage = response.data.nextPageCursor;
+          nextPage = encodeURIComponent(response.data.nextPageCursor);
           document.querySelector('#load-more-comments button').classList.remove('is-hidden');
         } else {
           // No more comments (hide button)

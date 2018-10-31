@@ -1,5 +1,3 @@
-'use strict';
-
 import express from 'express';
 import compression from 'compression';
 import path from 'path';
@@ -14,7 +12,7 @@ export default (context: Context, modules: AppModules) => {
    * Configure views template, static files, gzip
    */
   app.use(compression());
-  app.set('views', path.join(__dirname, '../views'));
+  app.set('views', './views');
   app.set('view engine', 'pug');
   app.use('/public', express.static(path.join(__dirname, '..', 'public'), { maxAge: '1 year' }));
   app.disable('x-powered-by');

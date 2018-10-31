@@ -1,20 +1,18 @@
-'use strict';
-
 import bodyParser from 'body-parser';
 import express, { Request, Response, NextFunction } from 'express';
 import { Context, Modules } from './models';
 
-export default ({ logger }: Context, { blogPost, comment }: Modules) => {
+export default (context: Context, { blogPost, comment }: Modules) => {
   /**
-   * The Demo application deployed has a Cron job to clean up BlogPost and Comments created
-   * every 24h. This middleware validates that the request is made by a App Engine Cron Job
+   * The Demo application deployed has a Cron job to clean up BlogPost and Comments created by the users.
+   * This middleware makes sure that the request is made by the Google App Engine Cron Job
    */
   const authorizeCronMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const ipAppEngine = req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].indexOf('0.1.0.1') >= 0;
     const cronHeader = !!req.headers['x-appengine-cron'];
 
     if (!cronHeader || !ipAppEngine) {
-      logger.warn(`The unauthorized host ${req.ip} tried to clean up BlogPost`);
+      context.logger.warn(`The unauthorized host ${req.ip} tried to clean up BlogPost`);
       return res.status(403).send('Not allowed');
     }
 

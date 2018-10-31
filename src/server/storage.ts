@@ -1,5 +1,3 @@
-'use strict';
-
 import Storage from '@google-cloud/storage';
 import { GcloudConfig } from './config/gcloud';
 

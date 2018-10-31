@@ -1,26 +1,26 @@
 extends ../layout.pug
 
 block title
-    title= post ? post.title : ""
+    title= blogPost ? blogPost.title : ""
 
 block content
     if error
         div(class="notification is-danger")= error.message
 
-    if post
+    if blogPost
         section(class="hero is-dark is-large")
-            if post.posterUri
+            if blogPost.posterUri
                 style.
                     .header-image:before{
-                        background-image:url(#{post.posterUri})
+                        background-image:url(#{blogPost.posterUri})
                     }
             div(class="hero-body header-image")
                 div(class="container has-text-centered")
-                    h1.title= post.title
+                    h1.title= blogPost.title
 
         .container
             .content
-                section.section!= post.contentToHtml
+                section.section!= blogPost.contentToHtml
 
         section(class="hero is-light")
             div(class="hero-body is-paddingless")
@@ -38,7 +38,7 @@ block content
                             article.media
                                 .media-content
                                     .content
-                                        form(method="post", id="form-comment" data-post-id=post.id)
+                                        form(method="post", id="form-comment" data-post-id=blogPost.id)
                                             .field
                                                 .control
                                                     input(class="input", type="text", placeholder="Your name" name="author")
@@ -55,8 +55,8 @@ block content
                                                     button(type="submit", class="button") Post comment
 
 block scripts
-    if post
+    if blogPost
         script.
             window.__blogPostData = {
-                id: #{post.id},
+                id: #{blogPost.id},
             };

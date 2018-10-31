@@ -1,18 +1,16 @@
-'use strict';
-
-const Joi = require('joi');
-const moment = require('moment');
+import Joi from 'joi';
+import distanceInWords from 'date-fns/distance_in_words';
 import { Entity, Query, QueryListOptions } from 'gstore-node';
-import { DatastoreTransaction } from '@google-cloud/datastore/transaction';
 
 import { Context } from '../models';
 import { CommentType } from './models';
 
 export interface CommentDB {
   getComments(postId: number | string, options?: QueryListOptions & { withVirtuals?: boolean }): Promise<any>;
-  createComment(data: CommentType): Promise<Entity<CommentType>>;
+  createComment(data: CommentType): Promise<CommentType>;
   deleteComment(id: number | string | (number | string)[]): Promise<any>;
-  createQuery(namespace?: string, transaction?: DatastoreTransaction): Query<CommentType>;
+  deletePostComment(postId: number): Promise<any>;
+  query(): Query<CommentType>;
 }
 
 export default ({ gstore }: Context): CommentDB => {
@@ -46,7 +44,7 @@ export default ({ gstore }: Context): CommentDB => {
    * to display the date of the comment in our View
    */
   schema.virtual('createdOnFormatted').get(function getCreatedOnFormatted() {
-    return moment(this.createdOn).fromNow();
+    return `${distanceInWords(new Date(), new Date(this.createdOn))} ago`;
   });
 
   /**
@@ -58,7 +56,7 @@ export default ({ gstore }: Context): CommentDB => {
    * DB API
    */
   return {
-    getComments(postId, options = { limit: 3 }) {
+    async getComments(postId, options = { limit: 3 }) {
       const query = Comment.query()
         .filter('blogPost', postId)
         .order('createdOn', { descending: true })
@@ -68,22 +66,44 @@ export default ({ gstore }: Context): CommentDB => {
         query.start(options.start);
       }
 
-      return query.run({ format: 'ENTITY' }).then(result => {
-        // Add virtual properties to the entities
-        const entities = (<Entity<CommentType>[]>result.entities).map(entity =>
-          entity.plain({ virtuals: options.withVirtuals })
-        );
-        return { entities, nextPageCursor: result.nextPageCursor };
-      });
+      const { entities, nextPageCursor } = await query.run({ format: 'ENTITY' });
+
+      return {
+        entities: (<Entity<CommentType>[]>entities).map(entity =>
+          // Return Json with virtual properties
+          entity.plain({ virtuals: !!options.withVirtuals })
+        ),
+        nextPageCursor,
+      };
     },
-    createComment(data) {
+    async createComment(data) {
       const entityData = Comment.sanitize(data);
       const comment = new Comment(entityData);
-      return comment.save();
+      const entity = await comment.save();
+
+      return entity.plain({ virtuals: true });
     },
     deleteComment(id) {
       return Comment.delete(id);
     },
-    createQuery: Comment.query.bind(Comment),
+    async deletePostComment(postId) {
+      /**
+       * A keys-only query returns just the keys of the entities instead of the entities data,
+       * at lower latency and cost.
+       */
+      const { entities } = await Comment.query()
+        .filter('blogPost', postId)
+        .select('__key__')
+        .run();
+
+      const keys = (entities as Array<any>).map(entity => entity[gstore.ds.KEY]);
+
+      /**
+       * Use @google-cloud/datastore delete() APi to delete the keys
+       * Info: gstore.ds ==> alias to the underlying "datastore" instance
+       */
+      return gstore.ds.delete(keys);
+    },
+    query: Comment.query,
   };
 };

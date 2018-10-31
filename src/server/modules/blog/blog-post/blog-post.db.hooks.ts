@@ -1,12 +1,10 @@
-'use-strict';
-
 import R from 'ramda';
 import { DatastoreKey } from '@google-cloud/datastore/entity';
 import { Entity } from 'gstore-node';
 import { Context, Modules } from '../models';
 import { BlogPostType } from './models';
 
-export default ({ gstore }: Context, { images, utils }: Modules) => {
+export default ({ gstore }: Context, { images, utils, comment }: Modules) => {
   /**
    * If the entity exists (it has an id) and we pass "null" as posterUri
    * or the entityData contains a "file", we fetch the entity to check if
@@ -25,7 +23,7 @@ export default ({ gstore }: Context, { images, utils }: Modules) => {
         if (!entity || !entity.cloudStorageObject) {
           return;
         }
-        return images.deleteFromGCS(entity.cloudStorageObject);
+        return images.GCS.deleteFile(entity.cloudStorageObject);
       });
     }
 
@@ -41,7 +39,6 @@ export default ({ gstore }: Context, { images, utils }: Modules) => {
      */
     this.entityData = R.compose(
       createExcerpt,
-      sanitize,
       addCloudStorageData
     )(this.entityData);
 
@@ -70,14 +67,6 @@ export default ({ gstore }: Context, { images, utils }: Modules) => {
   }
 
   /**
-   * Sanitize the entityData
-   * This will remove all undeclared prop on our Schema
-   */
-  function sanitize(entityData: any) {
-    return gstore.model('BlogPost').sanitize(entityData);
-  }
-
-  /**
    * Generate the excerpt from the "content" value
    */
   function createExcerpt(entityData: any) {
@@ -96,7 +85,7 @@ export default ({ gstore }: Context, { images, utils }: Modules) => {
       if (!entity || !entity.cloudStorageObject) {
         return;
       }
-      return images.deleteFromGCS(entity.cloudStorageObject);
+      return images.GCS.deleteFile(entity.cloudStorageObject);
     });
   }
 
@@ -107,18 +96,7 @@ export default ({ gstore }: Context, { images, utils }: Modules) => {
    */
   function deleteComments({ key }: { key: DatastoreKey }) {
     const { id } = key;
-
-    /**
-     * A keys-only query returns just the keys of the result entities instead of
-     * the entities data, at lower latency and cost.
-     */
-    return gstore
-      .model('Comment')
-      .query()
-      .filter('blogPost', id)
-      .select('__key__')
-      .run()
-      .then(({ entities }) => gstore.ds.delete(entities.map(entity => entity[gstore.ds.KEY])));
+    return comment.commentDB.deletePostComment(+id);
   }
 
   return {
