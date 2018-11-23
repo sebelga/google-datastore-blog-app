@@ -52,6 +52,6 @@ block content
                             section.content
                                 div(class="field is-grouped is-grouped-right")
                                     p.control
-                                        button(type="submit", class="button is-primary button-submit" disabled=post && protectedBlogPosts.indexOf(post.id) >= 0) #{post ? 'Update' : 'Create'}
-                                if post && protectedBlogPosts.indexOf(post.id) >= 0
+                                        button(type="submit", class="button is-primary button-submit" disabled=post && protectedBlogPosts && protectedBlogPosts.indexOf(post.id) >= 0) #{post ? 'Update' : 'Create'}
+                                if post && protectedBlogPosts && protectedBlogPosts.indexOf(post.id) >= 0
                                     p(class="has-text-right is-size-7") Update disabled for this blog post.

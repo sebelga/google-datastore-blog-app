@@ -9,7 +9,7 @@ if (!argv.v || typeof argv.v !== 'string') {
 
 try {
   execSync('which gcloud');
-} catch {
+} catch (e) {
   throw new Error('Sorry, this script requires the Google gcloud SDK');
 }
 

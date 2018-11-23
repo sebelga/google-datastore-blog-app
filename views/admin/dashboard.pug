@@ -44,7 +44,7 @@ block content
                                             a(href="/blog/" + item.id) view
                                         .level-item
                                             a(href="/admin/edit-post/" + item.id) edit
-                                        div(class=protectedBlogPosts.indexOf(item.id) >= 0 ? "is-hidden" : "level-item")
+                                        div(class=protectedBlogPosts && protectedBlogPosts.indexOf(item.id) >= 0 ? "is-hidden" : "level-item")
                                             a(
                                                 href="/admin/edit-post/" + item.id,
                                                 class="delete-post",

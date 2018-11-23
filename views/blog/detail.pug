@@ -55,8 +55,7 @@ block content
                                                     button(type="submit", class="button") Post comment
 
 block scripts
-    if blogPost
-        script.
-            window.__blogPostData = {
-                id: #{blogPost.id},
-            };
+  script.
+      window.__blogPostData = {
+          id: #{blogPost ? blogPost.id : 0},
+      };

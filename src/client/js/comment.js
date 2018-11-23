@@ -118,7 +118,9 @@ const pageReady = pageId => {
     commentFormErrorsEl = document.getElementById('comment-form-errors');
     commentFormEl = document.getElementById('form-comment');
 
-    commentFormEl.addEventListener('submit', submitComment);
+    if (commentFormEl) {
+      commentFormEl.addEventListener('submit', submitComment);
+    }
 
     const buttonsDeleteComments = Array.prototype.slice.apply(document.querySelectorAll('.comment .delete'));
     buttonsDeleteComments.forEach(el => el.addEventListener('click', deleteComment));
