@@ -99,8 +99,8 @@ export default ({ gstore }: Context): CommentDB => {
       const keys = (entities as Array<any>).map(entity => entity[gstore.ds.KEY]);
 
       /**
-       * Use @google-cloud/datastore delete() APi to delete the keys
-       * Info: gstore.ds ==> alias to the underlying "datastore" instance
+       * We use @google-cloud/datastore delete() APi to delete the keys
+       * Reminder: gstore.ds ==> alias to the underlying "datastore" instance
        */
       return gstore.ds.delete(keys);
     },

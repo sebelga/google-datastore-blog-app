@@ -56,8 +56,10 @@ gcloud config set project <your-project-id>
 
 Once you have your project configured in Google Cloud, install the application dependencies with
 
-```js
+```sh
 npm install
+# or
+yarn
 ```
 
 ### Environment variables
@@ -74,13 +76,13 @@ PORT=3000
 # -------------------
 # Google Cloud
 # -------------------
-GOOGLE_CLOUD_PROJECT=xxx
-GCLOUD_BUCKET=xxx
+GOOGLE_CLOUD_PROJECT=<your-google-cloud-project>
+GCLOUD_BUCKET=<your-google-storage-bucket>
 
 ## Namespace for the Datastore entities (optional)
 DATASTORE_NAMESPACE=development
 
-## Local Datastore Emulator Host (optional)
+## Local Datastore Emulator Host (optional but recommended for development)
 # DATASTORE_EMULATOR_HOST=localhost:8081
 
 # -------------------
@@ -112,12 +114,21 @@ You can now navigate to `http://localhost:3000` and start creating posts and com
 
 ### Deploy the application
 
-Before deploying the application make sure to define the `GCLOUD_BUCKET` environment variable inside the `app.yaml` file with your Google Storage bucket id.
-
-Then run the following command:
+Before deploying the application make sure you have defined the `GCLOUD_BUCKET` environment variable in the `app.yaml` file. Then, to deploy the application, run the following command:
 
 ```sh
-npm run deploy
+npm run deploy -v <app-version>
+# or
+yarn deploy -v <app-version>
+```
+
+This script will build the client + server code and deploy the application on Google Cloud. But **it will not** promote the traffic to the specified version. This allows you to **first test your application** and make sure that everything run correctly.  
+Once you are ready to send the traffic to the new version, simply run:
+
+```sh
+npm run promote -v <app-version>
+# or
+yarn promote -v <app-version>
 ```
 
 ### Make changes to the client code

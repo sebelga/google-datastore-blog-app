@@ -93,6 +93,6 @@ export default (context: Context, modules: Modules): BlogPostDB => {
     addPreSaveHook,
     addPreDeleteHook,
     addPostDeleteHook,
-    query: BlogPost.query,
+    query: BlogPost.query.bind(BlogPost),
   };
 };

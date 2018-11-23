@@ -125,7 +125,7 @@ export default (context: Context, { blogPostDB, images, utils, comment }: Module
           .select('__key__')
           .run();
         /**
-         * Retrieve alist of IDs (filtering out the "default" post of the Demo application)
+         * Retrieve a list of IDs (filtering out the "default" post of the Demo application)
          */
         ids = posts.entities.map(p => +p.id).filter(id => !protectedBlogPosts.includes(id));
       } catch (e) {

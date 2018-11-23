@@ -16,7 +16,8 @@
       "internalConsoleOptions": "neverOpen",
       "env": {
         "NODE_ENV": "development"
-      }
+      },
+      "runtimeVersion": "10.11.0"
     },
     {
       "type": "node",

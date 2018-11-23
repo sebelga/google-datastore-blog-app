@@ -4,7 +4,9 @@ import { Logger } from 'winston';
 import { GcloudConfig } from './config/gcloud';
 
 export default ({ config, logger }: { config: GcloudConfig; logger: Logger }): Gstore => {
-  logger.info(`Instantiating Datastore instance for project "${config.projectId}"`);
+  logger.info(`Instantiating Datastore instance`);
+  logger.info(`Google Cloud project: ${config.projectId}`);
+  logger.info(`Datastore namespace: ${config.datastore.namespace}`);
 
   /**
    * Create Datastore client instance

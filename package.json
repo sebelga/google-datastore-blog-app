@@ -1,6 +1,6 @@
 {
   "name": "gstore-blog-demo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Demo Blog Application on Google App Engine Flexible Environment",
   "keywords": [
     "nodejs",
@@ -17,7 +17,7 @@
     "url": "https://github.com/sebelga/blog-app-googlecloud"
   },
   "engines": {
-    "node": "8.x.x"
+    "node": "10.x.x"
   },
   "scripts": {
     "local-datastore": "gcloud beta emulators datastore start --data-dir=./local-datastore",
@@ -26,10 +26,10 @@
     "build-server": "npm run build-ts",
     "build-ts": "tsc",
     "clean": "rimraf dist",
-    "deploy": "gcloud app deploy -v prod",
-    "deploy-staging": "npm run predeploy && gcloud app deploy -v staging --no-promote",
+    "deploy": "node ./scripts/deploy",
     "test": "npm test",
     "predeploy": "npm run build",
+    "promote": "node ./scripts/promote",
     "serve": "node dist/index.js",
     "serve-debug": "nodemon --inspect dist/index.js",
     "start": "npm run serve",
@@ -45,14 +45,14 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "boom": "7.2.0",
-    "bulma": "^0.7.1",
+    "bulma": "0.7.1",
     "compression": "1.7.3",
     "dataloader": "^1.4.0",
     "date-fns": "^1.29.0",
     "dotenv": "^6.0.0",
     "es6-docready": "^1.0.0",
     "express": "^4.16.3",
-    "gstore-node": "^4.3.0",
+    "gstore-node": "^4.3.1",
     "is": "^3.2.1",
     "joi": "^13.4.0",
     "marked": "^0.4.0",
@@ -98,12 +98,12 @@
     "resolve-url-loader": "2.3.0",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.0.3",
-    "shelljs": "^0.8.2",
     "style-loader": "0.21.0",
     "ts-node": "^7.0.0",
     "typescript": "^3.0.3",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.16.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "yargs": "^12.0.2"
   }
 }
