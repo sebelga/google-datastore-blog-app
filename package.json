@@ -17,7 +17,7 @@
     "url": "https://github.com/sebelga/blog-app-googlecloud"
   },
   "engines": {
-    "node": "10.x.x"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "local-datastore": "gcloud beta emulators datastore start --data-dir=./local-datastore",
