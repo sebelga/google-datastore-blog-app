@@ -5,7 +5,7 @@ import { API_BASE } from './config';
 
 const deletePost = id =>
   axios
-    .delete(`${API_BASE}/blog-posts/${id}`, {
+    .delete(`${API_BASE}/blog/${id}`, {
       headers: { 'Content-type': 'application/json' },
       data: null, // data null is necessary to pass the headers
     })
