@@ -1,10 +1,12 @@
-# Google Datastore App demo: My Blog
+# Google Node.js App Engine demo
 
 > A Node.js demo application built with [`@google-cloud/datastore`](https://github.com/googleapis/nodejs-datastore) & [`gstore-node`](https://github.com/sebelga/gstore-node) running on Google App Engine.
 
-This small application demonstrates how to use `gstore-node` to build an application on Google App Engine **standard** environment. `gstore-node` is an modeling library that lets you define **Schemas** for your entities to easily validate their _data_ before saving them in Google Datastore. It has also other useful features like _pre_ & _post_ **middleware**, **virtual properties** or a **cache layer** to speed up entities fetching.
+This small application shows you how to use `gstore-node` to build an application on Google App Engine **standard** environment. `gstore-node` is a modeling library that lets you define **Schemas** for your entities to easily validate their data before saving them in Google Datastore. It has also other useful features like pre & post **middleware**, **virtual properties** or a **cache layer** to speed up entities fetching.
 
-Use this repository as a starting point to build complex applications on top of the Google Datastore.
+## Tutorial
+
+I wrote **a multi-part tutorial on Medium** that goes through the code in this repository. You can [fint it here](https://medium.com/google-cloud/build-a-blog-application-on-google-app-engine-setup-part-1-38dab981b779)
 
 ## Highlights
 
